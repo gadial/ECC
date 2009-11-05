@@ -6,15 +6,15 @@
  */
 
 #include <iostream>
-using std::cout;
-using std::endl;
+
+using namespace std;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
 
-    cout << "Hello world!\n";
+    cout << "Hello world!" << endl;
     return 0;
 }
 
