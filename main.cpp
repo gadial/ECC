@@ -14,7 +14,7 @@ using std::endl;
  */
 int main(int argc, char** argv) {
 
-    cout << "Hello world!" << endl;
+    cout << "Hello world!\n";
     return 0;
 }
 
