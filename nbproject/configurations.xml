@@ -29,6 +29,12 @@
         <platform>2</platform>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <commandLine>-lgmpxx -lgmp</commandLine>
+        </ccTool>
+        <fortranCompilerTool>
+          <commandLine>-lgmpxx -lgmp</commandLine>
+        </fortranCompilerTool>
         <linkerTool>
           <linkerLibItems>
           </linkerLibItems>

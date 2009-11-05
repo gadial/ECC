@@ -6,7 +6,7 @@
  */
 
 #include <iostream>
-
+#include "primes.h"
 using namespace std;
 
 /*
@@ -14,7 +14,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    cout << "Hello world!" << endl;
+    cout << "Hello world!!" << endl;
+    cout << "A prime number: " << generate_prime(100) << endl;
+
     return 0;
 }
 
