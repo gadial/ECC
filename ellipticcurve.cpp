@@ -106,7 +106,51 @@ Jacobian Ellipticcurve::doubling(Jacobian P) {
     return Jacobian(X3,Y3,Z3);
 }
 
-Coordinate Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {}
+Coordinate Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {
 
-Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {}
+}
 
+Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
+	// For the case a==-3
+	// TODO: test...
+
+	if (P.isInfinite()) {
+		return P;
+	} else {
+		mpz_class Y, W, A, B, X, Z, tmp_W;
+		X = P.X; Y = P.Y; Z = P.Z;
+		mpz_class const_4 = 4;
+
+		Y *= 2;
+		mpz_powm(W.get_mpz_t(), P.Z.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
+		while (m > 0) {
+			A = 3 * (X*X - W);
+			B = X * Y * Y;
+			X = A*A - 2*B;
+			Z = Z * Y;
+			if (--m > 0) {
+				tmp_W = W;
+				mpz_powm(W.get_mpz_t(), Y.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
+
+				// avoid computing y^4 two times -> W is now Y^4
+				Y = 2*A * (B - X) - W;
+
+				W = tmp_W * W;
+			} else {
+				// Y <-mod Y^4
+				mpz_powm(Y.get_mpz_t(), Y.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
+				Y = 2*A * (B - X) - Y;
+			}
+		}
+
+		X = X % mod;
+		Y = (Y / 2) % mod;
+		Z = Z % mod;
+
+		return Jacobian(X, Y, Z);
+	}
+}
+
+mpz_class Ellipticcurve::getNAF(mpz_class k) {
+
+}

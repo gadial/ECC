@@ -31,6 +31,11 @@ public:
         Jacobian(const Coordinate& rhs): //TODO: is this really the correct conversion?
                 X(rhs.X), Y(rhs.Y), Z(1) {}
 
+
+    bool isInfinite() {
+    	return X == 1 && Y == 1 && Z == 0;
+    }
+
 	mpz_class X, Y, Z;
 
 };
