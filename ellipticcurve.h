@@ -8,6 +8,7 @@
 #ifndef ELLIPTICCURVE_H_
 #define ELLIPTICCURVE_H_
 
+#include <gmpxx.h>
 #include "coordinates.h"
 
 class Ellipticcurve {
