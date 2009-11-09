@@ -106,8 +106,23 @@ Jacobian Ellipticcurve::doubling(Jacobian P) {
     return Jacobian(X3,Y3,Z3);
 }
 
-Coordinate Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {
+Jacobian Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {
 
+	// implementation according to p.99
+	// TODO: test
+
+	std::vector<int> naf = getNAF(k);
+	// TODO: implement inf...
+	Jacobian Q = Jacobian(1,1,0);
+	for (int i = naf.size() - 1; i >= 0; ++i) {
+		Q = doubling(Q);
+		if (naf[i] == 1) {
+			Q = addition(Q, P);
+		} else if (naf[i] == -1) {
+			Q = addition(Q, getNegative(P));
+		}
+	}
+	return Q;
 }
 
 Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
@@ -154,7 +169,7 @@ Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
 std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
     //implementation folows pg. 98
     //TODO: test
-    std::vector<int> naf;
+    std::vector<int> naf(mpz_sizeinbase(k.get_mpz_t(), 2));
     int i = 0;
     while (k >= 1){
         if (k % 2 == 1){
@@ -169,4 +184,8 @@ std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
         i++;
     }
     return naf;
+}
+
+Coordinate Ellipticcurve::getNegative(const Coordinate& P) {
+	return Coordinate(P.X, (-P.Y) % mod);
 }

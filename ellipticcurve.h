@@ -65,7 +65,7 @@ public:
 	 * Point multiplication (k times)
 	 * -> kP
 	 */
-	Coordinate pointMultiplication(Coordinate P, mpz_class k);
+	Jacobian pointMultiplication(Coordinate P, mpz_class k);
 
 private:
 
@@ -74,6 +74,12 @@ private:
 	 * of a positive integer k
 	 */
 	std::vector<int> getNAF(mpz_class k);
+
+	/**
+	 * Returns the point -P
+	 * According to p.80 (char /= 2,3)
+	 */
+	Coordinate getNegative(const Coordinate& P);
 };
 
 #endif /* ELLIPTICCURVE_H_ */
