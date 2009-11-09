@@ -8,6 +8,7 @@
 #ifndef ELLIPTICCURVE_H_
 #define ELLIPTICCURVE_H_
 
+#include <vector>
 #include <gmpxx.h>
 #include "coordinates.h"
 
@@ -72,7 +73,7 @@ private:
 	 * Returns the non-adjacent form (NAF)
 	 * of a positive integer k
 	 */
-	mpz_class getNAF(mpz_class k);
+	std::vector<int> getNAF(mpz_class k);
 };
 
 #endif /* ELLIPTICCURVE_H_ */

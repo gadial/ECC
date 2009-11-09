@@ -151,6 +151,22 @@ Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
 	}
 }
 
-mpz_class Ellipticcurve::getNAF(mpz_class k) {
-
+std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
+    //implementation folows pg. 98
+    //TODO: test
+    std::vector<int> naf;
+    int i = 0;
+    while (k >= 1){
+        if (k % 2 == 1){
+            mpz_class temp = (k % 4);
+            naf[i] = 2 - temp.get_ui();
+            k -= naf[i];
+        }
+        else{
+            naf[i] = 0;
+        }
+        k /= 2;
+        i++;
+    }
+    return naf;
 }
