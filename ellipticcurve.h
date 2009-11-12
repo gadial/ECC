@@ -15,6 +15,8 @@
 class Ellipticcurve {
 public:
 	Ellipticcurve();
+	Ellipticcurve(mpz_class _mod, int _ECC_a, int _ECC_b):
+		mod(_mod), ECC_a(_ECC_a), ECC_b(_ECC_b) {};
 	virtual ~Ellipticcurve();
 
 	/*

@@ -58,9 +58,12 @@ Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
         T4 = T4 * P.Y;
         Y3 = T3 - T4;
     }
-    X3 = X3 % mod;
-    Y3 = Y3 % mod;
-    Z3 = Z3 % mod;
+    mpz_mod(X3.get_mpz_t(), X3.get_mpz_t(), mod.get_mpz_t());
+    mpz_mod(Y3.get_mpz_t(), Y3.get_mpz_t(), mod.get_mpz_t());
+    mpz_mod(Z3.get_mpz_t(), Z3.get_mpz_t(), mod.get_mpz_t());
+    //X3 = X3 % mod;
+    //Y3 = Y3 % mod;
+    //Z3 = Z3 % mod;
     return Jacobian(X3,Y3,Z3);
 }
 
