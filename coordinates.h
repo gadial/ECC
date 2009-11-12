@@ -23,6 +23,10 @@ public:
 		X(_x), Y(_y) {}
 	Coordinate(const Jacobian& jac, const mpz_class& mod);
 
+    bool isInfinite() {
+    	return X == 0 && Y == 0;
+    }
+
 	mpz_class X, Y;
 };
 
