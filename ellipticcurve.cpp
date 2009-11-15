@@ -4,8 +4,8 @@
  *  Created on: Nov 5, 2009
  *      Author: bhess
  */
-
 #include "ellipticcurve.h"
+//#include <cassert>
 
 Ellipticcurve::Ellipticcurve() {}
 
@@ -14,6 +14,13 @@ Ellipticcurve::~Ellipticcurve() {}
 Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
     //I treat a**2 as simply a*a since I can't see an optimization
     //for it in gmp
+	if (P.isInfinite()) {
+		return Jacobian(Q);
+	}
+	if (Q.isInfinite()) {
+		return P;
+	}
+
     mpz_class X3,Y3,Z3;
     if (ECC_a != -3){
         //pg. 89 - dealing with the general case where a != -3
@@ -58,9 +65,12 @@ Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
         T4 = T4 * P.Y;
         Y3 = T3 - T4;
     }
-    X3 = X3 % mod;
-    Y3 = Y3 % mod;
-    Z3 = Z3 % mod;
+    mpz_mod(X3.get_mpz_t(), X3.get_mpz_t(), mod.get_mpz_t());
+    mpz_mod(Y3.get_mpz_t(), Y3.get_mpz_t(), mod.get_mpz_t());
+    mpz_mod(Z3.get_mpz_t(), Z3.get_mpz_t(), mod.get_mpz_t());
+    //X3 = X3 % mod;
+    //Y3 = Y3 % mod;
+    //Z3 = Z3 % mod;
     return Jacobian(X3,Y3,Z3);
 }
 
@@ -106,8 +116,22 @@ Jacobian Ellipticcurve::doubling(Jacobian P) {
     return Jacobian(X3,Y3,Z3);
 }
 
-Coordinate Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {
+Jacobian Ellipticcurve::pointMultiplication(Coordinate P, mpz_class k) {
 
+	// implementation according to p.99
+
+	std::vector<int> naf = getNAF(k);
+	// TODO: implement inf...
+	Jacobian Q = Jacobian(1,1,0);
+	for (int i = naf.size() - 1; i >= 0; --i) {
+		Q = doubling(Q);
+		if (naf[i] == 1) {
+			Q = addition(Q, P);
+		} else if (naf[i] == -1) {
+			Q = addition(Q, getNegative(P));
+		}
+	}
+	return Q;
 }
 
 Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
@@ -153,14 +177,14 @@ Jacobian Ellipticcurve::repeatedDoubling(Jacobian P, int m) {
 
 std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
     //implementation folows pg. 98
-    //TODO: test
-    std::vector<int> naf;
+    std::vector<int> naf(mpz_sizeinbase(k.get_mpz_t(), 2) + 1);
     int i = 0;
     while (k >= 1){
         if (k % 2 == 1){
             mpz_class temp = (k % 4);
-            naf[i] = 2 - temp.get_ui();
+            naf[i] = 2 - (int)temp.get_ui();
             k -= naf[i];
+
         }
         else{
             naf[i] = 0;
@@ -169,4 +193,8 @@ std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
         i++;
     }
     return naf;
+}
+
+Coordinate Ellipticcurve::getNegative(const Coordinate& P) {
+	return Coordinate(P.X, mod - P.Y);
 }

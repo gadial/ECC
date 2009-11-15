@@ -10,14 +10,22 @@
 
 #include <gmpxx.h>
 //#include "ellipticcurve.h"
-
 //#define isInfJac(mpz_class m) = m.z
+
+class Coordinate;
+class Jacobian;
+
 class Coordinate {
 public:
 
 	Coordinate() {}
 	Coordinate(mpz_class _x, mpz_class _y):
 		X(_x), Y(_y) {}
+	Coordinate(const Jacobian& jac, const mpz_class& mod);
+
+    bool isInfinite() {
+    	return X == 0 && Y == 0;
+    }
 
 	mpz_class X, Y;
 };
