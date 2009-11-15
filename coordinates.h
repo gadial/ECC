@@ -21,7 +21,7 @@ public:
 	Coordinate() {}
 	Coordinate(mpz_class _x, mpz_class _y):
 		X(_x), Y(_y) {}
-	Coordinate(const Jacobian& jac, const mpz_class& mod);
+	Coordinate(const Jacobian& jac, const mpz_class mod);
 
     bool isInfinite() {
     	return X == 0 && Y == 0;

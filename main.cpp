@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 
     cout << "X=" << add.X << ", Y=" << add.Y << ", Z=" << add.Z << endl;
 
-	do_tests();
+    do_tests();
     return 0;
 }
 

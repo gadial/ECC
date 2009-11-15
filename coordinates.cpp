@@ -8,7 +8,7 @@
 #include "coordinates.h"
 
 
-Coordinate::Coordinate(const Jacobian& jac, const mpz_class& mod) {
+Coordinate::Coordinate(const Jacobian& jac, const mpz_class mod) {
 	mpz_class const_2 = 2, const_3 = 3;
 
 	mpz_powm(X.get_mpz_t(), jac.Z.get_mpz_t(), const_2.get_mpz_t(), mod.get_mpz_t());

@@ -31,6 +31,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/coordinates.o \
 	${OBJECTDIR}/ellipticcurve.o \
 	${OBJECTDIR}/primes.o \
 	${OBJECTDIR}/tests.o \
@@ -59,6 +60,11 @@ LDLIBSOPTIONS=
 dist/Release/GNU-Linux-x86/ecc: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ecc ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
 
 ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
 	${MKDIR} -p ${OBJECTDIR}

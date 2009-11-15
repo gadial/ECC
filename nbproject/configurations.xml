@@ -16,6 +16,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>coordinates.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>
