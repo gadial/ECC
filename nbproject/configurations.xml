@@ -7,6 +7,7 @@
       <itemPath>coordinates.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>primes.h</itemPath>
+      <itemPath>tests.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -18,6 +19,7 @@
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>
+      <itemPath>tests.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -35,7 +37,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-lgmpxx -lgmp</commandLine>
+          <commandLine>-lgmpxx -lgmp -lcppunit -ldl</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <commandLine>-lgmpxx -lgmp</commandLine>

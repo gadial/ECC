@@ -33,6 +33,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ellipticcurve.o \
 	${OBJECTDIR}/primes.o \
+	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o
 
 # C Compiler Flags
@@ -68,6 +69,11 @@ ${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/primes.o primes.cpp
+
+${OBJECTDIR}/tests.o: nbproject/Makefile-${CND_CONF}.mk tests.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tests.o tests.cpp
 
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
