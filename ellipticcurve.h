@@ -17,6 +17,13 @@ public:
 	Ellipticcurve();
 	Ellipticcurve(mpz_class _mod, int _ECC_a, int _ECC_b):
 		mod(_mod), ECC_a(_ECC_a), ECC_b(_ECC_b) {};
+	Ellipticcurve(const char* _mod, int _mod_base,
+			const char* _order, int _order_base,
+			const char* _ecc_a, int _ecc_a_base,
+			const char* _ecc_b, int _ecc_b_base,
+			const char* _px, int _px_base,
+			const char* _py, int _py_base);
+
 	virtual ~Ellipticcurve();
 
 	/*
@@ -32,12 +39,14 @@ public:
 	 * Equation that defines the EC:
 	 * y^2 = x^3 + ax + b
 	 */
-	int ECC_a, ECC_b;
+	mpz_class ECC_a, ECC_b;
 
 	/**
 	 * A point in E(F_p)
 	 */
 	Coordinate point;
+
+	mpz_class getOrder();
 
 	/*
 	 * -------------
@@ -68,6 +77,13 @@ public:
 	 * -> kP
 	 */
 	Jacobian pointMultiplication(Coordinate P, mpz_class k);
+
+protected:
+
+	/*
+	 * Order of the EC
+	 */
+	mpz_class order;
 
 private:
 

@@ -11,6 +11,22 @@ Ellipticcurve::Ellipticcurve() {}
 
 Ellipticcurve::~Ellipticcurve() {}
 
+Ellipticcurve::Ellipticcurve(const char* _mod, int _mod_base,
+			const char* _order, int _order_base,
+			const char* _ecc_a, int _ecc_a_base,
+			const char* _ecc_b, int _ecc_b_base,
+			const char* _px, int _px_base,
+			const char* _py, int _py_base) {
+
+	mod.set_str(_mod, _mod_base);
+	order.set_str(_order, _order_base);
+	ECC_a.set_str(_ecc_a, _ecc_a_base);
+	ECC_b.set_str(_ecc_b, _ecc_b_base);
+	point = Coordinate();
+	point.X.set_str(_px, _px_base);
+	point.Y.set_str(_py, _py_base);
+}
+
 Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
     //I treat a**2 as simply a*a since I can't see an optimization
     //for it in gmp
