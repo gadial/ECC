@@ -19,9 +19,15 @@ class Coordinate {
 public:
 
 	Coordinate() {}
+	Coordinate(const char* _x, int basex,
+			const char* _y, int basey);
 	Coordinate(mpz_class _x, mpz_class _y):
 		X(_x), Y(_y) {}
 	Coordinate(const Jacobian& jac, const mpz_class mod);
+
+	bool operator==(const Coordinate& eqTo) {
+		return X == eqTo.X && Y == eqTo.Y;
+	}
 
     bool isInfinite() {
     	return X == 0 && Y == 0;
@@ -36,9 +42,8 @@ public:
 	Jacobian() {}
 	Jacobian(mpz_class _x, mpz_class _y, mpz_class _z):
 		X(_x), Y(_y), Z(_z) {}
-        Jacobian(const Coordinate& rhs): //TODO: is this really the correct conversion?
+	Jacobian(const Coordinate& rhs): //TODO: is this really the correct conversion?
                 X(rhs.X), Y(rhs.Y), Z(1) {}
-
 
     bool isInfinite() {
     	return X == 1 && Y == 1 && Z == 0;

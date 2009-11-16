@@ -21,3 +21,9 @@ Coordinate::Coordinate(const Jacobian& jac, const mpz_class mod) {
 	mpz_mod(X.get_mpz_t(), X.get_mpz_t(), mod.get_mpz_t());
 	mpz_mod(Y.get_mpz_t(), Y.get_mpz_t(), mod.get_mpz_t());
 }
+
+Coordinate::Coordinate(const char* _x, int basex,
+			const char* _y, int basey) {
+	X.set_str(_x, basex);
+	Y.set_str(_y, basey);
+}

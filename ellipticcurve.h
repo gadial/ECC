@@ -61,6 +61,12 @@ public:
 	Jacobian addition(Jacobian P, Coordinate Q);
 
 	/**
+	 * Subtraction P-Q of a jacobian coordinate
+	 * P and an affine coordinate Q
+	 */
+	Jacobian subtraction(Jacobian P, Coordinate Q);
+
+	/**
 	 * Doubling of a point P -> 2P
 	 * in jacobian coordinates
 	 */
@@ -85,6 +91,12 @@ protected:
 	 */
 	mpz_class order;
 
+	/**
+	 * Returns the point -P
+	 * According to p.80 (char /= 2,3)
+	 */
+	Coordinate getNegative(const Coordinate& P);
+
 private:
 
 	/**
@@ -93,11 +105,6 @@ private:
 	 */
 	std::vector<int> getNAF(mpz_class k);
 
-	/**
-	 * Returns the point -P
-	 * According to p.80 (char /= 2,3)
-	 */
-	Coordinate getNegative(const Coordinate& P);
 };
 
 #endif /* ELLIPTICCURVE_H_ */
