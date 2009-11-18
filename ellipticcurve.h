@@ -46,7 +46,7 @@ public:
 	 */
 	Coordinate point;
 
-	mpz_class getOrder();
+	virtual mpz_class getOrder() {}
 
 	/*
 	 * -------------

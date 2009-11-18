@@ -91,6 +91,12 @@ void CurvesNISTTest::p192Multiplication() {
 	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
 }
 
+void CurvesNISTTest::p192Order() {
+	Coordinate multiplicationCalc = Coordinate(curveP192->pointMultiplication(curveP192->point, curveP192->getOrder()),
+			curveP192->mod);
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
+}
+
 void CurvesNISTTest::p224Addition() {
 	Coordinate addTestData = Coordinate(P224_S_PLUS_T_X, NIST_TESTDATA_BASE,
 			P224_S_PLUS_T_Y, NIST_TESTDATA_BASE);
@@ -124,6 +130,12 @@ void CurvesNISTTest::p224Multiplication() {
 	Coordinate multiplicationCalc = Coordinate(curveP224->pointMultiplication(p224S, p224d),
 			curveP224->mod);
 	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
+}
+
+void CurvesNISTTest::p224Order() {
+	Coordinate multiplicationCalc = Coordinate(curveP224->pointMultiplication(curveP224->point, curveP224->getOrder()),
+			curveP224->mod);
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
 }
 
 void CurvesNISTTest::p256Addition() {
@@ -161,6 +173,12 @@ void CurvesNISTTest::p256Multiplication() {
 	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
 }
 
+void CurvesNISTTest::p256Order() {
+	Coordinate multiplicationCalc = Coordinate(curveP256->pointMultiplication(curveP256->point, curveP256->getOrder()),
+			curveP256->mod);
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
+}
+
 void CurvesNISTTest::p384Addition() {
 	Coordinate addTestData = Coordinate(P384_S_PLUS_T_X, NIST_TESTDATA_BASE,
 			P384_S_PLUS_T_Y, NIST_TESTDATA_BASE);
@@ -196,6 +214,12 @@ void CurvesNISTTest::p384Multiplication() {
 	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
 }
 
+void CurvesNISTTest::p384Order() {
+	Coordinate multiplicationCalc = Coordinate(curveP384->pointMultiplication(curveP384->point, curveP384->getOrder()),
+			curveP384->mod);
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
+}
+
 void CurvesNISTTest::p521Addition() {
 	Coordinate addTestData = Coordinate(P521_S_PLUS_T_X, NIST_TESTDATA_BASE,
 			P521_S_PLUS_T_Y, NIST_TESTDATA_BASE);
@@ -229,4 +253,10 @@ void CurvesNISTTest::p521Multiplication() {
 	Coordinate multiplicationCalc = Coordinate(curveP521->pointMultiplication(p521S, p521d),
 			curveP521->mod);
 	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
+}
+
+void CurvesNISTTest::p521Order() {
+	Coordinate multiplicationCalc = Coordinate(curveP521->pointMultiplication(curveP521->point, curveP521->getOrder()),
+			curveP521->mod);
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
 }

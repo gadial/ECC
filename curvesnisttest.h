@@ -97,26 +97,32 @@ class CurvesNISTTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(p192Subtraction);
 	CPPUNIT_TEST(p192Doubling);
 	CPPUNIT_TEST(p192Multiplication);
+	// Tests if p^ord=e
+	CPPUNIT_TEST(p192Order);
 
 	CPPUNIT_TEST(p224Addition);
 	CPPUNIT_TEST(p224Subtraction);
 	CPPUNIT_TEST(p224Doubling);
 	CPPUNIT_TEST(p224Multiplication);
+	CPPUNIT_TEST(p224Order);
 
 	CPPUNIT_TEST(p256Addition);
 	CPPUNIT_TEST(p256Subtraction);
 	CPPUNIT_TEST(p256Doubling);
 	CPPUNIT_TEST(p256Multiplication);
+	CPPUNIT_TEST(p256Order);
 
 	CPPUNIT_TEST(p384Addition);
 	CPPUNIT_TEST(p384Subtraction);
 	CPPUNIT_TEST(p384Doubling);
 	CPPUNIT_TEST(p384Multiplication);
+	CPPUNIT_TEST(p384Order);
 
 	CPPUNIT_TEST(p521Addition);
 	CPPUNIT_TEST(p521Subtraction);
 	CPPUNIT_TEST(p521Doubling);
 	CPPUNIT_TEST(p521Multiplication);
+	CPPUNIT_TEST(p521Order);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -130,26 +136,31 @@ public:
 	void p192Subtraction();
 	void p192Doubling();
 	void p192Multiplication();
+	void p192Order();
 
 	void p224Addition();
 	void p224Subtraction();
 	void p224Doubling();
 	void p224Multiplication();
+	void p224Order();
 
 	void p256Addition();
 	void p256Subtraction();
 	void p256Doubling();
 	void p256Multiplication();
+	void p256Order();
 
 	void p384Addition();
 	void p384Subtraction();
 	void p384Doubling();
 	void p384Multiplication();
+	void p384Order();
 
 	void p521Addition();
 	void p521Subtraction();
 	void p521Doubling();
 	void p521Multiplication();
+	void p521Order();
 
 private:
 	Ellipticcurve *curveP192, *curveP224, *curveP256, *curveP384, *curveP521;
