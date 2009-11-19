@@ -8,7 +8,9 @@
 #include <iostream>
 #include "coordinates.h"
 #include "ellipticcurve.h"
+#include "curvesnist.h"
 #include "primes.h"
+#include "curvesnisttest.h"
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -50,14 +52,17 @@ int main(int argc, char** argv) {
     printCd(Coordinate(doub, 29));
     printCd(Coordinate(mult, 29));
 
-    cout << "X=" << add.X << ", Y=" << add.Y << ", Z=" << add.Z << endl;
+    delete ellC;
 
     do_tests();
     return 0;
 }
 
 int do_tests(){
-    // Get the top level suite from the registry
+
+  CPPUNIT_TEST_SUITE_REGISTRATION(CurvesNISTTest);
+
+  // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
   // Adds the test to the list of test to run
