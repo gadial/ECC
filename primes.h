@@ -12,7 +12,7 @@ class RandomNumberGenerator{ //naive. very naive
 public:
     RandomNumberGenerator(unsigned long seed = 0);
     mpz_class rand(mpz_class max);
-    mpz_class rand(int binary_digits);
+    mpz_class rand_binary_digits(int binary_digits);
     //generates a random prime not larger than 2^n-1
     mpz_class generate_prime(unsigned long int n);
 private:
