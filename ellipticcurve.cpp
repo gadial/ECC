@@ -214,3 +214,9 @@ std::vector<int> Ellipticcurve::getNAF(mpz_class k) {
 Coordinate Ellipticcurve::getNegative(const Coordinate& P) {
 	return Coordinate(P.X, mod - P.Y);
 }
+
+Coordinate getPoint(mpz_class x, bool negative_value = false)
+{
+    //we solve the equation y^2 = x^3+ax+b
+   
+}

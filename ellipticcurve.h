@@ -78,6 +78,19 @@ public:
 	 */
 	Jacobian pointMultiplication(Coordinate P, mpz_class k);
 
+        /*
+         * -----------
+         * Accesseors
+         * ----------
+         *
+         * /
+
+         /**
+          *
+          * Given x, returns the point corresponding to (x,y) (or (x,-y) if asked)
+          * If there is no corresponding point, returns the infinity
+          */
+        Coordinate getPoint(mpz_class x, bool negative_value = false);
 protected:
 
 	/*

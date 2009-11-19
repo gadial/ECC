@@ -23,6 +23,9 @@ public:
 		X(_x), Y(_y) {}
 	Coordinate(const Jacobian& jac, const mpz_class mod);
 
+        //returns the point at infinity, as is represented by this class in the context of elliptic curves
+        static Coordinate infinity(){return Coordinate(0,0);}
+
     bool isInfinite() {
     	return X == 0 && Y == 0;
     }
