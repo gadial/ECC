@@ -6,18 +6,38 @@
 #include <stdio.h>
 #define MILLER_RABIN_REPEATS 5
 
-mpz_class generate_prime(unsigned long int n){
+mpz_class rand(mpz_class max){
     gmp_randstate_t random_state;
     gmp_randinit_mt(random_state);
     gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
     mpz_t temp;
     mpz_init(temp);
+    mpz_urandomm(temp, random_state,max.get_mpz_t());
+    return mpz_class(temp);
+}
+
+mpz_class rand(int binary_digits){
+    gmp_randstate_t random_state;
+    gmp_randinit_mt(random_state);
+    gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
+    mpz_t temp;
+    mpz_init(temp);
+    mpz_urandomb(temp, random_state,binary_digits);
+    return mpz_class(temp);
+}
+
+mpz_class generate_prime(unsigned long int n){
+//    gmp_randstate_t random_state;
+//    gmp_randinit_mt(random_state);
+//    gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
+//    mpz_t temp;
+//    mpz_init(temp);
 
     //by the prime number theorem, 10*n attempts should do the trick
     for (int i=0; i<10*n; i++){
-        mpz_urandomb(temp, random_state,n);
-        if (mpz_probab_prime_p(temp, MILLER_RABIN_REPEATS) != 0)
-            return mpz_class(temp);
+        mpz_class temp = rand(n);
+        if (mpz_probab_prime_p(temp.get_mpz_t(), MILLER_RABIN_REPEATS) != 0)
+            return temp;
     }
     return 1; //failure
 }
@@ -57,5 +77,6 @@ int jacobi_symbol(mpz_class a,mpz_class b){
 
 //returns x such that x**2 = n. If none exists, returns 0
 mpz_class modular_square_root(mpz_class n, mpz_class p){
-    
+    if (jacobi_symbol(n,p) != 1)
+        return 0;
 }

@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>coordinates.h</itemPath>
+      <itemPath>curvesnisttest.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>primes.h</itemPath>
       <itemPath>tests.h</itemPath>
@@ -17,6 +18,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>coordinates.cpp</itemPath>
+      <itemPath>curvesnisttest.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>

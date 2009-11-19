@@ -31,8 +31,9 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/coordinates.o \
+	${OBJECTDIR}/curvesnisttest.o \
 	${OBJECTDIR}/ellipticcurve.o \
+	${OBJECTDIR}/coordinates.o \
 	${OBJECTDIR}/primes.o \
 	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o
@@ -61,15 +62,20 @@ dist/Release/GNU-Linux-x86/ecc: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ecc ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp 
+${OBJECTDIR}/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk curvesnisttest.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/curvesnisttest.o curvesnisttest.cpp
 
 ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
+
+${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
 
 ${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -9,6 +9,11 @@
 #define	_PRIMES_H
 #include <gmpxx.h>
 
+
+mpz_class rand(mpz_class max);
+
+mpz_class rand(int binary_digits);
+
 //generates a random prime not larger than 2^n-1
 mpz_class generate_prime(unsigned long int n);
 
