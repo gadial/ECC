@@ -6,33 +6,28 @@
 #include <stdio.h>
 #define MILLER_RABIN_REPEATS 5
 
-mpz_class rand(mpz_class max){
-    gmp_randstate_t random_state;
-    gmp_randinit_mt(random_state);
-    gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
+RandomNumberGenerator::RandomNumberGenerator(unsigned long seed){
+    gmp_randinit_mt(state);
+    if (seed == 0)
+        seed = time(NULL);
+    gmp_randseed_ui(state,seed);
+}
+
+mpz_class RandomNumberGenerator::rand(mpz_class max){
     mpz_t temp;
     mpz_init(temp);
-    mpz_urandomm(temp, random_state,max.get_mpz_t());
+    mpz_urandomm(temp, state,max.get_mpz_t());
     return mpz_class(temp);
 }
 
-mpz_class rand(int binary_digits){
-    gmp_randstate_t random_state;
-    gmp_randinit_mt(random_state);
-    gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
+mpz_class RandomNumberGenerator::rand(int binary_digits){
     mpz_t temp;
     mpz_init(temp);
-    mpz_urandomb(temp, random_state,binary_digits);
+    mpz_urandomb(temp, state,binary_digits);
     return mpz_class(temp);
 }
 
-mpz_class generate_prime(unsigned long int n){
-//    gmp_randstate_t random_state;
-//    gmp_randinit_mt(random_state);
-//    gmp_randseed_ui(random_state,time(NULL)); //for now, use a random seed
-//    mpz_t temp;
-//    mpz_init(temp);
-
+mpz_class RandomNumberGenerator::generate_prime(unsigned long int n){
     //by the prime number theorem, 10*n attempts should do the trick
     for (int i=0; i<10*n; i++){
         mpz_class temp = rand(n);

@@ -11,6 +11,7 @@
 #include "curvesnist.h"
 #include "primes.h"
 #include "curvesnisttest.h"
+#include "tests.h"
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -31,9 +32,6 @@ void printJac(const Jacobian& j) {
  * 
  */
 int main(int argc, char** argv) {
-
-    cout << "Hello world!!" << endl;
-    cout << "A prime number: " << generate_prime(100) << endl;
 
     /*
     Coordinate c1(27,27);
@@ -60,7 +58,9 @@ int main(int argc, char** argv) {
 
 int do_tests(){
 
-  CPPUNIT_TEST_SUITE_REGISTRATION(CurvesNISTTest);
+//  CPPUNIT_TEST_SUITE_REGISTRATION(CurvesNISTTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(PrimesTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(EllipticCurveTest);
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
