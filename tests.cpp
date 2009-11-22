@@ -82,8 +82,8 @@ void EllipticCurveTest::test_get_point()
         P = random_curve.getPoint(x);
     }
     //test if P is really on the curve
-    cout << "x, y = " << P.X << ", " << P.Y << endl;
-    cout << "p, a, b = " << random_curve.mod << ", " << random_curve.ECC_a << ", " <<random_curve.ECC_b << endl;
+//    cout << "x, y = " << P.X << ", " << P.Y << endl;
+//    cout << "p, a, b = " << random_curve.mod << ", " << random_curve.ECC_a << ", " <<random_curve.ECC_b << endl;
     CPPUNIT_ASSERT((P.Y*P.Y) % random_curve.mod == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b) % random_curve.mod);
     //test if getPoint really knows to return the "negative" value
     CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == random_curve.mod);
@@ -91,5 +91,9 @@ void EllipticCurveTest::test_get_point()
 
 void EllipticCurveTest::test_doubling_vs_addition()
 {
-
+    Coordinate P = Ellipticcurve::infinity();
+    while (P == Ellipticcurve::infinity())
+        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    //CPPUNIT_ASSERT(random_curve.addition(P,P) == random_curve.doubling(P));
+    //TODO: must implement jacobian equality operator in order to test this
 }
