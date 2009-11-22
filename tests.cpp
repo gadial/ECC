@@ -36,8 +36,8 @@ void PrimesTest::test_square_root(){
     int primes[3] = {587, 653, 1033}; // chosen to cover all cases
     for (int i = 0; i<number_of_primes; i++){
         mpz_class n = gen.rand(primes[i]);
-        mpz_class root = modular_square_root(n*n,primes[i]);
-        cout << "n=" << n <<", root=" << root << " for p="<<primes[i]<<endl;
+        mpz_class root = modular_square_root((n*n) % primes[i],primes[i]);
+//        cout << "n, root, p=" << n <<", " << root << ", "<<primes[i]<<endl;
         CPPUNIT_ASSERT(n == root || primes[i]-n == root);
     }
 }

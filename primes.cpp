@@ -117,7 +117,8 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         }
         if (qnr == 0) // could not find a QNR
             return -1;
-
+//        cout << "n, p = " << n << ", " << p <<endl;
+//        cout << "qnr = " << qnr << endl;
         //now writing p-1 as p-1=2^k*t where t is odd
         int k = 0; //we can safely assume an integer is enough to represent the exponent...
         mpz_class t = p-1;
@@ -129,24 +130,29 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         mpz_class z;
         mpz_powm(z.get_mpz_t(),qnr.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
 
+//        cout << "k, t = " << k <<", " << t << endl;
+//        cout << "z = " << z <<endl;
         //finished the "pre-processing" (up to step 1 in the algorithm, pg. 33)
         mpz_class x,y,b;
         mpz_powm(y.get_mpz_t(),n.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
         temp = (t + 1) / 2;
         mpz_powm(x.get_mpz_t(),n.get_mpz_t(),temp.get_mpz_t(),p.get_mpz_t());
-
-        mpz_class exp;
+//        cout << "x, y = " << x <<", "<< y << endl;
+        mpz_class exp = 1;
         for (int i=0; i<k-2; i++)
             exp *= 2;
 
-        for (int i=0; i<k; i++){         
+        for (int i=0; i<k; i++){
+//            cout << "exp = " << exp << endl;
             mpz_powm(b.get_mpz_t(),y.get_mpz_t(),exp.get_mpz_t(),p.get_mpz_t());
+//            cout << "i, b = " << i << ", " << b << endl;
             if (b == p-1){
                 x = (x*z) % p;
                 y = (y*z*z) % p;
             }
             z = (z*z) % p;
             exp /= 2;
+//            cout << "x, y, z = " << x << ", " << y <<", " << z << endl;
         }
         return x % p;
 }
