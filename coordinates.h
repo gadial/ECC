@@ -14,6 +14,7 @@
 
 class Coordinate;
 class Jacobian;
+class LD;
 
 class Coordinate {
 public:
@@ -24,6 +25,7 @@ public:
 	Coordinate(mpz_class _x, mpz_class _y):
 		X(_x), Y(_y) {}
 	Coordinate(const Jacobian& jac, const mpz_class mod);
+	Coordinate(const LD& ld, const mpz_class mod);
 
         //returns the point at infinity, as is represented by this class in the context of elliptic curves
         static Coordinate infinity(){return Coordinate(0,0);}
@@ -48,8 +50,34 @@ public:
 	Jacobian(const Coordinate& rhs): //TODO: is this really the correct conversion?
                 X(rhs.X), Y(rhs.Y), Z(1) {}
 
+	static Jacobian infinity(){return Jacobian(1, 1, 0);}
     bool isInfinite() {
     	return X == 1 && Y == 1 && Z == 0;
+    }
+
+	mpz_class X, Y, Z;
+
+};
+
+/**
+ * Lopez-Dahab projective coordinate
+ * (X;Y;Z) corresponds to (X/Z;X/Z^2) in standard
+ * coordinates
+ *
+ * See p.93, Menezes et. al.
+ */
+class LD {
+public:
+
+	LD() {}
+	LD(mpz_class _x, mpz_class _y, mpz_class _z):
+		X(_x), Y(_y), Z(_z) {}
+	LD(const Coordinate& rhs): //TODO: is this really the correct conversion?
+                X(rhs.X), Y(rhs.Y), Z(1) {}
+
+	static LD infinity(){return LD(1, 0, 0);}
+    bool isInfinite() {
+    	return X == 1 && Y == 0 && Z == 0;
     }
 
 	mpz_class X, Y, Z;

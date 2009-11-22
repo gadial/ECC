@@ -69,7 +69,7 @@ Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
             if (T2 == 0)
                 return doubling(Q);
             else
-                return infinity();
+                return Coordinate::infinity();
         Z3 = P.Z * T1;
         T3 = T1 * T1;
         T4 = T3 * T1;
@@ -227,7 +227,7 @@ Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
     mpz_class temp = (x*x*x + ECC_a*x + ECC_b) % mod;
     mpz_class y = modular_square_root(temp,mod);
     if (y == 0)
-        return infinity();
+        return Coordinate::infinity();
     if (negative_value)
         return Coordinate(x,mod-y);
     return Coordinate(x,y);

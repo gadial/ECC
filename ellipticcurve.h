@@ -49,10 +49,8 @@ public:
 
 	virtual mpz_class getOrder() {}
 
-        //returns the point at infinity, as is represented by this class in the context of elliptic curves
-        static Coordinate infinity(){return Coordinate(0,0);}
+	static Ellipticcurve randomCurve(int number_of_bits, RandomNumberGenerator gen);
 
-        static Ellipticcurve randomCurve(int number_of_bits, RandomNumberGenerator gen);
 	/*
 	 * -------------
 	 * EC operations
