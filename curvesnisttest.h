@@ -163,7 +163,7 @@ public:
 	void p521Order();
 
 private:
-	Ellipticcurve *curveP192, *curveP224, *curveP256, *curveP384, *curveP521;
+	ECPrime *curveP192, *curveP224, *curveP256, *curveP384, *curveP521;
 	Coordinate p192S, p192T, p224S, p224T, p256S, p256T, p384S, p384T, p521S, p521T;
 	mpz_class p192d, p224d, p256d, p384d, p521d;
 

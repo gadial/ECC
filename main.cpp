@@ -40,15 +40,14 @@ int main(int argc, char** argv) {
     printCd(c1); printJac(j1); printCd(c1);
     */
 
-    Ellipticcurve* ellC = new Ellipticcurve(29, 4, 20);
-    Jacobian add = ellC->addition(Jacobian(1, 1, 0), Coordinate(16, 27));
-    Jacobian doub = ellC->doubling(Jacobian(Coordinate(1,5)));
-    Jacobian mult = ellC->pointMultiplication(Coordinate(1,5), 33);
+    Ellipticcurve* ellC = new ECPrime(29, 4, 20);
+    Coordinate add = ellC->addition(Coordinate::infinity(), Coordinate(16, 27));
+    Coordinate doub = ellC->doubling(Coordinate(1,5));
+    //Jacobian mult = ellC->pointMultiplication(Coordinate(1,5), 33);
 
 
-    printCd(Coordinate(add, 29));
-    printCd(Coordinate(doub, 29));
-    printCd(Coordinate(mult, 29));
+    printCd(add);
+    printCd(doub);
 
     delete ellC;
 
@@ -58,7 +57,7 @@ int main(int argc, char** argv) {
 
 int do_tests(){
 
-//  CPPUNIT_TEST_SUITE_REGISTRATION(CurvesNISTTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(CurvesNISTTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PrimesTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(EllipticCurveTest);
 

@@ -19,7 +19,7 @@
 #ifndef CURVESNIST_H_
 #define CURVESNIST_H_
 
-#include "ellipticcurve.h"
+#include "ecprime.h"
 
 #define P192_MOD_FIELD "6277101735386680763835789423207666416083908700390324961279"
 #define P192_ORDER "6277101735386680763835789423176059013767194773182842284081"
@@ -56,9 +56,9 @@
 #define P521_POINT_X "c6 858e06b7 0404e9cd 9e3ecb66 2395b442 9c648139 053fb521 f828af60 6b4d3dba a14b5e77 efe75928 fe1dc127 a2ffa8de 3348b3c1 856a429b f97e7e31 c2e5bd66"
 #define P521_POINT_Y "118 39296a78 9a3bc004 5c8a5fb4 2c7d1bd9 98f54449 579b4468 17afbd17 273e662c 97ee7299 5ef42640 c550b901 3fad0761 353c7086 a272c240 88be9476 9fd16650"
 
-class CurveNISTp192 : public Ellipticcurve {
+class CurveNISTp192 : public ECPrime {
 public:
-	CurveNISTp192(): Ellipticcurve(P192_MOD_FIELD, 10,
+	CurveNISTp192(): ECPrime(P192_MOD_FIELD, 10,
 			P192_ORDER, 10,
 			P192_ECC_A, 16,
 			P192_ECC_B, 16,
@@ -70,9 +70,9 @@ public:
 	}
 };
 
-class CurveNISTp224 : public Ellipticcurve {
+class CurveNISTp224 : public ECPrime {
 public:
-	CurveNISTp224(): Ellipticcurve(P224_MOD_FIELD, 10,
+	CurveNISTp224(): ECPrime(P224_MOD_FIELD, 10,
 			P224_ORDER, 10,
 			P224_ECC_A, 16,
 			P224_ECC_B, 16,
@@ -84,9 +84,9 @@ public:
 	}
 };
 
-class CurveNISTp256 : public Ellipticcurve {
+class CurveNISTp256 : public ECPrime {
 public:
-	CurveNISTp256(): Ellipticcurve(P256_MOD_FIELD, 10,
+	CurveNISTp256(): ECPrime(P256_MOD_FIELD, 10,
 			P256_ORDER, 10,
 			P256_ECC_A, 16,
 			P256_ECC_B, 16,
@@ -98,9 +98,9 @@ public:
 	}
 };
 
-class CurveNISTp384 : public Ellipticcurve {
+class CurveNISTp384 : public ECPrime {
 public:
-	CurveNISTp384(): Ellipticcurve(P384_MOD_FIELD, 10,
+	CurveNISTp384(): ECPrime(P384_MOD_FIELD, 10,
 			P384_ORDER, 10,
 			P384_ECC_A, 16,
 			P384_ECC_B, 16,
@@ -112,9 +112,9 @@ public:
 	}
 };
 
-class CurveNISTp521 : public Ellipticcurve {
+class CurveNISTp521 : public ECPrime {
 public:
-	CurveNISTp521(): Ellipticcurve(P521_MOD_FIELD, 10,
+	CurveNISTp521(): ECPrime(P521_MOD_FIELD, 10,
 			P521_ORDER, 10,
 			P521_ECC_A, 16,
 			P521_ECC_B, 16,

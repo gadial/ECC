@@ -16,13 +16,13 @@
 class Ellipticcurve {
 public:
 	Ellipticcurve();
-	Ellipticcurve(mpz_class _mod, mpz_class _ECC_a, mpz_class _ECC_b):
-		mod(_mod), ECC_a(_ECC_a), ECC_b(_ECC_b) {};
-	Ellipticcurve(const char* _mod, int _mod_base,
-			const char* _order, int _order_base,
-			const char* _ecc_a, int _ecc_a_base,
-			const char* _ecc_b, int _ecc_b_base,
-			const char* _px, int _px_base,
+	Ellipticcurve(mpz_class _mod, mpz_class _ECC_a, mpz_class _ECC_b) :
+		mod(_mod), ECC_a(_ECC_a), ECC_b(_ECC_b) {
+	}
+	;
+	Ellipticcurve(const char* _mod, int _mod_base, const char* _order,
+			int _order_base, const char* _ecc_a, int _ecc_a_base,
+			const char* _ecc_b, int _ecc_b_base, const char* _px, int _px_base,
 			const char* _py, int _py_base);
 
 	virtual ~Ellipticcurve();
@@ -47,9 +47,11 @@ public:
 	 */
 	Coordinate point;
 
-	virtual mpz_class getOrder() {}
+	virtual mpz_class getOrder() {
+	}
 
-	static Ellipticcurve randomCurve(int number_of_bits, RandomNumberGenerator gen);
+	//static Ellipticcurve randomCurve(int number_of_bits,
+	//		RandomNumberGenerator gen);
 
 	/*
 	 * -------------
@@ -61,45 +63,45 @@ public:
 	 * Addition P+Q of a jacobian coordinate
 	 * P and an affine coordinate Q
 	 */
-	Jacobian addition(Jacobian P, Coordinate Q);
+	virtual Coordinate addition(Coordinate P, Coordinate Q) = 0;
 
 	/**
 	 * Subtraction P-Q of a jacobian coordinate
 	 * P and an affine coordinate Q
 	 */
-	Jacobian subtraction(Jacobian P, Coordinate Q);
+	virtual Coordinate subtraction(Coordinate P, Coordinate Q) = 0;
 
 	/**
 	 * Doubling of a point P -> 2P
 	 * in jacobian coordinates
 	 */
-	Jacobian doubling(Jacobian P);
+	virtual Coordinate doubling(Coordinate P) = 0;
 
 	/**
 	 * Repeated doubling of a point P in jacobian coordinates
 	 * (m times) -> 2^m P
 	 */
-	Jacobian repeatedDoubling(Jacobian P, int m);
+	virtual Coordinate repeatedDoubling(Coordinate P, int m) = 0;
 
 	/**
 	 * Point multiplication (k times)
 	 * -> kP
 	 */
-	Jacobian pointMultiplication(Coordinate P, mpz_class k);
+	virtual Coordinate pointMultiplication(Coordinate P, mpz_class k) = 0;
 
-        /*
-         * -----------
-         * Accesseors
-         * ----------
-         *
-         * /
+	/*
+	 * -----------
+	 * Accesseors
+	 * ----------
+	 *
+	 * /
 
-         /**
-          *
-          * Given x, returns the point corresponding to (x,y) (or (x,-y) if asked)
-          * If there is no corresponding point, returns the infinity
-          */
-        Coordinate getPoint(mpz_class x, bool negative_value = false);
+	 /**
+	 *
+	 * Given x, returns the point corresponding to (x,y) (or (x,-y) if asked)
+	 * If there is no corresponding point, returns the infinity
+	 */
+	Coordinate getPoint(mpz_class x, bool negative_value = false);
 protected:
 
 	/*
@@ -112,8 +114,6 @@ protected:
 	 * According to p.80 (char /= 2,3)
 	 */
 	Coordinate getNegative(const Coordinate& P);
-
-private:
 
 	/**
 	 * Returns the non-adjacent form (NAF)
