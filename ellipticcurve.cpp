@@ -5,10 +5,13 @@
  *      Author: bhess
  */
 
+#include <iostream>
+
 #include "primes.h"
 
 #include "ellipticcurve.h"
 
+using namespace std;
 //#include <cassert>
 
 Ellipticcurve::Ellipticcurve() {}
@@ -58,6 +61,12 @@ Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
     //we solve the equation y^2 = x^3+ax+b
     mpz_class temp = (x*x*x + ECC_a*x + ECC_b) % mod;
     mpz_class y = modular_square_root(temp,mod);
+//    cout << "x = " << x << endl;
+//    cout << "p = " << mod << endl;
+//    cout << "p(x) = " << temp << endl;
+//    cout << "y = " << y << endl;
+//    cout << "a = " << ECC_a << endl;
+//    cout << "b = " << ECC_b << endl;
     if (y == 0)
         return Coordinate::infinity();
     if (negative_value)
