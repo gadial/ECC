@@ -104,7 +104,7 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         //we now remain in the "hard" case of p % 8 == 1, and use Shanks-Tonelli
 
         //first step - obtain a non-quadratic residue
-        int number_of_attempts = 20;
+        int number_of_attempts = 20; // we have a chance of 1/2 to stumble upon a QNR, so 20 is more than enough
         mpz_class qnr = 0;
         mpz_class temp;
         RandomNumberGenerator gen;

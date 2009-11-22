@@ -64,6 +64,11 @@ void EllipticCurveTest::tearDown()
 {
     
 }
+
+void EllipticCurveTest::test_get_point()
+{
+
+}
 void EllipticCurveTest::test_doubling_vs_addition()
 {
 

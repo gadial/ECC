@@ -33,12 +33,14 @@ public:
 class EllipticCurveTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( EllipticCurveTest );
     CPPUNIT_TEST( test_doubling_vs_addition );
+    CPPUNIT_TEST( test_get_point );
     CPPUNIT_TEST_SUITE_END();
 private:
 public:
         void setUp();
         void tearDown();
 
+        void test_get_point();
         void test_doubling_vs_addition();
 
 };

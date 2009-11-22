@@ -4,7 +4,11 @@
  *  Created on: Nov 5, 2009
  *      Author: bhess
  */
+
+#include "primes.h"
+
 #include "ellipticcurve.h"
+
 //#include <cassert>
 
 Ellipticcurve::Ellipticcurve() {}
@@ -65,7 +69,7 @@ Jacobian Ellipticcurve::addition(Jacobian P, Coordinate Q) {
             if (T2 == 0)
                 return doubling(Q);
             else
-                return Jacobian(1,1,0); //TODO: write a class method to return the identity
+                return infinity();
         Z3 = P.Z * T1;
         T3 = T1 * T1;
         T4 = T3 * T1;
@@ -217,8 +221,24 @@ Coordinate Ellipticcurve::getNegative(const Coordinate& P) {
 	return Coordinate(P.X, mod - P.Y);
 }
 
-Coordinate getPoint(mpz_class x, bool negative_value = false)
+Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
 {
     //we solve the equation y^2 = x^3+ax+b
-   
+    mpz_class temp = (x*x*x + ECC_a*x + ECC_b) % mod;
+    mpz_class y = modular_square_root(temp,mod);
+    if (y == 0)
+        return infinity();
+    if (negative_value)
+        return Coordinate(x,mod-y);
+    return Coordinate(x,y);
+}
+
+Ellipticcurve Ellipticcurve::randomCurve(int number_of_bits, RandomNumberGenerator gen){
+    mpz_class p = gen.rand_binary_digits(number_of_bits);
+    mpz_class a = gen.rand(p);
+    mpz_class b = gen.rand(p);
+
+    //TODO: check that the curve is smooth
+
+    return Ellipticcurve(p,a,b);
 }

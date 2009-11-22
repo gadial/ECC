@@ -11,11 +11,12 @@
 #include <vector>
 #include <gmpxx.h>
 #include "coordinates.h"
+#include "primes.h"
 
 class Ellipticcurve {
 public:
 	Ellipticcurve();
-	Ellipticcurve(mpz_class _mod, int _ECC_a, int _ECC_b):
+	Ellipticcurve(mpz_class _mod, mpz_class _ECC_a, mpz_class _ECC_b):
 		mod(_mod), ECC_a(_ECC_a), ECC_b(_ECC_b) {};
 	Ellipticcurve(const char* _mod, int _mod_base,
 			const char* _order, int _order_base,
@@ -48,6 +49,10 @@ public:
 
 	virtual mpz_class getOrder() {}
 
+        //returns the point at infinity, as is represented by this class in the context of elliptic curves
+        static Coordinate infinity(){return Coordinate(0,0);}
+
+        static Ellipticcurve randomCurve(int number_of_bits, RandomNumberGenerator gen);
 	/*
 	 * -------------
 	 * EC operations
