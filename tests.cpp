@@ -32,8 +32,8 @@ void PrimesTest::test_legendre_symbol(){
 }
 
 void PrimesTest::test_square_root(){
-    int number_of_primes = 2;
-    int primes[2] = {587, 653}; // chosen to cover all cases
+    int number_of_primes = 3;
+    int primes[3] = {587, 653, 1033}; // chosen to cover all cases
     for (int i = 0; i<number_of_primes; i++){
         mpz_class n = gen.rand(primes[i]);
         mpz_class root = modular_square_root(n*n,primes[i]);

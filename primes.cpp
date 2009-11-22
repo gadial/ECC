@@ -100,6 +100,7 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
             mpz_powm(result.get_mpz_t(),temp_n.get_mpz_t(),exp.get_mpz_t(),p.get_mpz_t());
             return ((2*n*result) % p);
         }
+    }
         //we now remain in the "hard" case of p % 8 == 1, and use Shanks-Tonelli
 
         //first step - obtain a non-quadratic residue
@@ -126,27 +127,26 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         }
 
         mpz_class z;
-        mpz_powm(z.get_mpz_t(),temp_qnr.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
+        mpz_powm(z.get_mpz_t(),qnr.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
 
         //finished the "pre-processing" (up to step 1 in the algorithm, pg. 33)
+        mpz_class x,y,b;
+        mpz_powm(y.get_mpz_t(),n.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
+        temp = (t + 1) / 2;
+        mpz_powm(x.get_mpz_t(),n.get_mpz_t(),temp.get_mpz_t(),p.get_mpz_t());
 
-//		y = fast_modular_exponent(self, t, p)
-//		x = fast_modular_exponent(self, (t+1) / 2, p)
-//
-//# 		puts "self = #{self}, y = #{y}, x = #{x}"
-//		(0..k-1).each do |i|
-//		    b = fast_modular_exponent(y,2**(k-2-i),p)
-//		    case b
-//			when 1 #do nothing, everything ok
-//			when p-1 # -1
-//			    x = (x*z) % p
-//			    y = (y*z*z) % p
-//			else
-//			    raise "b = #{b}, which is very odd" unless b == -1
-//		    end
-//		    z = (z*z) % p
-//		end
-//		return x % p
-    }
-    return -1; //TODO: remove after finishing
+        mpz_class exp;
+        for (int i=0; i<k-2; i++)
+            exp *= 2;
+
+        for (int i=0; i<k; i++){         
+            mpz_powm(b.get_mpz_t(),y.get_mpz_t(),exp.get_mpz_t(),p.get_mpz_t());
+            if (b == p-1){
+                x = (x*z) % p;
+                y = (y*z*z) % p;
+            }
+            z = (z*z) % p;
+            exp /= 2;
+        }
+        return x % p;
 }
