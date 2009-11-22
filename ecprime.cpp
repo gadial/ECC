@@ -156,8 +156,7 @@ Coordinate ECPrime::pointMultiplication(Coordinate P, mpz_class k) {
 	// implementation according to p.99
 
 	std::vector<int> naf = getNAF(k);
-	// TODO: implement inf...
-	Jacobian Q = Jacobian(1,1,0);
+	Jacobian Q = Jacobian::infinity();
 	for (int i = naf.size() - 1; i >= 0; --i) {
 		Q = doubling(Q);
 		if (naf[i] == 1) {
