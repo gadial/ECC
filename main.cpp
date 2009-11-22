@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
     Coordinate c2(j1, 29);
     printCd(c1); printJac(j1); printCd(c1);
     */
-
     Ellipticcurve* ellC = new Ellipticcurve(29, 4, 20);
     Jacobian add = ellC->addition(Jacobian(1, 1, 0), Coordinate(16, 27));
     Jacobian doub = ellC->doubling(Jacobian(Coordinate(1,5)));

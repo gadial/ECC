@@ -10,9 +10,14 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "primes.h"
+#include "ellipticcurve.h"
+#include "ellipticcurve.h"
+
 class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PrimesTest );
     CPPUNIT_TEST( test_is_odd );
+    CPPUNIT_TEST( test_small_primes );
     CPPUNIT_TEST( test_legendre_symbol );
     CPPUNIT_TEST( test_rand );
     CPPUNIT_TEST( test_square_root );
@@ -28,6 +33,7 @@ public:
     void test_legendre_symbol();
     void test_rand();
     void test_square_root();
+    void test_small_primes();
 };
 
 class EllipticCurveTest : public CppUnit::TestFixture{
@@ -36,6 +42,8 @@ class EllipticCurveTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_get_point );
     CPPUNIT_TEST_SUITE_END();
 private:
+    RandomNumberGenerator gen;
+    Ellipticcurve random_curve;
 public:
         void setUp();
         void tearDown();

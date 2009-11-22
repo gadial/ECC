@@ -42,6 +42,14 @@ void PrimesTest::test_square_root(){
     }
 }
 
+void PrimesTest::test_small_primes(){
+    for (int i=0; i<10; i++){
+        mpz_class p = gen.generate_prime(10);
+        for (int j=2; j<p / 2 ; j++) //as naive as it gets
+            CPPUNIT_ASSERT(p % j != 0);
+    }
+}
+
 void PrimesTest::test_rand(){
     mpz_class a = gen.rand_binary_digits(100);
     mpz_class b = gen.rand_binary_digits(100);
@@ -57,7 +65,7 @@ void PrimesTest::test_is_odd()
 
 void EllipticCurveTest::setUp()
 {
-
+    random_curve = Ellipticcurve::randomCurve(10, gen);
 }
 
 void EllipticCurveTest::tearDown()
@@ -67,8 +75,20 @@ void EllipticCurveTest::tearDown()
 
 void EllipticCurveTest::test_get_point()
 {
-
+    Coordinate P = Ellipticcurve::infinity();
+    mpz_class x;
+    while (P == Ellipticcurve::infinity()){
+        x = gen.rand(random_curve.mod);
+        P = random_curve.getPoint(x);
+    }
+    //test if P is really on the curve
+    cout << "x, y = " << P.X << ", " << P.Y << endl;
+    cout << "p, a, b = " << random_curve.mod << ", " << random_curve.ECC_a << ", " <<random_curve.ECC_b << endl;
+    CPPUNIT_ASSERT((P.Y*P.Y) % random_curve.mod == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b) % random_curve.mod);
+    //test if getPoint really knows to return the "negative" value
+    CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == random_curve.mod);
 }
+
 void EllipticCurveTest::test_doubling_vs_addition()
 {
 
