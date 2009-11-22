@@ -11,8 +11,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "primes.h"
-#include "ellipticcurve.h"
-#include "ellipticcurve.h"
+#include "ecprime.h"
 
 class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PrimesTest );
@@ -43,7 +42,7 @@ class EllipticCurveTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE_END();
 private:
     RandomNumberGenerator gen;
-    Ellipticcurve random_curve;
+    ECPrime random_curve;
 public:
         void setUp();
         void tearDown();

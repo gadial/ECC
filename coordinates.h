@@ -55,11 +55,15 @@ public:
     	return X == 1 && Y == 1 && Z == 0;
     }
 
+    /* TODO: didn't compile...
     bool operator==(const Jacobian& eqTo){
         if (isInfinite() && eqTo.isInfinite())
             return true;
             //TODO Implement! This is crucial.
+
+
     }
+    */
 
 	mpz_class X, Y, Z;
 

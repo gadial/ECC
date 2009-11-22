@@ -17,7 +17,7 @@ ECPrime::~ECPrime() {
 }
 
 ECPrime ECPrime::randomCurve(int number_of_bits, RandomNumberGenerator gen){
-    mpz_class p = gen.rand_binary_digits(number_of_bits);
+    mpz_class p = gen.generate_prime(number_of_bits);
     mpz_class a = gen.rand(p);
     mpz_class b = gen.rand(p);
 

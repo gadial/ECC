@@ -65,7 +65,7 @@ void PrimesTest::test_is_odd()
 
 void EllipticCurveTest::setUp()
 {
-    random_curve = Ellipticcurve::randomCurve(10, gen);
+    random_curve = ECPrime::randomCurve(10, gen);
 }
 
 void EllipticCurveTest::tearDown()
@@ -75,9 +75,9 @@ void EllipticCurveTest::tearDown()
 
 void EllipticCurveTest::test_get_point()
 {
-    Coordinate P = Ellipticcurve::infinity();
+    Coordinate P = Coordinate::infinity();
     mpz_class x;
-    while (P == Ellipticcurve::infinity()){
+    while (P == Coordinate::infinity()){
         x = gen.rand(random_curve.mod);
         P = random_curve.getPoint(x);
     }
@@ -91,8 +91,8 @@ void EllipticCurveTest::test_get_point()
 
 void EllipticCurveTest::test_doubling_vs_addition()
 {
-    Coordinate P = Ellipticcurve::infinity();
-    while (P == Ellipticcurve::infinity())
+    Coordinate P = Coordinate::infinity();
+    while (P == Coordinate::infinity())
         P = random_curve.getPoint(gen.rand(random_curve.mod));
     //CPPUNIT_ASSERT(random_curve.addition(P,P) == random_curve.doubling(P));
     //TODO: must implement jacobian equality operator in order to test this
