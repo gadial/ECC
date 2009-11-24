@@ -40,3 +40,8 @@ Coordinate::Coordinate(const char* _x, int basex,
 	X.set_str(_x, basex);
 	Y.set_str(_y, basey);
 }
+
+ostream& operator<<(ostream& out, Coordinate& rhs){
+    out << "(" << rhs.X << ", "<<rhs.Y<<")";
+    return out;
+}
