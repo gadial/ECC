@@ -95,5 +95,29 @@ void EllipticCurveTest::test_doubling_vs_addition()
     Coordinate Q,R;
     while (P == Coordinate::infinity())
         P = random_curve.getPoint(gen.rand(random_curve.mod));
-    CPPUNIT_ASSERT(random_curve.addition(P,P) == random_curve.doubling(P));
+    Q = random_curve.doubling(P);
+    //first check if P+P == 2P (P+P should be computed by reduction to the computation of 2P, so shouldn't be a problem
+    CPPUNIT_ASSERT(random_curve.addition(P,P) == Q);
+    //now check if P + Q + P + Q == 2(P+Q)
+    Coordinate temp = P;
+    temp = random_curve.addition(temp,Q); // P != Q, so ok
+    temp = random_curve.addition(temp,P); // P+Q != P, so ok
+    temp = random_curve.addition(temp,Q); // temp = P+Q+P+Q
+
+    CPPUNIT_ASSERT(temp == random_curve.doubling(random_curve.addition(P,Q)));
+}
+
+void EllipticCurveTest::test_repeated_doubling(){
+    Coordinate P = Coordinate::infinity();
+    
+    while (P == Coordinate::infinity())
+        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    
+    Coordinate temp = P;
+    temp = random_curve.doubling(temp);
+    CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,1));
+//    for (int m=1; m<10; m++){
+//        temp = random_curve.doubling(temp);
+//        CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,m));
+//    }
 }

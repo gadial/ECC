@@ -177,12 +177,16 @@ Coordinate ECPrime::pointMultiplication(Coordinate P, mpz_class k) {
 }
 
 Jacobian ECPrime::repeatedDoubling(Jacobian P, int m) {
-	// For the case a==-3
 	// TODO: test...
 
 	if (P.isInfinite()) {
 		return P;
-	} else {
+        } else if (ECC_a != -3){ //naive, for the case a != -3
+            Jacobian temp = P;
+            for (int i=1; i<=m; i++)
+                temp = doubling(temp);
+            return temp;
+	} else { // For the case a==-3
 		mpz_class Y, W, A, B, X, Z, tmp_W;
 		X = P.X; Y = P.Y; Z = P.Z;
 		mpz_class const_4 = 4;
