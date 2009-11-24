@@ -46,6 +46,8 @@ void CurvesNISTTest::setUp() {
 	p521T = Coordinate(P521_POINT_T_X, NIST_TESTDATA_BASE,
 			P521_POINT_T_Y, NIST_TESTDATA_BASE);
 	p521d.set_str(P521_SCALAR_D, NIST_TESTDATA_BASE);
+
+	curveB163 = new CurveNISTb163();
 }
 
 void CurvesNISTTest::tearDown() {
@@ -54,6 +56,7 @@ void CurvesNISTTest::tearDown() {
 	delete curveP256;
 	delete curveP384;
 	delete curveP521;
+	delete curveB163;
 }
 
 void CurvesNISTTest::p192Addition() {
@@ -234,5 +237,46 @@ void CurvesNISTTest::p521Multiplication() {
 
 void CurvesNISTTest::p521Order() {
 	Coordinate multiplicationCalc = curveP521->pointMultiplication(curveP521->point, curveP521->getOrder());
+	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
+}
+
+void CurvesNISTTest::b163Addition() {
+	// TODO: find testdata
+	Coordinate addTestData = Coordinate(P521_S_PLUS_T_X, NIST_TESTDATA_BASE,
+			P521_S_PLUS_T_Y, NIST_TESTDATA_BASE);
+	Coordinate addCalc = curveP521->addition(p521S, p521T);
+
+	CPPUNIT_ASSERT(addTestData == addCalc);
+}
+
+void CurvesNISTTest::b163Subtraction() {
+	// TODO: find testdata
+	Coordinate subTestData = Coordinate(P521_S_MINUS_T_X, NIST_TESTDATA_BASE,
+			P521_S_MINUS_T_Y, NIST_TESTDATA_BASE);
+
+	Coordinate subCalc = curveP521->subtraction(p521S, p521T);
+
+	CPPUNIT_ASSERT(subTestData == subCalc);
+}
+
+void CurvesNISTTest::b163Doubling() {
+	// TODO: find testdata
+	Coordinate doublingTestData = Coordinate(P521_2S_X, NIST_TESTDATA_BASE,
+			P521_2S_Y, NIST_TESTDATA_BASE);
+	Coordinate doublingCalc = curveP521->doubling(p521S);
+	CPPUNIT_ASSERT(doublingTestData == doublingCalc);
+}
+
+void CurvesNISTTest::b163Multiplication() {
+	// TODO: find testdata
+	Coordinate multiplicationTestData = Coordinate(P521_D_TIMES_S_X, NIST_TESTDATA_BASE,
+			P521_D_TIMES_S_Y, NIST_TESTDATA_BASE);
+	Coordinate multiplicationCalc = curveP521->pointMultiplication(p521S, p521d);
+	CPPUNIT_ASSERT(multiplicationTestData == multiplicationCalc);
+}
+
+void CurvesNISTTest::b163Order() {
+	//std::cout << curveB163->mod << std::endl;
+	Coordinate multiplicationCalc = curveB163->pointMultiplication(curveB163->point, curveB163->getOrder());
 	CPPUNIT_ASSERT(multiplicationCalc.isInfinite());
 }

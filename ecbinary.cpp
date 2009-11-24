@@ -13,15 +13,15 @@ ECBinary::ECBinary() {
 }
 
 Coordinate ECBinary::addition(Coordinate P, Coordinate Q) {
-	return Coordinate(addition(LD(P), Q), mod);
+	return toCoordinate(addition(LD(P), Q));
 }
 
 Coordinate ECBinary::subtraction(Coordinate P, Coordinate Q) {
-	return Coordinate(subtraction(LD(P), Q), mod);
+	return toCoordinate(subtraction(LD(P), Q));
 }
 
 Coordinate ECBinary::doubling(Coordinate P) {
-	return Coordinate(doubling(LD(P)), mod);
+	return toCoordinate(doubling(LD(P)));
 }
 
 Coordinate ECBinary::repeatedDoubling(Coordinate P, int m) {
@@ -200,4 +200,17 @@ LD ECBinary::doubling(LD P) {
 		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
 	}
 	return LD(x3, y3, z3);
+}
+
+Coordinate ECBinary::toCoordinate(const LD& ld) {
+
+	GFE ldX = GFE(ld.X, mod), ldY = GFE(ld.Y, mod), ldZ = GFE(ld.Z, mod);
+	GFE resY = ldZ * ldZ;
+	GFE resX = !ldZ;
+	resY = !resY;
+	resX = ldX * resX;
+	resY = ldY * resY;
+
+	return Coordinate(resX.element, resY.element);
+
 }

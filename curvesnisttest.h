@@ -124,6 +124,8 @@ class CurvesNISTTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(p521Multiplication);
 	CPPUNIT_TEST(p521Order);
 
+	CPPUNIT_TEST(b163Order);
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -162,8 +164,15 @@ public:
 	void p521Multiplication();
 	void p521Order();
 
+	void b163Addition();
+	void b163Subtraction();
+	void b163Doubling();
+	void b163Multiplication();
+	void b163Order();
+
 private:
 	ECPrime *curveP192, *curveP224, *curveP256, *curveP384, *curveP521;
+	ECBinary *curveB163;
 	Coordinate p192S, p192T, p224S, p224T, p256S, p256T, p384S, p384T, p521S, p521T;
 	mpz_class p192d, p224d, p256d, p384d, p521d;
 
