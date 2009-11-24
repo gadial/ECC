@@ -114,10 +114,28 @@ void EllipticCurveTest::test_repeated_doubling(){
         P = random_curve.getPoint(gen.rand(random_curve.mod));
     
     Coordinate temp = P;
-    temp = random_curve.doubling(temp);
-    CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,1));
-//    for (int m=1; m<10; m++){
-//        temp = random_curve.doubling(temp);
-//        CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,m));
-//    }
+    for (int m=1; m<10; m++){
+        temp = random_curve.doubling(temp);
+        CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,m));
+    }
+}
+
+void EllipticCurveTest::test_point_multiplication(){
+    Coordinate P = Coordinate::infinity();
+
+    while (P == Coordinate::infinity())
+        P = random_curve.getPoint(gen.rand(random_curve.mod));
+
+    CPPUNIT_ASSERT(Coordinate::infinity() == random_curve.pointMultiplication(P,0));
+    CPPUNIT_ASSERT(P == random_curve.pointMultiplication(P,1));
+
+    Coordinate temp = random_curve.doubling(P);
+    CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,2));
+    CPPUNIT_ASSERT(random_curve.addition(P,temp) == random_curve.pointMultiplication(P,3));
+
+    mpz_class goal = 2 + gen.rand(50);
+    for (int i=2; i< goal; i++)
+        temp = random_curve.addition(P,temp);
+
+    CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,goal));
 }
