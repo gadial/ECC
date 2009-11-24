@@ -5,7 +5,10 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>coordinates.h</itemPath>
+      <itemPath>curvesnist.h</itemPath>
       <itemPath>curvesnisttest.h</itemPath>
+      <itemPath>ecbinary.h</itemPath>
+      <itemPath>ecprime.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>primes.h</itemPath>
       <itemPath>tests.h</itemPath>
@@ -19,6 +22,8 @@
                    projectFiles="true">
       <itemPath>coordinates.cpp</itemPath>
       <itemPath>curvesnisttest.cpp</itemPath>
+      <itemPath>ecbinary.cpp</itemPath>
+      <itemPath>ecprime.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>

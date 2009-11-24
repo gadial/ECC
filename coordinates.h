@@ -7,8 +7,10 @@
 
 #ifndef COORDINATES_H_
 #define COORDINATES_H_
+#include <iostream>
 
 #include <gmpxx.h>
+using namespace std;
 //#include "ellipticcurve.h"
 //#define isInfJac(mpz_class m) = m.z
 
@@ -41,6 +43,8 @@ public:
 	mpz_class X, Y;
 };
 
+ostream& operator<<(ostream& out, Coordinate& rhs);
+
 class Jacobian {
 public:
 
@@ -54,17 +58,6 @@ public:
     bool isInfinite() {
     	return X == 1 && Y == 1 && Z == 0;
     }
-
-    /* TODO: didn't compile...
-    bool operator==(const Jacobian& eqTo){
-        if (isInfinite() && eqTo.isInfinite())
-            return true;
-            //TODO Implement! This is crucial.
-
-
-    }
-    */
-
 	mpz_class X, Y, Z;
 
 };

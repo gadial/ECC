@@ -31,12 +31,14 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/curvesnisttest.o \
+	${OBJECTDIR}/ecprime.o \
 	${OBJECTDIR}/ellipticcurve.o \
-	${OBJECTDIR}/coordinates.o \
-	${OBJECTDIR}/primes.o \
+	${OBJECTDIR}/ecbinary.o \
 	${OBJECTDIR}/tests.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/coordinates.o \
+	${OBJECTDIR}/curvesnisttest.o \
+	${OBJECTDIR}/primes.o
 
 # C Compiler Flags
 CFLAGS=
@@ -62,25 +64,20 @@ dist/Debug/GNU-Linux-x86/ecc: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ecc ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk curvesnisttest.cpp 
+${OBJECTDIR}/ecprime.o: nbproject/Makefile-${CND_CONF}.mk ecprime.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/curvesnisttest.o curvesnisttest.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecprime.o ecprime.cpp
 
 ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
 
-${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp 
+${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
-
-${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/primes.o primes.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecbinary.o ecbinary.cpp
 
 ${OBJECTDIR}/tests.o: nbproject/Makefile-${CND_CONF}.mk tests.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -91,6 +88,21 @@ ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
+
+${OBJECTDIR}/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk curvesnisttest.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/curvesnisttest.o curvesnisttest.cpp
+
+${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/primes.o primes.cpp
 
 # Subprojects
 .build-subprojects:

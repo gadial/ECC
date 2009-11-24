@@ -92,8 +92,8 @@ void EllipticCurveTest::test_get_point()
 void EllipticCurveTest::test_doubling_vs_addition()
 {
     Coordinate P = Coordinate::infinity();
+    Coordinate Q,R;
     while (P == Coordinate::infinity())
         P = random_curve.getPoint(gen.rand(random_curve.mod));
-    //CPPUNIT_ASSERT(random_curve.addition(P,P) == random_curve.doubling(P));
-    //TODO: must implement jacobian equality operator in order to test this
+    CPPUNIT_ASSERT(random_curve.addition(P,P) == random_curve.doubling(P));
 }

@@ -43,6 +43,9 @@ Coordinate ECPrime::repeatedDoubling(Coordinate P, int m) {
 }
 
 Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
+    //We assume that P != Q,-Q
+    //If P==Q use doubling
+    //if P==-Q, return 0
     //I treat a**2 as simply a*a since I can't see an optimization
     //for it in gmp
 	if (P.isInfinite()) {
@@ -51,7 +54,12 @@ Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
 	if (Q.isInfinite()) {
 		return P;
 	}
-
+        Coordinate temp = Coordinate(P,mod);
+        if (temp == Q)
+            return doubling(P);
+        if (temp == getNegative(Q))
+            return Coordinate::infinity();
+        
     mpz_class X3,Y3,Z3;
     if (ECC_a != -3){
         //pg. 89 - dealing with the general case where a != -3
@@ -65,7 +73,7 @@ Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
         G = E * E;
         H = G * E;
         I = P.X * G;
-        X3 = F*F - (H+2*I);
+        X3 = F*F - (H+2*I); //cout << "F = " << F << ", H= " << H << ", I=" << I << endl;
         Y3 = F*(I-X3)-P.Y*H;
         Z3 = P.Z * E;
     }
