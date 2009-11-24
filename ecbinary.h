@@ -119,7 +119,7 @@ public:
 	/*
 	 * Subtraction is the same as Addition
 	 */
-	GFE operator+(const GFE& other) {
+	GFE operator-(const GFE& other) {
 		mpz_class res;
 		mpz_xor(res.get_mpz_t(), element.get_mpz_t(), other.element.get_mpz_t());
 		return GFE(res, mod);
