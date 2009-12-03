@@ -63,6 +63,13 @@ void PrimesTest::test_is_odd()
     CPPUNIT_ASSERT((q % 2) == 1);
 }
 
+void PrimesTest::test_generate_prime_for_discriminant(){
+    mpz_class D = gen.rand(100);
+    mpz_class s,t;
+    mpz_class p = gen.generate_prime_for_discriminant(10,D,t,s);
+    CPPUNIT_ASSERT(4*p == t*t+s*s*D);
+}
+
 void EllipticCurveTest::setUp()
 {
     random_curve = ECPrime::randomCurve(10, gen);

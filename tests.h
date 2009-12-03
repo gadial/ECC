@@ -20,6 +20,7 @@ class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_legendre_symbol );
     CPPUNIT_TEST( test_rand );
     CPPUNIT_TEST( test_square_root );
+    CPPUNIT_TEST( test_generate_prime_for_discriminant );
     CPPUNIT_TEST_SUITE_END();
 private:
     RandomNumberGenerator gen;
@@ -33,6 +34,7 @@ public:
     void test_rand();
     void test_square_root();
     void test_small_primes();
+    void test_generate_prime_for_discriminant();
 };
 
 class EllipticCurveTest : public CppUnit::TestFixture{
