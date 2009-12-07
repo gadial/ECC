@@ -67,11 +67,7 @@
 
 
 
-\lyxframeend{}\section{Introduction}
-
-
-\lyxframeend{}\subsection{Public Key Cryptosystems}
-
+\lyxframeend{}\section{Public Key Cryptosystems}
 
 \lyxframeend{}\lyxframe{Familiar Cryptosystems}
 \begin{itemize}
@@ -82,7 +78,21 @@
 \item Typical key size of around 2048 bits.
 \end{itemize}
 
-\lyxframeend{}\lyxframe{Equivalent Key Sizes}
+\lyxframeend{}
+
+\lyxframe{Enter Elliptic Curves}
+\begin{itemize}
+\item Elliptic Curves provide a wide variety of groups, similar to $\mathbb{Z}_{n}^{*}$
+but more complex.
+\item Diffie-Hellman and El-Gamal can be reproduced in this setting.
+\item The discrete logarithm problem is much harder - i.e. the index calculus
+method is not applicable.
+\item This results in much smaller key sizes (100-200 bits).
+\item The problem: More costly to generate, more costly to operate.
+\end{itemize}
+
+\lyxframeend{}
+\lyxframe{Equivalent Key Sizes}
 \begin{itemize}
  \item Equivalent secure key sizes for: Symmetric cryptography (AES), traditional PKC (RSA/DH) and ECC:
 \end{itemize}
@@ -101,18 +111,7 @@ AES & $\mathbb{Z}_{n}^{*}$ PKC & ECC \\ \cline{1-3}
 \end{table}
 
 
-\lyxframeend{}\lyxframe{Enter Elliptic Curves}
-\begin{itemize}
-\item Elliptic Curves provide a wide variety of groups, similar to $\mathbb{Z}_{n}^{*}$
-but more complex.
-\item Diffie-Hellman and El-Gamal can be reproduced in this setting.
-\item The discrete logarithm problem is much harder - i.e. the index calculus
-method is not applicable.
-\item This results in much smaller key sizes (100-200 bits).
-\item The problem: More costly to generate, more costly to operate.
-\end{itemize}
-
-\lyxframeend{}\subsection{What are Elliptic Curves?}
+\lyxframeend{}\section{Elliptic Curves}
 
 
 \lyxframeend{}\lyxframe{Definition}
@@ -183,6 +182,8 @@ $x_{3}=\left(\frac{3x_{1}^{2}+a}{2y_{1}}\right)^{2}-2x_{1},y_{3}=\left(\frac{3x_
 
 \end{itemize}
 
+\lyxframeend{}\section{Elliptic Curve Cryptosystems}
+
 \lyxframeend{}\lyxframe{EC Key Pair Generation}
 Public Parameters:
 \begin{itemize}
@@ -221,6 +222,7 @@ Decryption requires private key $d$:
 \item $C_1-dC_2=M+kQ-\underbrace{dkP}_{=k(dP)=kQ}=M$
 \end{itemize}
 
+\lyxframeend{}\section{Elliptic Curve Generation}
 \lyxframeend{}\lyxframe{Random Curves}
 \begin{itemize}
 \item Some ``good'' fixed curves are recommended and are available from NIST
