@@ -10,6 +10,7 @@
       <itemPath>ecbinary.h</itemPath>
       <itemPath>ecprime.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
+      <itemPath>hcp.h</itemPath>
       <itemPath>primes.h</itemPath>
       <itemPath>tests.h</itemPath>
     </logicalFolder>
@@ -25,6 +26,7 @@
       <itemPath>ecbinary.cpp</itemPath>
       <itemPath>ecprime.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
+      <itemPath>hcp.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>
       <itemPath>tests.cpp</itemPath>

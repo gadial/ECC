@@ -15,6 +15,7 @@ public:
     mpz_class rand_binary_digits(int binary_digits);
     //generates a random prime not larger than 2^n-1
     mpz_class generate_prime(unsigned long int n);
+    mpz_class generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s);
 private:
     gmp_randstate_t state;
 };

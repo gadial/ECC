@@ -33,6 +33,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ecprime.o \
 	${OBJECTDIR}/ellipticcurve.o \
+	${OBJECTDIR}/hcp.o \
 	${OBJECTDIR}/ecbinary.o \
 	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o \
@@ -73,6 +74,11 @@ ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
+
+${OBJECTDIR}/hcp.o: nbproject/Makefile-${CND_CONF}.mk hcp.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/hcp.o hcp.cpp
 
 ${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp 
 	${MKDIR} -p ${OBJECTDIR}

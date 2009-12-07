@@ -41,6 +41,21 @@ mpz_class RandomNumberGenerator::generate_prime(unsigned long int n){
     return 1; //failure
 }
 
+mpz_class RandomNumberGenerator::generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s){
+    //find a p such that 4p=t^2+Ds^2 for random t,s
+    for (int i=0; i<10*n; i++){
+        t = rand_binary_digits(n / 2);
+        s = rand_binary_digits(n / 2);
+        mpz_class temp = t*t+D*s*s;
+        if (temp % 4 == 0){
+            mpz_class p = temp / 4;
+            if (mpz_probab_prime_p(p.get_mpz_t(), MILLER_RABIN_REPEATS) != 0)
+                return p;
+        }
+    }
+    return 1; //failure
+}
+
 int legendre_symbol(mpz_class n, mpz_class p){
     //an efficient algorithm using quadratic reciprocity; better than using Euler's criterion
     return jacobi_symbol(n,p);
