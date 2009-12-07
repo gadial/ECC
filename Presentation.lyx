@@ -1,0 +1,606 @@
+#LyX 1.6.4 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw}
+% or ...
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding auto
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Elliptic Curve Cryptography
+\end_layout
+
+\begin_layout Author
+G.
+ Aleksandrowicz,
+\begin_inset Flex InstituteMark
+status open
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ B.
+\begin_inset space ~
+\end_inset
+
+Hass
+\begin_inset Flex InstituteMark
+status collapsed
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+\begin_inset Flex InstituteMark
+status collapsed
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+
+Department of Computer Science
+\end_layout
+
+\begin_layout Date
+Technion - Israel Institute of Technology
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Flex InstituteMark
+status collapsed
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+
+Department of Theoretical Philosophy
+\end_layout
+
+\begin_layout Date
+University of Elsewhere
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Basil, please fill in your university
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+Project in Computer Security, 2009
+\end_layout
+
+\begin_layout BeginFrame
+Outline
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Structuring a talk is a difficult task and the following structure may not
+ be suitable.
+ Here are some rules that apply for this solution: 
+\end_layout
+
+\begin_layout Plain Layout
+- Exactly two or three sections (other than the summary).
+ 
+\end_layout
+
+\begin_layout Plain Layout
+- At *most* three subsections per section.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+- Talk about 30s to 2min per frame.
+ So there should be between about 15 and 30 frames, all told.
+\end_layout
+
+\begin_layout Plain Layout
+- A conference audience is likely to know very little of what you are going
+ to talk about.
+ So *simplify*! 
+\end_layout
+
+\begin_layout Plain Layout
+- In a 20min talk, getting the main ideas across is hard enough.
+ Leave out details, even if it means being less precise than you think necessary.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+- If you omit details that are vital to the proof/implementation, just say
+ so once.
+ Everybody will be happy with that.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Public Key Cryptosystems
+\end_layout
+
+\begin_layout BeginFrame
+Familiar Cryptosystems
+\end_layout
+
+\begin_layout Itemize
+Diffie-Hellman key exchange
+\end_layout
+
+\begin_layout Itemize
+RSA cryptosystem.
+\end_layout
+
+\begin_layout Itemize
+El-Gamal cryptosystem.
+\end_layout
+
+\begin_layout Itemize
+Rely on hardness of factoring/discrete logarithm in 
+\begin_inset Formula $\mathbb{Z}_{n}^{*}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Typical key size of around 2048 bits.
+\end_layout
+
+\begin_layout BeginFrame
+Enter Elliptic Curves
+\end_layout
+
+\begin_layout Itemize
+Elliptic Curves provide a wide variety of groups, similar to 
+\begin_inset Formula $\mathbb{Z}_{n}^{*}$
+\end_inset
+
+ but more complex.
+\end_layout
+
+\begin_layout Itemize
+Diffie-Hellman and El-Gamal can be reproduced in this setting.
+\end_layout
+
+\begin_layout Itemize
+The discrete logarithm problem is much harder - i.e.
+ the index calculus method is not applicable.
+\end_layout
+
+\begin_layout Itemize
+This results in much smaller key sizes (100-200 bits).
+\end_layout
+
+\begin_layout Itemize
+The problem: More costly to generate, more costly to operate.
+\end_layout
+
+\begin_layout Subsection
+What are Elliptic Curves?
+\end_layout
+
+\begin_layout BeginFrame
+Definition
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We should add pictures
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+An Elliptic Curve is the set of solutions of an equation of the form 
+\begin_inset Formula $y^{2}=x^{3}+ax+b$
+\end_inset
+
+ over some field 
+\begin_inset Formula $\mathbb{F}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Usually denoted 
+\begin_inset Formula $E_{\mathbb{F}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+There is a small condition on 
+\begin_inset Formula $a,b$
+\end_inset
+
+ (
+\begin_inset Formula $4a^{3}+27b^{2}\ne0$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $\mbox{char}\mathbb{F}=2,3$
+\end_inset
+
+ the equation is a little more complex...
+\end_layout
+
+\begin_layout Itemize
+We also consider a solution 
+\begin_inset Quotes eld
+\end_inset
+
+at infinity
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Formula $O$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout BeginFrame
+The Group Operation
+\end_layout
+
+\begin_layout Itemize
+Given points 
+\begin_inset Formula $P,Q\in E$
+\end_inset
+
+ on the curve, we define 
+\begin_inset Formula $P+Q$
+\end_inset
+
+ in the following strange way:
+\end_layout
+
+\begin_layout Itemize
+Draw a line between 
+\begin_inset Formula $P,Q$
+\end_inset
+
+.
+ This line intersects the curve at another point (or infinity).
+ Take the reflection of that point relative to the 
+\begin_inset Formula $x$
+\end_inset
+
+-axis to be 
+\begin_inset Formula $P+Q$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $P=Q$
+\end_inset
+
+ draw the line tangent to the curve at 
+\begin_inset Formula $P$
+\end_inset
+
+.
+ It intersects the curve at one other point (or infinity).
+\end_layout
+
+\begin_layout Itemize
+For all 
+\begin_inset Formula $P$
+\end_inset
+
+, 
+\begin_inset Formula $P+O=P$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Motivation for such a stange definition: exists, and is derived from the
+ behivour of elliptic curves over 
+\begin_inset Formula $\mathbb{C}$
+\end_inset
+
+.
+ We cannot go into details here.
+\end_layout
+
+\begin_layout Itemize
+This operations make 
+\begin_inset Formula $E$
+\end_inset
+
+ into an abelian group.
+\end_layout
+
+\begin_layout BeginFrame
+Group Operations in Practice
+\end_layout
+
+\begin_layout Itemize
+Given 
+\begin_inset Formula $E$
+\end_inset
+
+ over 
+\begin_inset Formula $\mathbb{F}$
+\end_inset
+
+ such that 
+\begin_inset Formula $\mbox{char}\mathbb{F}$
+\end_inset
+
+ and 
+\begin_inset Formula $P_{1}=\left(x_{1},y_{1}\right),P_{2}=\left(x_{2},y_{2}\right)$
+\end_inset
+
+ (
+\begin_inset Formula $P_{1}\ne\pm P_{2}$
+\end_inset
+
+) we can describe 
+\begin_inset Formula $P_{3}=P_{1}+P_{2}$
+\end_inset
+
+ by:
+\end_layout
+
+\begin_layout Fact
+\begin_inset Formula $x_{3}=\left(\frac{y_{2}-y_{1}}{x_{2}-x_{1}}\right)^{2}-x_{1}-x_{2},y_{3}=\left(\frac{y_{2}-y_{1}}{x_{2}-x_{1}}\right)\left(x_{1}-x_{3}\right)-y_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $P_{1}=P_{2}$
+\end_inset
+
+ we have for 
+\begin_inset Formula $P_{3}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Fact
+\begin_inset Formula $x_{3}=\left(\frac{3x_{1}^{2}+a}{2y_{1}}\right)^{2}-2x_{1},y_{3}=\left(\frac{3x_{1}^{2}+a}{2y_{1}}\right)\left(x_{1}-x_{3}\right)-y_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Proof: Basic analytic geometry.
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\begin_layout Section*
+\start_of_appendix
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+All of the following is optional and typically not needed.
+\end_layout
+
+\end_inset
+
+Appendix
+\end_layout
+
+\begin_layout Subsection*
+For Further Reading
+\end_layout
+
+\begin_layout BeginFrame
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[allowframebreaks]
+\end_layout
+
+\end_inset
+
+For Further Reading
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamertemplatebookbibitems
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Start with overview books.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "HMV"
+
+\end_inset
+
+D.
+ Hankerson, A.
+ Menezes, S.
+ Vanstone.
+ Guide to Elliptic Curve Cryptography.
+ Springer, 2004.
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamertemplatearticlebibitems
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Followed by interesting articles.
+ Keep the list short.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document
