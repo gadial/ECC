@@ -82,6 +82,25 @@ of Theoretical Philosophy}
 \item Typical key size of around 2048 bits.
 \end{itemize}
 
+\lyxframeend{}\lyxframe{Equivalent Key Sizes}
+\begin{itemize}
+ \item Equivalent secure key sizes for: Symmetric cryptography (AES), traditional PKC (RSA/DH) and ECC:
+\end{itemize}
+
+\begin{table}
+% use packages: array
+\begin{tabular}{c|c|c}
+AES & $\mathbb{Z}_{n}^{*}$ PKC & ECC \\ \cline{1-3}
+80 & 1024 & 160 \\ 
+112 & 2048 & 224 \\ 
+128 & 3072 & 256 \\ 
+192 & 7680 & 384 \\ 
+256 & 15360 & 521
+\end{tabular}
+\caption{Equivalent key sizes in bits, recommended by NIST}
+\end{table}
+
+
 \lyxframeend{}\lyxframe{Enter Elliptic Curves}
 \begin{itemize}
 \item Elliptic Curves provide a wide variety of groups, similar to $\mathbb{Z}_{n}^{*}$
@@ -164,6 +183,43 @@ $x_{3}=\left(\frac{3x_{1}^{2}+a}{2y_{1}}\right)^{2}-2x_{1},y_{3}=\left(\frac{3x_
 
 \end{itemize}
 
+\lyxframeend{}\lyxframe{EC Key Pair Generation}
+Public Parameters:
+\begin{itemize}
+\item An elliptic curve $E(\mathbb{F}_p)$
+\item A curve-point $P$, which generates a cyclic subgroup of $E$, of order $n$:
+\begin{fact}
+ $\langle P\rangle=\{\infty,P,2P,3P,...,(n-1)P\}$
+\end{fact}
+\end{itemize}
+
+Algorithm:
+\begin{enumerate}
+ \item Choose $d\in_{u.a.r.}\{1,...,n-1\}$
+ \item Compute $Q=dP$
+ \item Output pair $(Q,d)$. public key: $Q$, private key: $d$
+\end{enumerate}
+
+\lyxframeend{}\lyxframe{EC El-Gamal}
+Public Parameters:
+\begin{itemize}
+\item Elliptic curve $E(\mathbb{F}_p)$, point $P$, order $n$
+\item A public key $Q$.
+\end{itemize}
+
+Algorithm (encrypting message $m$)
+\begin{enumerate}
+\item Map $m$ to a point in $E$, let's say to $M$
+\item Choose $k\in_{u.a.r.}\{1,...,n-1\}$ (\textcolor{red}{non-determinism})
+\item Compute $C_1=kP$
+\item Compute $C_2=M+kQ$
+\item Output ciphertext: $(C_1,C_2)$
+\end{enumerate}
+
+Decryption requires private key $d$:
+\begin{itemize}
+\item $C_1-dC_2=M+kQ-\underbrace{dkP}_{=k(dP)=kQ}=M$
+\end{itemize}
 
 \lyxframeend{}\lyxframe{Random Curves}
 \begin{itemize}
@@ -177,7 +233,7 @@ $x_{3}=\left(\frac{3x_{1}^{2}+a}{2y_{1}}\right)^{2}-2x_{1},y_{3}=\left(\frac{3x_
 
 Approach:
 \begin{itemize}
-\item Select a large random prime $p$ for $\mathbb{F}_p$
+\item Select a large random prime $p$ for $\mathbb{F}_p$.
 \item EC: $y^2=x^3+ax+b$. Task: select random pair $(a,b)$
 \item Main security requirement: $|E(\mathbb{F}_p)|=k\cdot p$, $p$ large prime.
 \item Why? to avoid application of generic DL algorithms.
@@ -206,6 +262,7 @@ Complex Multiplication Approach
 \item Idea: generate curve for given EC order
 \item Literature shows efficient implementation is possible
 \item Approach not completely random (not all curves can be generated)
+\item However not much loss of generality
 \end{itemize}
 
 
@@ -241,7 +298,8 @@ Complex Multiplication Approach
 \beamertemplatebookbibitems
 \begin{thebibliography}{1}
 \bibitem{HMV}D. Hankerson, A. Menezes, S. Vanstone. Guide to Elliptic
-Curve Cryptography. Springer, 2004.\beamertemplatearticlebibitems
+Curve Cryptography. Springer, 2004.
+\bibitem{HMV}H. Baier, J. Buchmann. Generation Methods of Elliptic Curves. 2002.\beamertemplatearticlebibitems
 
 \end{thebibliography}
 
