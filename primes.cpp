@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "primes.h"
-
+#include "small_primes.h"
 #include <stdio.h>
 #include <iostream>
 
@@ -170,4 +170,18 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
 //            cout << "x, y, z = " << x << ", " << y <<", " << z << endl;
         }
         return x % p;
+}
+
+bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed){
+    int max_prime_num = NUM_SMALL_PRIMES;
+    if (smoothness_allowed < NUM_SMALL_PRIMES && smoothness_allowed > 0)
+        max_prime_num = smoothness_allowed;
+    for (int i=0; i<max_prime_num; i++){
+        if (p % small_primes[i] == 0)
+            p /= small_primes[i];
+    }
+
+    if (p<min_size_allowed)
+        return false;
+    return mpz_probab_prime_p(p.get_mpz_t(), MILLER_RABIN_REPEATS);
 }
