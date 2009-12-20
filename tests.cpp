@@ -1,7 +1,9 @@
 #include <iostream>
+#include <stdlib.h>
 #include "primes.h"
 #include "ellipticcurve.h"
 #include "tests.h"
+#include "small_primes.h"
 using namespace std;
 
 void PrimesTest::setUp()
@@ -68,6 +70,20 @@ void PrimesTest::test_generate_prime_for_discriminant(){
     mpz_class s,t;
     mpz_class p = gen.generate_prime_for_discriminant(10,D,t,s);
     CPPUNIT_ASSERT(4*p == t*t+s*s*D);
+}
+
+void PrimesTest::test_is_near_prime(){
+    mpz_class p = gen.generate_prime(100);
+    mpz_class min_size = p;
+    mpz_class temp = p;
+    CPPUNIT_ASSERT(is_near_prime(p,-1,min_size) == true);
+    for (int i=0; i<NUM_SMALL_PRIMES; i++){
+        if (rand() % 2 == 0)
+            temp *= small_primes[i];
+    }
+    CPPUNIT_ASSERT(is_near_prime(temp,-1,min_size) == true);
+
+    CPPUNIT_ASSERT(is_near_prime(p*small_primes[NUM_SMALL_PRIMES - 10],NUM_SMALL_PRIMES - 10,min_size) == false);
 }
 
 void EllipticCurveTest::setUp()

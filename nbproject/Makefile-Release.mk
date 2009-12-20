@@ -31,8 +31,8 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/ecprime.o \
 	${OBJECTDIR}/ellipticcurve.o \
+	${OBJECTDIR}/ecprime.o \
 	${OBJECTDIR}/hcp.o \
 	${OBJECTDIR}/ecbinary.o \
 	${OBJECTDIR}/tests.o \
@@ -65,15 +65,15 @@ dist/Release/GNU-Linux-x86/ecc: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ecc ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/ecprime.o: nbproject/Makefile-${CND_CONF}.mk ecprime.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecprime.o ecprime.cpp
-
 ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
+
+${OBJECTDIR}/ecprime.o: nbproject/Makefile-${CND_CONF}.mk ecprime.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecprime.o ecprime.cpp
 
 ${OBJECTDIR}/hcp.o: nbproject/Makefile-${CND_CONF}.mk hcp.cpp 
 	${MKDIR} -p ${OBJECTDIR}

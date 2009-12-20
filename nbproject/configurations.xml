@@ -12,6 +12,7 @@
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>hcp.h</itemPath>
       <itemPath>primes.h</itemPath>
+      <itemPath>small_primes.h</itemPath>
       <itemPath>tests.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
