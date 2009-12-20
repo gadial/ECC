@@ -16,13 +16,17 @@
 #define ECBINARY_H_
 
 #include "ellipticcurve.h"
-#include <iostream>
+#include "arith/GFE.h"
+//#include <iostream>
+
+
+//class GFE;
 
 class ECBinary: public Ellipticcurve {
 public:
 	ECBinary();
 	ECBinary(mpz_class _mod_poly, mpz_class _ECC_a, mpz_class _ECC_b) :
-		Ellipticcurve(0, _ECC_a, _ECC_b) {
+		Ellipticcurve(_mod_poly, _ECC_a, _ECC_b) {
 
 		// mod=2^_mod_2b
 		//mod = 1;
@@ -71,17 +75,40 @@ public:
 	 */
 	Coordinate pointMultiplication(Coordinate P, mpz_class k);
 
+	std::vector<GFE> get_jinvariants();
+
+	std::vector<GFE> update_js(int n, std::vector<GFE> Jinvs);
+
+	std::vector<GFE> lift_jinvariants(int n, std::vector<GFE> jinvs);
+
+	mpz_class satohfgh_point_counting();
+
 private:
+
+	/*
+	 * modular equation phi_2
+	 */
+	inline GFE phi_2(GFE x, GFE y);
+
+	/*
+	 * derivation of phi_2 with respect to x
+	 */
+	inline GFE phi_2_x(GFE x, GFE y);
+
+	inline mpz_class pi_j(mpz_class J) {
+		return 0;
+	}
+
 	LD doubling(LD P);
 	LD addition(LD P, Coordinate Q);
 	LD subtraction(LD P, Coordinate Q);
 
 	mpz_class binMult(mpz_class a, mpz_class b, mpz_class f) {
 		mpz_class res = 0;
-		mpz_class const_1 = 2;
+		mpz_class const_2 = 2;
 		mpz_class hiBitSet;
 		for (int i = 0; i < mod; ++i) {
-			if (b % const_1 == 1) {
+			if (b % const_2 == 1) {
 				res ^= a;
 			}
 			mpz_and(hiBitSet.get_mpz_t(), a.get_mpz_t(), mod.get_mpz_t());
@@ -99,91 +126,6 @@ private:
 
 #define WORD 32
 
-/*
- * Implementation of the galois field
- * operations
- */
-class GFE {
-public:
-	GFE(mpz_class _element, const mpz_class& _mod): mod(_mod), element(_element) {}
 
-	/*
-	 * Addition is just XOR
-	 */
-	GFE operator+(const GFE& other) {
-		mpz_class res;
-		mpz_xor(res.get_mpz_t(), element.get_mpz_t(), other.element.get_mpz_t());
-		return GFE(res, mod);
-	}
-
-	/*
-	 * Subtraction is the same as Addition
-	 */
-	GFE operator-(const GFE& other) {
-		mpz_class res;
-		mpz_xor(res.get_mpz_t(), element.get_mpz_t(), other.element.get_mpz_t());
-		return GFE(res, mod);
-	}
-
-	/**
-	 * Implements shift-and-add, complexity O(n) with degree n polynomial
-	 * According to Lopez-Deneb (High-speed software mult. in F2m)
-	 */
-	GFE operator*(const GFE& other) {
-		// TODO: more efficient impl. or use gf2x http://wwwmaths.anu.edu.au/~brent/gf2x.html
-		mpz_class c = 0;
-		int m = mpz_sizeinbase(mod.get_mpz_t(), 2);
-		mpz_class mask_1 = 1 << (m - 1);
-		mpz_class mask_2 = mask_1;
-		mpz_class tmp;
-		//int s = (m % WORD == 0 ? m / WORD : m / WORD + 1);
-		//int k = m - 1 - WORD*(s - 1);
-		for (int i = m - 1; i >= 0; --i, mask_1 >>= 1) {
-			c <<= 1;
-			mpz_and(tmp.get_mpz_t(), element.get_mpz_t(), mask_1.get_mpz_t());
-			if (tmp != 0) {
-				c ^= other.element;
-			}
-			mpz_and(tmp.get_mpz_t(), c.get_mpz_t(), mask_2.get_mpz_t());
-			if (tmp != 0) {
-				c ^= mod;
-			}
-		}
-		return GFE(c, mod);
-
-	}
-
-	/*
-	 * Returns the inverse Inverse
-	 * Uses the Extended Euxlidean Algorithm over finite fields
-	 */
-	GFE operator!() {
-		mpz_class u = element, v = mod;
-		mpz_class g1 = 1, g2 = 0;
-		while (u != 1) {
-			int j = mpz_sizeinbase(u.get_mpz_t(), 2) - mpz_sizeinbase(v.get_mpz_t(), 2);
-			if (j < 0) {
-				mpz_class swap = u;
-				u = v;
-				v = swap;
-				swap = g1;
-				g1 = g2;
-				g2 = swap;
-				j = -j;
-			}
-			mpz_class sh = v << j;
-			u ^= (v << j);
-			g1 ^= (g2 << j);
-		}
-		return GFE(g1, mod);
-	}
-
-	void print() {
-		std::cout << element.get_str(2) << " mod " << mod.get_str(2) << std::endl;
-	}
-
-	mpz_class mod;
-	mpz_class element;
-};
 
 #endif /* ECBINARY_H_ */

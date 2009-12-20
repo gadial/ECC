@@ -214,3 +214,84 @@ Coordinate ECBinary::toCoordinate(const LD& ld) {
 	return Coordinate(resX.element, resY.element);
 
 }
+
+vector<GFE> ECBinary::get_jinvariants() {
+	GFE a = GFE(ECC_b, mod);
+	a.print();
+	// j(E)=j0=1/b
+	GFE j0 = !a;
+	// We create cyclic curves, therefore: jd=j0
+	GFE jd = j0;
+	int d = a.mod_deg();
+	cout << d << endl;
+	std::vector<GFE> res(d + 1);
+	//res[0] = j0;
+	res[d] = jd;
+	for (int i = d - 1; i >= 0; --i) {
+		res[i] = res[i + 1] * res[i + 1];
+	}
+
+	return res;
+}
+
+
+std::vector<GFE> ECBinary::update_js(int n, std::vector<GFE> Jinvs) {
+	int d = Jinvs.size();
+	vector<GFE> D(d - 1);
+	vector<GFE> P(d);
+	vector<GFE> J(d);
+	for (int i = 0; i < d - 2; ++i) {
+		GFE t = !phi_2_x(Jinvs[i], Jinvs[i+1]);
+
+	}
+
+
+	return J;
+}
+
+/*
+ * Lifts j-invariants given by 'jinvs' to precision n
+ * jinvs: j_0,...,j_d
+ * returns J_0,...,J_{d-1}
+ */
+std::vector<GFE> ECBinary::lift_jinvariants(int n, std::vector<GFE> jinvs) {
+	if (n == 1) {
+		return jinvs;
+	}
+	int nn = (n % 2 == 0 ? n / 2 : n / 2 + 1);
+	vector<GFE> res = lift_jinvariants(nn, jinvs);
+	return update_js(n, res);
+	// phi_2(X,Y)=X^3+Y^3-X^2Y^2+c1(XY^2+X^2Y)-c2(X^2+Y^2)+c3XY+c4(X+Y)-c5
+	// c1=1488 c2=162000 c3=40773375 c4=87448000000 c5=157464000000000
+}
+
+mpz_class ECBinary::satohfgh_point_counting() {
+	vector<GFE> jinvs = get_jinvariants();
+	int d = jinvs[0].mod_deg();
+	int n = (d % 2 == 0 ? d / 2 + 1 : d / 2 + 2);
+
+	cout << "n: " << n << endl;
+	return n;
+}
+
+inline GFE ECBinary::phi_2(GFE x, GFE y) {
+	mpz_class c4t;
+	c4t.set_str("87448000000", 2);
+	mpz_class c5t;
+	c5t.set_str("157464000000000", 2);
+	GFE c1 = GFE(1488, x.mod);
+	GFE c2 = GFE(162000, x.mod);
+	GFE c3 = GFE(40773375, x.mod);
+	GFE c4 = GFE(c4t, x.mod);
+	GFE c5 = GFE(c5t, x.mod);
+	return x*x*x+y*y*y-x*x*y*y+c1*(x*y*y+x*x*y)-c2*(x*x+y*y)+c3*x*y+c4*(x+y)-c5;
+}
+
+inline GFE ECBinary::phi_2_x(GFE x, GFE y) {
+	GFE co2 = GFE(2, x.mod);
+	GFE co3 = GFE(3, x.mod);
+	GFE c1 = GFE(1488, x.mod);
+	GFE c2 = GFE(162000, x.mod);
+	GFE c3 = GFE(40773375, x.mod);
+	return co3*x*x - co2*x*(y*y - c1*y + c2) + c1*y*y + c3*y;
+}
