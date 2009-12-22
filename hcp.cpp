@@ -1,4 +1,113 @@
 #include "hcp.h"
+
+using std::cout;
+using std::endl;
+
+static int read_degree(string& poly_string){
+    //assumes the string is of the form *x^i*, returns i
+    int degree = 0;
+    int pos = 0;
+//    cout << "searching for x... pos = " << pos << endl;
+    while (pos < poly_string.length() && poly_string[pos] != 'x')
+        pos++;
+//    cout << "stopped in pos = " << pos << endl;
+    if (pos + 1 >= poly_string.length() || poly_string[pos+1] != '^')
+        degree = 1;
+    if (pos >= poly_string.length())
+        degree = 0;
+    if (poly_string[pos+1] == '^'){
+        pos += 2;
+        while (pos < poly_string.length() && poly_string[pos] <= '9' && poly_string[pos] >= '0'){
+            degree *= 10;
+            degree += (poly_string[pos] - '0');
+            pos++;
+        }
+    }
+    poly_string.erase(0,pos);
+    return degree;
+}
+
+static mpz_class read_number(string& poly_string){
+    mpz_class number;
+    int pos = 0;
+    int start;
+    char buf[80];
+    memset( buf, '\0', 80 );
+
+    while (pos < poly_string.length() && (poly_string[pos] >= '9' || poly_string[pos] <= '0')){
+        if (poly_string[pos] == 'x') //abort! abort! (since there is no number explicitly written
+            return 1;
+        pos++;
+    }
+        //reached the first digit
+    start = pos;
+    while (pos < poly_string.length() && poly_string[pos] <= '9' && poly_string[pos] >= '0')
+        pos++;
+    poly_string.copy(buf, pos-start, start);
+    mpz_set_str(number.get_mpz_t(), buf, 10);
+    poly_string.erase(0,pos);
+    return number;
+}
+
+static int read_sign(string& poly_string){
+    int pos = 0;
+    int sign = 0;
+    while (pos < poly_string.length() && poly_string[pos] != '+' && poly_string[pos] != '-')
+        pos++;
+    if (poly_string[pos] == '+')
+        sign = 1;
+    if (poly_string[pos] == '-')
+        sign = -1;
+    poly_string.erase(0,pos+1); //might cause bug if pos == poly_string.length?
+    return sign;
+}
+ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulos(p),degree(0){
+    string temp_string = poly_string;
+    int sign = 1;
+
+    while (!temp_string.empty()){
+//        cout << "reading number... string is " << temp_string << endl;
+        mpz_class number = read_number(temp_string);
+//        cout << "number read = " << number << endl;
+//        cout << "reading degree... string is " << temp_string << endl;
+        int temp_degree = read_degree(temp_string);
+        if (degree < temp_degree)
+            degree = temp_degree;
+//        cout << "degree found = " << temp_degree << endl;
+//        cout << "putting " <<((sign*number) % p) << " in coefficients[" << temp_degree << "]" << endl;
+        coefficients[temp_degree] = ((sign*number) % p);
+//        cout << "reading sign... string is " << temp_string << endl;
+        sign = read_sign(temp_string);
+//        cout << "sign is " << sign << endl;
+    }
+//    cout << "degree = " <<degree << endl;
+//    cout << coefficients[2] << endl;
+}
+
+string ModularPolynomial::to_string(){
+    string o = "";
+    //first we deal with two extreme cases
+    if (degree == 0 && coefficients[0] == 0)
+        return "0";
+    if (degree == 0 && coefficients[0] == 1)
+        return "1";
+    for (int i = degree; i>=0; i--){
+        mpz_class number = coefficients[i];
+        if (number == 0)
+            continue;
+        if (i < degree - 1)
+            o += " + ";
+        if (number != 1)
+            o += number.get_str(10);
+        if (i >= 2)
+            o += ("x^" + mpz_class(i).get_str(10));
+        if (i == 1)
+            o += "x";
+    }
+    return o;
+
+}
+
 HCP::HCP()
 
 {

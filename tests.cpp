@@ -162,3 +162,19 @@ void EllipticCurveTest::test_point_multiplication(){
 
     CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,goal));
 }
+
+void PolynomialTest::setUp(){
+
+}
+
+void PolynomialTest::tearDown(){
+
+}
+void PolynomialTest::test_input_output(){
+    #define S_ARRAY_LENGTH 5
+    string s_array[S_ARRAY_LENGTH] = {"1", "x", "x^7", "2x^2 + 3","x^5 + 17x + 543"};
+    for (int i=0; i< S_ARRAY_LENGTH; i++){
+        ModularPolynomial p(s_array[i], 100000);
+        CPPUNIT_ASSERT(s_array[i] == p.to_string());
+    }    
+}

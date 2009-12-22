@@ -20,7 +20,6 @@ private:
     gmp_randstate_t state;
 };
 
-
 //returns 1 if n is a quadratic residue modulo a prime p, -1 if it is not, and 0 if p divides n
 int legendre_symbol(mpz_class n, mpz_class p);
 
