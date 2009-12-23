@@ -187,3 +187,10 @@ void PolynomialTest::test_addition_substraction(){
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x^2",100) == ModularPolynomial("0",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x",100) == ModularPolynomial("x^2 + 99x",100));
 }
+
+void PolynomialTest::test_multiplication(){
+    CPPUNIT_ASSERT(ModularPolynomial("x",100) * ModularPolynomial("x",100) == ModularPolynomial("x^2",100));
+    CPPUNIT_ASSERT(ModularPolynomial("1",100) * ModularPolynomial("x",100) == ModularPolynomial("x",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x",100) == ModularPolynomial("x^2 + x",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x + 1",100) == ModularPolynomial("x^2 + 2x + 1",100));
+}

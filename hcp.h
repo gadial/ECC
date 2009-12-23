@@ -24,6 +24,7 @@ public:
     ModularPolynomial(string, mpz_class);
     ModularPolynomial(const ModularPolynomial&);
     string to_string();
+    ModularPolynomial& operator=(const ModularPolynomial&);
     ModularPolynomial& operator+=(const ModularPolynomial&);
     ModularPolynomial& operator-=(const ModularPolynomial&);
     ModularPolynomial& operator*=(const ModularPolynomial&);
@@ -36,6 +37,7 @@ private:
 
 ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
+ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 
 class HCP{ //Hilbert class polynomials
 public:

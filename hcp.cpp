@@ -142,7 +142,26 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     degree = max_degree;
     return *this;
 }
+ModularPolynomial& ModularPolynomial::operator=(const ModularPolynomial& lhs){
+    degree = lhs.degree;
+    for (int i=0; i<= degree; i++)
+        coefficients[i] = lhs.coefficients[i];
+    return *this;
+}
 ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
+    ModularPolynomial temp("",modulus);
+    //naive multiplication - no optimizations yet
+    int max_degree = degree + lhs.degree;
+    temp.degree = max_degree;
+    for (int i = max_degree; i>=0; i--){
+        temp.coefficients[i] = 0;
+        for (int j=0; j<=i; j++)
+            if (i-j <= degree && j <= lhs.degree)
+                temp.coefficients[i] += coefficients[i-j]*lhs.coefficients[j];
+        if (temp.degree == i && temp.coefficients[i] == 0)
+            temp.degree--;
+    }
+    *this = temp;
     return *this;
 }
 
@@ -154,6 +173,12 @@ ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomia
 ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
     ModularPolynomial temp = rhs;
     temp -= lhs;
+    return temp;
+}
+
+ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
+    ModularPolynomial temp = rhs;
+    temp *= lhs;
     return temp;
 }
 
