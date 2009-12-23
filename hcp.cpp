@@ -61,7 +61,7 @@ static int read_sign(string& poly_string){
     poly_string.erase(0,pos+1); //might cause bug if pos == poly_string.length?
     return sign;
 }
-ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulos(p),degree(0){
+ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulus(p),degree(0){
     string temp_string = poly_string;
     int sign = 1;
 
@@ -106,6 +106,61 @@ string ModularPolynomial::to_string(){
     }
     return o;
 
+}
+
+ModularPolynomial::ModularPolynomial(const ModularPolynomial& lhs):modulus(lhs.modulus),degree(lhs.degree){
+    for (int i=degree; i>=0; i--){
+        coefficients[i] =  lhs.coefficients[i];
+    }
+}
+
+static inline int max(int a, int b){
+    return (a<b)?(b):(a);
+}
+ModularPolynomial& ModularPolynomial::operator+=(const ModularPolynomial& lhs){
+    int max_degree = max(degree, lhs.degree);
+    for (int i = max_degree; i>=0; i--){
+        coefficients[i] += lhs.coefficients[i];
+        coefficients[i] %= modulus;
+        if (i == max_degree && coefficients[i] == 0)
+            max_degree--;
+    }
+    return *this;
+}
+ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
+    int max_degree = max(degree, lhs.degree);
+    for (int i = max_degree; i>=0; i--){
+        coefficients[i] -= lhs.coefficients[i];
+        coefficients[i] %= modulus;
+        if (i == max_degree && coefficients[i] == 0)
+            max_degree--;
+    }
+
+    return *this;
+}
+ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
+    return *this;
+}
+
+ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
+    ModularPolynomial temp = rhs;
+    temp += lhs;
+    return temp;
+}
+ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
+    ModularPolynomial temp = rhs;
+    temp -= lhs;
+    return temp;
+}
+
+bool ModularPolynomial::operator==(const ModularPolynomial& lhs) const{
+    if (degree != lhs.degree)
+        return false;
+    for (int i=degree; i>=0; i--){
+        if (coefficients[i] != lhs.coefficients[i])
+            return false;
+    }
+    return true;    
 }
 
 HCP::HCP()

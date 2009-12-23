@@ -22,12 +22,20 @@ using std::ostream;
 class ModularPolynomial{
 public:
     ModularPolynomial(string, mpz_class);
+    ModularPolynomial(const ModularPolynomial&);
     string to_string();
+    ModularPolynomial& operator+=(const ModularPolynomial&);
+    ModularPolynomial& operator-=(const ModularPolynomial&);
+    ModularPolynomial& operator*=(const ModularPolynomial&);
+    bool operator==(const ModularPolynomial&) const;
 private:
-    map<int,mpz_class> coefficients;
-    mpz_class modulos;
+    mutable map<int,mpz_class> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
+    mpz_class modulus;
     int degree;
 };
+
+ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
+ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 
 class HCP{ //Hilbert class polynomials
 public:

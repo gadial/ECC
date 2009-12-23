@@ -64,12 +64,14 @@ public:
 class PolynomialTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PolynomialTest );
     CPPUNIT_TEST( test_input_output );
+    CPPUNIT_TEST( test_addition_substraction );
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
     void tearDown();
 
     void test_input_output();
+    void test_addition_substraction();
 };
 #endif	/* _TESTS_H */
 
