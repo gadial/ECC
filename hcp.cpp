@@ -34,12 +34,13 @@ static mpz_class read_number(string& poly_string){
     char buf[80];
     memset( buf, '\0', 80 );
 
-    while (pos < poly_string.length() && (poly_string[pos] >= '9' || poly_string[pos] <= '0')){
+    while (pos < poly_string.length() && (poly_string[pos] > '9' || poly_string[pos] < '0')){
         if (poly_string[pos] == 'x') //abort! abort! (since there is no number explicitly written
             return 1;
         pos++;
     }
         //reached the first digit
+//    cout << "first digit" << endl;
     start = pos;
     while (pos < poly_string.length() && poly_string[pos] <= '9' && poly_string[pos] >= '0')
         pos++;
@@ -95,7 +96,7 @@ string ModularPolynomial::to_string(){
         mpz_class number = coefficients[i];
         if (number == 0)
             continue;
-        if (i < degree - 1)
+        if (i < degree)
             o += " + ";
         if (number != 1)
             o += number.get_str(10);
@@ -122,9 +123,10 @@ ModularPolynomial& ModularPolynomial::operator+=(const ModularPolynomial& lhs){
     for (int i = max_degree; i>=0; i--){
         coefficients[i] += lhs.coefficients[i];
         coefficients[i] %= modulus;
-        if (i == max_degree && coefficients[i] == 0)
+        if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
+    degree = max_degree;
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
@@ -132,10 +134,12 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     for (int i = max_degree; i>=0; i--){
         coefficients[i] -= lhs.coefficients[i];
         coefficients[i] %= modulus;
-        if (i == max_degree && coefficients[i] == 0)
+        if (coefficients[i] < 0)
+            coefficients[i] += modulus ;
+        if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
-
+    degree = max_degree;
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
