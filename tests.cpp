@@ -194,3 +194,15 @@ void PolynomialTest::test_multiplication(){
     CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x",100) == ModularPolynomial("x^2 + x",100));
     CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x + 1",100) == ModularPolynomial("x^2 + 2x + 1",100));
 }
+
+void PolynomialTest::test_divisons(){
+//    cout << endl;
+//    cout << (ModularPolynomial("x^2 + x",100) % ModularPolynomial("x^2",100)).to_string() << endl;
+//    cout << ModularPolynomial("x",100).to_string() << endl;
+    CPPUNIT_ASSERT(ModularPolynomial("x^2 + x",100) % ModularPolynomial("x^2",100) == ModularPolynomial("x",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x^2 + x",100) % ModularPolynomial("x",100) == ModularPolynomial("0",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x^2 + 2x + 7",100) % ModularPolynomial("x + 1",100) == ModularPolynomial("6",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x^2 + 2x + 7",100) % ModularPolynomial("x + 1",100) == ModularPolynomial("6",100));
+    CPPUNIT_ASSERT(ModularPolynomial("x^3 + 4x + 10",113) % ModularPolynomial("3x + 5",113) == ModularPolynomial("28",113));
+    CPPUNIT_ASSERT(ModularPolynomial("x^7 + 34x^5 + 15x^4 + 95x^3 + 17",113) % ModularPolynomial("3x^6 + 5x^3",113) == ModularPolynomial("34x^5 + 51x^4 + 95x^3 + 17",113));
+}

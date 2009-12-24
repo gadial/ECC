@@ -85,7 +85,7 @@ ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulus(p)
 //    cout << coefficients[2] << endl;
 }
 
-string ModularPolynomial::to_string(){
+string ModularPolynomial::to_string() const{
     string o = "";
     //first we deal with two extreme cases
     if (degree == 0 && coefficients[0] == 0)
@@ -163,6 +163,28 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
     }
     *this = temp;
     return *this;
+}
+ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
+    ModularPolynomial R = *this;
+    mpz_class lhs_leading_coefficient_inverse;
+    mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
+//    cout << "R.degree = " << R.degree << ", lhs.degree = "<<lhs.degree << endl;
+//    cout << "got here with " << lhs.to_string() << endl;
+//    cout << "and this = " << this->to_string() << endl;
+    while (R.degree >= lhs.degree){
+        int R_old_degree = R.degree;
+        mpz_class R_leading_coefficient = R.coefficients[R.degree];
+        for (int i=R.degree; i>=R.degree - lhs.degree; i--){
+            R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
+            R.coefficients[i] %= R.modulus;
+            if (R.coefficients[i] < 0)
+                R.coefficients[i] += R.modulus;
+            if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
+                R.degree--;
+//            cout << "i = " << i << " coefficients[i] = " << R.coefficients[i] << endl;
+        }
+    }
+    return R;
 }
 
 ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
