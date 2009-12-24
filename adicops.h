@@ -30,7 +30,7 @@ public:
 	Poly poly_invert(Poly f, int p, int prec);
 	Poly get_inverse(Poly a, Poly mod, int prec);
 	Poly get_invsqrt(Poly a, Poly approx, Poly mod, int prec);
-	Poly get_sqrt(Poly a, Poly approx, Poly mod, int prec);
+	Poly get_sqrt(Poly a, Poly mod, int prec);
 
 
 	mpz_class get_points(mpz_class _c, mpz_class _mod, int d);

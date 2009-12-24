@@ -32,6 +32,30 @@ public:
 		//mod = 1;
 		//mod <<= _mod_2b.get_ui();
 	}
+	ECBinary(int _tri_d, int _tri_k, mpz_class _ECC_a, mpz_class _ECC_b) :
+			Ellipticcurve(0, _ECC_a, _ECC_b) {
+
+		tri_d = _tri_d;
+		tri_k = _tri_k;
+		mod |= (1 << tri_d);
+		mod |= (1 << tri_k);
+		mod |= 1;
+
+		sqrtx = GFE::get_sqrtx(tri_d, tri_k, mod);
+
+
+		sqrtx.print();
+		GFE xx = sqrtx * sqrtx;
+		xx.print();
+
+		GFE el(0b101011, mod);
+		el.print();
+		GFE elsq = el * el;
+		elsq.print();
+		GFE back = elsq.get_sqrt(sqrtx);
+		back.print();
+
+	}
 	ECBinary(const char* _mod_poly, int _mod_base, const char* _order,
 			int _order_base, const char* _ecc_a, int _ecc_a_base,
 			const char* _ecc_b, int _ecc_b_base, const char* _px, int _px_base,
@@ -122,6 +146,9 @@ private:
 	}
 
 	Coordinate toCoordinate(const LD& ld);
+
+	int tri_d, tri_k;
+	GFE sqrtx;
 };
 
 #define WORD 32

@@ -82,8 +82,33 @@ void adicops::do_s() {
 	az0.set_coeff(1, 1);
 	az0.print();
 
-	Poly invAA = get_invsqrt(AA, az0, TmM, 9);
-	invAA.print();
+
+	Poly newmod(7);
+	newmod.set_coeff(7, 1);
+	newmod.set_coeff(1, 1);
+	newmod.set_coeff(0, 1);
+	//newmod = get_teichmuller_modulus(newmod, 10);
+	newmod.print();
+
+	Poly bb(4);
+	bb.set_coeff(4, 8);
+	bb.set_coeff(0, 9);
+
+
+	cout << " -------------------------" << endl;
+
+	//bb = poly_remainder(bb, newmod, 10);
+	//bb.print();
+	Poly invbb = get_sqrt(bb, newmod, 5);
+	invbb.print();
+	invbb = invbb * invbb;
+	invbb = poly_remainder(invbb, newmod, 5);
+	invbb.print();
+	//invbb = get_inverse(invbb, newmod, 5);
+	//invbb = poly_remainder(invbb, newmod, 5);
+	invbb.print();
+
+	get_points(0b10001, 0b10000011, 7);
 	/*
 	Poly M0 = M.PXpPmX();
 	M0.print();
@@ -291,9 +316,13 @@ Poly adicops::get_invsqrt(Poly a, Poly approx, Poly mod, int prec) {
 	}
 }
 
-Poly adicops::get_sqrt(Poly a, Poly approx, Poly mod, int prec) {
-	Poly invsqrt = get_invsqrt(a, approx, mod, prec);
-	invsqrt = invsqrt * invsqrt;
+Poly adicops::get_sqrt(Poly a, Poly mod, int prec) {
+	GFE app = GFE(a.to_gfe_el(), mod.to_gfe_el());
+	app = app.get_sqrt(GFE::get_sqrtx(7, 1, mod.to_gfe_el()));
+
+	Poly invsqrt = get_invsqrt(a, Poly(app.element), mod, prec);
+	invsqrt = invsqrt * a;
+	//invsqrt = get_inverse(invsqrt, mod, prec);
 	return poly_remainder(invsqrt, mod, prec);
 }
 
@@ -313,14 +342,41 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 	for (int i = 5; i <= N; ++i) {
 		Poly olda = a;
 		Poly oldb = b;
-		a = olda + oldb;
+		a = a + b;
 		a /= 2;
-		a = poly_remainder(a, mod, i);
-
 		Poly ab = olda * oldb;
 		ab = poly_remainder(ab, mod, i);
-		//ab = get_sqrt()
+		b = get_sqrt(ab, mod, i);
+		Poly re = b * b;
+		re = poly_remainder(re, mod, i);
+		cout << "ab: "; ab.print();
+		cout << "re: "; re.print();
+		//cout << "a: "; a.print();
+		//cout << "b: "; b.print();
 	}
+
+	Poly a0 = a;
+
+	for (int i = 0; i <= d - 1; ++i) {
+		Poly olda = a;
+		Poly oldb = b;
+		a = a + b;
+		a /= 2;
+		Poly ab = olda * oldb;
+		ab = poly_remainder(ab, mod, N);
+		b = get_sqrt(ab, mod, N);
+		Poly re = b * b;
+		re = poly_remainder(re, mod, N);
+		cout << "ab: "; ab.print();
+		cout << "re: "; re.print();
+		//cout << "a: "; a.print();
+		//cout << "b: "; b.print();
+	}
+
+	a0 %= (1 << (N - 1));
+	a %= (1 << (N - 1));
+	a0.print();
+	a.print();
 }
 
 adicops::~adicops() {
