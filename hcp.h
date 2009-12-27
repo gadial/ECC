@@ -31,6 +31,8 @@ public:
 
     ModularPolynomial operator%(const ModularPolynomial& lhs);
     bool operator==(const ModularPolynomial&) const;
+    ModularPolynomial& normalize();
+    bool is_zero() const;
 private:
     mutable map<int,mpz_class> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
     mpz_class modulus;
@@ -40,6 +42,10 @@ private:
 ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
+ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
+
+
+ostream& operator<<(ostream& o, const ModularPolynomial& lhs);
 
 class HCP{ //Hilbert class polynomials
 public:

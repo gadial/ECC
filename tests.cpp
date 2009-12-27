@@ -66,6 +66,7 @@ void PrimesTest::test_is_odd()
 }
 
 void PrimesTest::test_generate_prime_for_discriminant(){
+    //TODO: this test OFTEN FAILS. check why.
     mpz_class D = gen.rand(100);
     mpz_class s,t;
     mpz_class p = gen.generate_prime_for_discriminant(10,D,t,s);
@@ -205,4 +206,7 @@ void PolynomialTest::test_divisons(){
     CPPUNIT_ASSERT(ModularPolynomial("x^2 + 2x + 7",100) % ModularPolynomial("x + 1",100) == ModularPolynomial("6",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^3 + 4x + 10",113) % ModularPolynomial("3x + 5",113) == ModularPolynomial("28",113));
     CPPUNIT_ASSERT(ModularPolynomial("x^7 + 34x^5 + 15x^4 + 95x^3 + 17",113) % ModularPolynomial("3x^6 + 5x^3",113) == ModularPolynomial("34x^5 + 51x^4 + 95x^3 + 17",113));
+
+    CPPUNIT_ASSERT(gcd(ModularPolynomial("x",113),ModularPolynomial("x",113)) == ModularPolynomial("x",113));
+    CPPUNIT_ASSERT(gcd(ModularPolynomial("x^5 + 3x^2 + x",113),ModularPolynomial("3x^4 + 2x^3 + 17",113)) == ModularPolynomial("1",113));
 }

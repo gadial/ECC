@@ -164,6 +164,15 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
     *this = temp;
     return *this;
 }
+
+ModularPolynomial& ModularPolynomial::normalize(){
+    mpz_class leading_coefficient_inverse;
+    mpz_invert(leading_coefficient_inverse.get_mpz_t(), coefficients[degree].get_mpz_t(),modulus.get_mpz_t());
+    for (int i=0; i<=degree; i++)
+        coefficients[i] = ((coefficients[i] * leading_coefficient_inverse) % modulus);
+    return *this;
+}
+
 ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
     ModularPolynomial R = *this;
     mpz_class lhs_leading_coefficient_inverse;
@@ -171,7 +180,7 @@ ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
 //    cout << "R.degree = " << R.degree << ", lhs.degree = "<<lhs.degree << endl;
 //    cout << "got here with " << lhs.to_string() << endl;
 //    cout << "and this = " << this->to_string() << endl;
-    while (R.degree >= lhs.degree){
+    while (R.degree >= lhs.degree && !R.is_zero()){
         int R_old_degree = R.degree;
         mpz_class R_leading_coefficient = R.coefficients[R.degree];
         for (int i=R.degree; i>=R.degree - lhs.degree; i--){
@@ -187,6 +196,9 @@ ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
     return R;
 }
 
+bool ModularPolynomial::is_zero() const{
+    return (degree == 0 && coefficients[0] == 0);
+}
 ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
     ModularPolynomial temp = rhs;
     temp += lhs;
@@ -204,6 +216,18 @@ ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomia
     return temp;
 }
 
+ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
+    ModularPolynomial A = rhs;
+    ModularPolynomial B = lhs;
+    ModularPolynomial R = lhs;
+    while (!B.is_zero()){
+        R = A % B;
+        A = B;
+        B = R;
+    }
+    return A.normalize();
+}
+
 bool ModularPolynomial::operator==(const ModularPolynomial& lhs) const{
     if (degree != lhs.degree)
         return false;
@@ -213,6 +237,12 @@ bool ModularPolynomial::operator==(const ModularPolynomial& lhs) const{
     }
     return true;    
 }
+
+ostream& operator<<(ostream& o, const ModularPolynomial& lhs){
+    o << lhs.to_string();
+    return o;
+}
+
 
 HCP::HCP()
 
