@@ -22,6 +22,33 @@ public:
 
 	GFE(mpz_class _element, const mpz_class& _mod): mod(_mod), element(_element) {}
 
+	static GFE get_sqrtx(int d, int k, mpz_class mod) {
+		GFE x(0b10, mod);
+		GFE sqx_k = x;
+		if (k % 2 == 1) {
+			int i = 1;
+			for (; i < (k + 1) / 2; ++i) {
+				sqx_k = sqx_k * x;
+			}
+			GFE sqx_d = sqx_k;
+			for (; i < (d + 1) / 2; ++i) {
+				sqx_d = sqx_d * x;
+			}
+
+			return (sqx_k + sqx_d);
+		} else {
+			int i = 1;
+			for (; i < k / 2; ++i) {
+				sqx_k = sqx_k * x;
+			}
+			GFE sqx_d = sqx_k;
+			for (; i < (d - 1) / 2; ++i) {
+				sqx_d = sqx_d * x;
+			}
+
+			return ((!sqx_d) * (sqx_k + GFE(1, mod)));
+		}
+	}
 	/*
 	 * Addition is just XOR
 	 */
@@ -91,6 +118,50 @@ public:
 			g1 ^= (g2 << j);
 		}
 		return GFE(g1, mod);
+	}
+
+	GFE get_sqrt(GFE sqrtx) {
+		//GFE x(0b10, mod);
+		/*
+		GFE even = GFE(element & 0b1, mod);
+		GFE odd = GFE((element & 0b10) >> 1, mod);
+		*/
+		mpz_class even = 0;
+		mpz_class odd = 0;
+		for (int i = 0; i <= el_deg(); i += 2) {
+
+		}
+		for (int i = 0; i <= el_deg() / 2; ++i) {
+			if ((element >> (2 * i)) % 2 == 1) {
+				even |= (1 << i);
+			}
+			if ((element >> ((2 * i) + 1)) % 2 == 1) {
+				odd |= (1 << i);
+			}
+		}
+
+		return GFE(even, mod) + (sqrtx * GFE(odd, mod));
+	}
+
+	/*
+	 * Solves T^2 + T = c, to T
+	 */
+	GFE solve_quad_eq(GFE c) {
+
+		// TODO: only for odd degree polynomials yet.
+		int d = c.el_deg();
+		GFE csq = c * c;
+		GFE res = csq;
+		// sum c^2^(2i+1), i=0..(d-3)/2
+		// c^2^1+c^2^3+c^2^5+...=c^2+c^8+c^32+c^128
+		// c^j=c^(j-1)^4=((c^(j-1))^2)^2
+		for (int i = 1; i <= (d - 3) / 2; ++i) {
+			// squaring two times, then add...
+			csq = csq * csq;
+			csq = csq * csq;
+			res = res + csq;
+		}
+		return res;
 	}
 
 	void print() {
