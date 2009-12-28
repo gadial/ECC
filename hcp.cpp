@@ -98,7 +98,7 @@ string ModularPolynomial::to_string() const{
             continue;
         if (i < degree)
             o += " + ";
-        if (number != 1)
+        if (number != 1 || i == 0)
             o += number.get_str(10);
         if (i >= 2)
             o += ("x^" + mpz_class(i).get_str(10));
@@ -144,12 +144,14 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
 }
 ModularPolynomial& ModularPolynomial::operator=(const ModularPolynomial& lhs){
     degree = lhs.degree;
+    modulus = lhs.modulus;
     for (int i=0; i<= degree; i++)
         coefficients[i] = lhs.coefficients[i];
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
-    ModularPolynomial temp("",modulus);
+    ModularPolynomial temp;
+    temp.modulus = modulus;
     //naive multiplication - no optimizations yet
     int max_degree = degree + lhs.degree;
     temp.degree = max_degree;
@@ -165,6 +167,9 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
     return *this;
 }
 
+ModularPolynomial& ModularPolynomial::operator/=(const ModularPolynomial& lhs){
+
+}
 ModularPolynomial& ModularPolynomial::normalize(){
     mpz_class leading_coefficient_inverse;
     mpz_invert(leading_coefficient_inverse.get_mpz_t(), coefficients[degree].get_mpz_t(),modulus.get_mpz_t());
@@ -172,14 +177,12 @@ ModularPolynomial& ModularPolynomial::normalize(){
         coefficients[i] = ((coefficients[i] * leading_coefficient_inverse) % modulus);
     return *this;
 }
-
-ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
-    ModularPolynomial R = *this;
+void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,ModularPolynomial& R){
+//    cout << "dividing " << *this << " by " << lhs << endl;
+    R = *this;
+    Q = ModularPolynomial("0",modulus);
     mpz_class lhs_leading_coefficient_inverse;
     mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
-//    cout << "R.degree = " << R.degree << ", lhs.degree = "<<lhs.degree << endl;
-//    cout << "got here with " << lhs.to_string() << endl;
-//    cout << "and this = " << this->to_string() << endl;
     while (R.degree >= lhs.degree && !R.is_zero()){
         int R_old_degree = R.degree;
         mpz_class R_leading_coefficient = R.coefficients[R.degree];
@@ -190,21 +193,51 @@ ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
                 R.coefficients[i] += R.modulus;
             if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
                 R.degree--;
-//            cout << "i = " << i << " coefficients[i] = " << R.coefficients[i] << endl;
         }
+        Q.coefficients[R.degree - lhs.degree] += R_leading_coefficient*lhs_leading_coefficient_inverse;
+        Q.coefficients[R.degree - lhs.degree] %= Q.modulus;
+        if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
+            Q.degree = R.degree - lhs.degree;
     }
+//    cout << "R = " << R << " , Q = " << Q << endl;
+}
+
+ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
+    ModularPolynomial R,Q;
+    divide(lhs, Q, R);
+//    mpz_class lhs_leading_coefficient_inverse;
+//    mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
+////    cout << "R.degree = " << R.degree << ", lhs.degree = "<<lhs.degree << endl;
+////    cout << "got here with " << lhs.to_string() << endl;
+////    cout << "and this = " << this->to_string() << endl;
+//    while (R.degree >= lhs.degree && !R.is_zero()){
+//        int R_old_degree = R.degree;
+//        mpz_class R_leading_coefficient = R.coefficients[R.degree];
+//        for (int i=R.degree; i>=R.degree - lhs.degree; i--){
+//            R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
+//            R.coefficients[i] %= R.modulus;
+//            if (R.coefficients[i] < 0)
+//                R.coefficients[i] += R.modulus;
+//            if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
+//                R.degree--;
+////            cout << "i = " << i << " coefficients[i] = " << R.coefficients[i] << endl;
+//        }
+//    }
+//    cout << "about to return R = " << R << endl;
     return R;
 }
 
 ModularPolynomial ModularPolynomial::modular_exponent(mpz_class exp, const ModularPolynomial& mod) const{
     ModularPolynomial result("1",modulus);
 //    cout << "result = " << result << endl;
-    ModularPolynomial y = *this;    
+    ModularPolynomial y = *this;
     mpz_class n = exp;
     while (n > 0){
         if (n % 2 == 1)
             result = ((result * y) % mod);
 //        cout << "prev y = " << y << " degree = " << y.degree << endl;
+//        cout << "y * y = " << y * y << endl;
+//        cout << "mod = " << mod << endl;
         y = ((y * y) % mod);
 //        cout << "next y = " << y << " degree = " << y.degree << endl;
         n /= 2;
@@ -261,10 +294,31 @@ ostream& operator<<(ostream& o, const ModularPolynomial& lhs){
     return o;
 }
 
-vector<mpz_class> ModularPolynomial::find_roots(){
-//pg. 37 in Cohen's book
-//    ModularPolynomial A = gcd(*this, ModularPolynomial("x^"))
+mpz_class ModularPolynomial::operator()(mpz_class a) const{
+    mpz_class temp_a = 1;
+    mpz_class result = 0;
+    for (int i = 0; i<=degree; i++){
+        result = (result + temp_a * coefficients[i]) % modulus;
+        temp_a = (temp_a * a) % modulus;
+    }
+    return result;
+}
 
+vector<mpz_class> ModularPolynomial::find_roots(){
+    //pg. 37 in Cohen's book
+    //first stage: isolating roots in F_p
+    //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
+    //and then compute gcd(d-b,c)
+    vector<mpz_class> results;
+    mpz_class p = modulus;
+    ModularPolynomial b("x", p);
+    ModularPolynomial d = b.modular_exponent(modulus,*this);
+    ModularPolynomial A = gcd(*this, d - b);
+
+    if (A(0) == 0){
+        results.push_back(0);
+    }
+    //TODO: finish
 }
 
 HCP::HCP()

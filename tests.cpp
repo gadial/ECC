@@ -195,7 +195,6 @@ void PolynomialTest::test_multiplication(){
     CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x",100) == ModularPolynomial("x^2 + x",100));
     CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x + 1",100) == ModularPolynomial("x^2 + 2x + 1",100));
     CPPUNIT_ASSERT(ModularPolynomial("0",113) * ModularPolynomial("0",113) == ModularPolynomial("0",113));
-
     CPPUNIT_ASSERT((ModularPolynomial("x",113).modular_exponent(4,ModularPolynomial("x^2",113))) == ModularPolynomial("0",113));
     CPPUNIT_ASSERT((ModularPolynomial("x + 1",113).modular_exponent(2,ModularPolynomial("x^2",113))) == ModularPolynomial("2x + 1",113));
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(8,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("18x^2 + 7",113));
@@ -221,4 +220,12 @@ void PolynomialTest::test_divisons(){
 
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x",113),ModularPolynomial("x",113)) == ModularPolynomial("x",113));
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x^5 + 3x^2 + x",113),ModularPolynomial("3x^4 + 2x^3 + 17",113)) == ModularPolynomial("1",113));
+}
+
+void PolynomialTest::test_evaluations(){
+    CPPUNIT_ASSERT(ModularPolynomial("0",113)(4) == 0);
+    CPPUNIT_ASSERT(ModularPolynomial("x",113)(4) == 4);
+    CPPUNIT_ASSERT(ModularPolynomial("x^2",113)(4) == 16);
+    CPPUNIT_ASSERT(ModularPolynomial("x^8",113)(4) == 109);
+    CPPUNIT_ASSERT(ModularPolynomial("x^8 + 7x^3 + 53",113)(4) == 45);
 }
