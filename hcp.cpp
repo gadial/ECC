@@ -168,8 +168,12 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
 }
 
 ModularPolynomial& ModularPolynomial::operator/=(const ModularPolynomial& lhs){
-
+    ModularPolynomial R,Q;
+    divide(lhs, Q, R);
+    *this = Q;
+    return *this;
 }
+
 ModularPolynomial& ModularPolynomial::normalize(){
     mpz_class leading_coefficient_inverse;
     mpz_invert(leading_coefficient_inverse.get_mpz_t(), coefficients[degree].get_mpz_t(),modulus.get_mpz_t());
@@ -186,6 +190,12 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
     while (R.degree >= lhs.degree && !R.is_zero()){
         int R_old_degree = R.degree;
         mpz_class R_leading_coefficient = R.coefficients[R.degree];
+
+        Q.coefficients[R.degree - lhs.degree] += R_leading_coefficient*lhs_leading_coefficient_inverse;
+        Q.coefficients[R.degree - lhs.degree] %= Q.modulus;
+        if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
+            Q.degree = R.degree - lhs.degree;
+
         for (int i=R.degree; i>=R.degree - lhs.degree; i--){
             R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
             R.coefficients[i] %= R.modulus;
@@ -194,10 +204,6 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
             if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
                 R.degree--;
         }
-        Q.coefficients[R.degree - lhs.degree] += R_leading_coefficient*lhs_leading_coefficient_inverse;
-        Q.coefficients[R.degree - lhs.degree] %= Q.modulus;
-        if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
-            Q.degree = R.degree - lhs.degree;
     }
 //    cout << "R = " << R << " , Q = " << Q << endl;
 }
@@ -205,25 +211,6 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
 ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
     ModularPolynomial R,Q;
     divide(lhs, Q, R);
-//    mpz_class lhs_leading_coefficient_inverse;
-//    mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
-////    cout << "R.degree = " << R.degree << ", lhs.degree = "<<lhs.degree << endl;
-////    cout << "got here with " << lhs.to_string() << endl;
-////    cout << "and this = " << this->to_string() << endl;
-//    while (R.degree >= lhs.degree && !R.is_zero()){
-//        int R_old_degree = R.degree;
-//        mpz_class R_leading_coefficient = R.coefficients[R.degree];
-//        for (int i=R.degree; i>=R.degree - lhs.degree; i--){
-//            R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
-//            R.coefficients[i] %= R.modulus;
-//            if (R.coefficients[i] < 0)
-//                R.coefficients[i] += R.modulus;
-//            if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
-//                R.degree--;
-////            cout << "i = " << i << " coefficients[i] = " << R.coefficients[i] << endl;
-//        }
-//    }
-//    cout << "about to return R = " << R << endl;
     return R;
 }
 
@@ -264,6 +251,12 @@ ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomia
 ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
     ModularPolynomial temp = rhs;
     temp *= lhs;
+    return temp;
+}
+
+ModularPolynomial operator/(const ModularPolynomial& rhs, const ModularPolynomial& lhs){
+    ModularPolynomial temp = rhs;
+    temp /= lhs;
     return temp;
 }
 

@@ -50,6 +50,7 @@ private:
 ModularPolynomial operator+(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial operator-(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial operator*(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
+ModularPolynomial operator/(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs);
 
 
