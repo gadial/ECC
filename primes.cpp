@@ -185,3 +185,4 @@ bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allow
         return false;
     return mpz_probab_prime_p(p.get_mpz_t(), MILLER_RABIN_REPEATS);
 }
+

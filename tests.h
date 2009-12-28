@@ -12,6 +12,7 @@
 
 #include "primes.h"
 #include "ecprime.h"
+#include "hcp.h"
 
 class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PrimesTest );
@@ -60,5 +61,23 @@ public:
 
 };
 
+class PolynomialTest : public CppUnit::TestFixture{
+    CPPUNIT_TEST_SUITE( PolynomialTest );
+    CPPUNIT_TEST( test_input_output );
+    CPPUNIT_TEST( test_addition_substraction );
+    CPPUNIT_TEST( test_multiplication );
+    CPPUNIT_TEST( test_divisons );
+    CPPUNIT_TEST( test_evaluations );
+    CPPUNIT_TEST_SUITE_END();
+public:
+    void setUp();
+    void tearDown();
+
+    void test_input_output();
+    void test_addition_substraction();
+    void test_multiplication();
+    void test_divisons();
+    void test_evaluations();
+};
 #endif	/* _TESTS_H */
 
