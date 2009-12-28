@@ -14,6 +14,7 @@ adicops::adicops() {
 
 void adicops::do_s() {
 
+	/*
 	Poly M(8);
 	M.set_coeff(0, 1);
 	M.set_coeff(2, 1);
@@ -82,7 +83,8 @@ void adicops::do_s() {
 	az0.set_coeff(1, 1);
 	az0.print();
 
-
+	*/
+	/*
 	Poly newmod(7);
 	newmod.set_coeff(7, 1);
 	newmod.set_coeff(1, 1);
@@ -108,6 +110,7 @@ void adicops::do_s() {
 	//invbb = poly_remainder(invbb, newmod, 5);
 	invbb.print();
 
+	*/
 	get_points(0b10001, 0b10000011, 7);
 	/*
 	Poly M0 = M.PXpPmX();
@@ -317,12 +320,36 @@ Poly adicops::get_invsqrt(Poly a, Poly approx, Poly mod, int prec) {
 }
 
 Poly adicops::get_sqrt(Poly a, Poly mod, int prec) {
-	GFE app = GFE(a.to_gfe_el(), mod.to_gfe_el());
-	app = app.get_sqrt(GFE::get_sqrtx(7, 1, mod.to_gfe_el()));
 
-	Poly invsqrt = get_invsqrt(a, Poly(app.element), mod, prec);
+	// binary inverse sqrt...
+	GFE z = GFE(a.to_gfe_el(), mod.to_gfe_el());
+	// TODO: ...
+	z = z.get_sqrt(GFE::get_sqrtx(7, 1, mod.to_gfe_el()));
+	z = !z;
+
+	// Computing b=(1/a + z^2) / 4
+	Poly inva = get_inverse(a, mod, prec);
+	Poly polyz = Poly(z.element);
+	Poly b = inva - (polyz * polyz);
+	b = poly_remainder(b, mod, prec);
+	b /= 4;
+
+	// solving equation Delta^2+z*Delta=b
+	GFE bgfe = GFE(b.to_gfe_el(), mod.to_gfe_el());
+	GFE bigdelta = GFE::solve_quad_eq(z, bgfe);
+
+
+	Poly polybigdelta = Poly(bigdelta.element);
+	polybigdelta *= 2;
+
+	// approx root to prec 2 is z+2*Delta
+	polyz = polyz + polybigdelta;
+
+	// comp. inverse square root with initial approximation polyz
+	Poly invsqrt = get_invsqrt(a, polyz, mod, prec);
+
+	// revover sqrt: 1/a^{-1} * a = sqrt(a)
 	invsqrt = invsqrt * a;
-	//invsqrt = get_inverse(invsqrt, mod, prec);
 	return poly_remainder(invsqrt, mod, prec);
 }
 
