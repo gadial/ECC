@@ -28,11 +28,13 @@ public:
     ModularPolynomial& operator+=(const ModularPolynomial&);
     ModularPolynomial& operator-=(const ModularPolynomial&);
     ModularPolynomial& operator*=(const ModularPolynomial&);
+    ModularPolynomial modular_exponent(mpz_class exp, const ModularPolynomial& mod) const;
 
     ModularPolynomial operator%(const ModularPolynomial& lhs);
     bool operator==(const ModularPolynomial&) const;
     ModularPolynomial& normalize();
     bool is_zero() const;
+    vector<mpz_class> find_roots();
 private:
     mutable map<int,mpz_class> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
     mpz_class modulus;

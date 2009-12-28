@@ -158,7 +158,7 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
         for (int j=0; j<=i; j++)
             if (i-j <= degree && j <= lhs.degree)
                 temp.coefficients[i] += coefficients[i-j]*lhs.coefficients[j];
-        if (temp.degree == i && temp.coefficients[i] == 0)
+        if (temp.degree == i && temp.coefficients[i] == 0 && temp.degree > 0)
             temp.degree--;
     }
     *this = temp;
@@ -194,6 +194,24 @@ ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
         }
     }
     return R;
+}
+
+ModularPolynomial ModularPolynomial::modular_exponent(mpz_class exp, const ModularPolynomial& mod) const{
+    ModularPolynomial result("1",modulus);
+//    cout << "result = " << result << endl;
+    ModularPolynomial y = *this;    
+    mpz_class n = exp;
+    while (n > 0){
+        if (n % 2 == 1)
+            result = ((result * y) % mod);
+//        cout << "prev y = " << y << " degree = " << y.degree << endl;
+        y = ((y * y) % mod);
+//        cout << "next y = " << y << " degree = " << y.degree << endl;
+        n /= 2;
+//        cout << "result = " << result << endl;
+    }
+//    cout << "result = " << result << endl;
+    return result;
 }
 
 bool ModularPolynomial::is_zero() const{
@@ -243,6 +261,11 @@ ostream& operator<<(ostream& o, const ModularPolynomial& lhs){
     return o;
 }
 
+vector<mpz_class> ModularPolynomial::find_roots(){
+//pg. 37 in Cohen's book
+//    ModularPolynomial A = gcd(*this, ModularPolynomial("x^"))
+
+}
 
 HCP::HCP()
 
