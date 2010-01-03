@@ -10,8 +10,10 @@
 //We rely on the gmp library in order to allow arbitarly-large numbers
 #ifndef _ZP_INT_H
 #define	_ZP_INT_H
-
+#include <iostream>
 #include <gmpxx.h>
+
+using std::ostream;
 
 class zp_int{
 public:
@@ -23,8 +25,10 @@ public:
     zp_int& operator-=(const zp_int&);
     zp_int& operator*=(const zp_int&);
     zp_int& operator/=(const zp_int&);
+    zp_int& operator^=(const mpz_class&); //miuse of ^ - means exponent here. WARNING: ^ has low precedence, always use parentheis!
     zp_int& invert();
     zp_int inverse() const;
+    ostream& print(ostream&) const;
 private:
     mpz_class val;
     mpz_class p; // p=0 means we treat it as a normal integer
@@ -36,8 +40,11 @@ zp_int operator+(const zp_int&, const zp_int&);
 zp_int operator-(const zp_int&, const zp_int&);
 zp_int operator*(const zp_int&, const zp_int&);
 zp_int operator/(const zp_int&, const zp_int&);
+zp_int operator^(const zp_int&, const mpz_class&);
 bool operator==(const zp_int&, const zp_int&);
 bool operator!=(const zp_int&, const zp_int&);
+
+ostream& operator<<(ostream&, const zp_int&);
 
 
 

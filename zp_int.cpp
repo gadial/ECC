@@ -49,6 +49,16 @@ zp_int& zp_int::operator=(const zp_int& rhs){
     p = rhs.p;
 }
 
+zp_int& zp_int::operator^=(const mpz_class& exp){
+    mpz_powm(val.get_mpz_t(),val.get_mpz_t(),exp.get_mpz_t(),p.get_mpz_t());
+    return *this;
+}
+
+ostream& zp_int::print(ostream& o) const{
+    o << val;
+    return o;
+}
+
 zp_int operator+(const zp_int& lhs, const zp_int& rhs){
     zp_int temp = lhs;
     return (temp += rhs);
@@ -66,10 +76,19 @@ zp_int operator/(const zp_int& lhs, const zp_int& rhs){
     return (temp /= rhs);
 }
 
+zp_int operator^(const zp_int& lhs, const mpz_class& rhs){
+    zp_int temp = lhs;
+    return (temp ^= rhs);
+}
+
 bool operator==(const zp_int& lhs, const zp_int& rhs){
     return (lhs.is_equal(rhs));
 }
 
 bool operator!=(const zp_int& lhs, const zp_int& rhs){
     return (!lhs.is_equal(rhs));
+}
+
+ostream& operator<<(ostream& o, const zp_int& rhs){
+    return rhs.print(o);
 }

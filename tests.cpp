@@ -245,6 +245,7 @@ void ZpIntTest::tearDown(){
     
 }
 void ZpIntTest::test_arithmetic(){
+    cout << endl;
     for (int i=0; i<NUMBER_ARRAY_LENGTH; i++){
         zp_int a = numbers[i];
         zp_int zero = zp_int(0,0);
@@ -258,5 +259,8 @@ void ZpIntTest::test_arithmetic(){
             CPPUNIT_ASSERT(1 == (a / a));
             CPPUNIT_ASSERT(2 == (a*2 / a));
         }
+        CPPUNIT_ASSERT(a == (a^1));
+        CPPUNIT_ASSERT(1 == (a^0));
+        CPPUNIT_ASSERT(a*a*a == (a^3));
     }
 }
