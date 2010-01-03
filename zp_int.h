@@ -17,7 +17,7 @@ class zp_int{
 public:
     zp_int(const mpz_class& _val = 0, const mpz_class& _p = 0):val(_val),p(_p){};
     zp_int(int _val):val(_val),p(0){};
-    bool operator==(const zp_int&) const;
+    bool is_equal(const zp_int&) const;
     zp_int& operator=(const zp_int&);
     zp_int& operator+=(const zp_int&);
     zp_int& operator-=(const zp_int&);
@@ -36,6 +36,8 @@ zp_int operator+(const zp_int&, const zp_int&);
 zp_int operator-(const zp_int&, const zp_int&);
 zp_int operator*(const zp_int&, const zp_int&);
 zp_int operator/(const zp_int&, const zp_int&);
+bool operator==(const zp_int&, const zp_int&);
+bool operator!=(const zp_int&, const zp_int&);
 
 
 

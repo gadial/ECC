@@ -251,6 +251,12 @@ void ZpIntTest::test_arithmetic(){
         CPPUNIT_ASSERT(a == (a + a ) - a);
         CPPUNIT_ASSERT(zero == (a - a ));
         CPPUNIT_ASSERT(a*2 == (a + a ));
-//        CPPUNIT_ASSERT(5*a == (a + a + a + 2*a ));
+        CPPUNIT_ASSERT(a*7 == (a*3 + a + a + a*2));
+        CPPUNIT_ASSERT(a*13 == (a*54 - a*41));
+
+        if (a != 0){
+            CPPUNIT_ASSERT(1 == (a / a));
+            CPPUNIT_ASSERT(2 == (a*2 / a));
+        }
     }
 }

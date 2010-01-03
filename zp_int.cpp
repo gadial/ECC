@@ -40,7 +40,7 @@ zp_int& zp_int::normalize(){
         val += p;
     return *this;
 }
-bool zp_int::operator==(const zp_int& rhs) const{
+bool zp_int::is_equal(const zp_int& rhs) const{
     return (val == rhs.val);
 }
 
@@ -64,4 +64,12 @@ zp_int operator*(const zp_int& lhs, const zp_int& rhs){
 zp_int operator/(const zp_int& lhs, const zp_int& rhs){
     zp_int temp = lhs;
     return (temp /= rhs);
+}
+
+bool operator==(const zp_int& lhs, const zp_int& rhs){
+    return (lhs.is_equal(rhs));
+}
+
+bool operator!=(const zp_int& lhs, const zp_int& rhs){
+    return (!lhs.is_equal(rhs));
 }
