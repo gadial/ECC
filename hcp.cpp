@@ -1,4 +1,5 @@
 #include "hcp.h"
+#include "primes.h"
 
 using std::cout;
 using std::endl;
@@ -297,21 +298,52 @@ mpz_class ModularPolynomial::operator()(mpz_class a) const{
     return result;
 }
 
-vector<mpz_class> ModularPolynomial::find_roots(){
+NumberArray ModularPolynomial::find_roots(){
     //pg. 37 in Cohen's book
     //first stage: isolating roots in F_p
     //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
     //and then compute gcd(d-b,c)
-    vector<mpz_class> results;
+    NumberArray results;
+    if (degree == 0)
+        return results; //degree 0 polynomial is not considered to have any roots, including the zero polynomial
     mpz_class p = modulus;
+    mpz_class temp_result;
     ModularPolynomial b("x", p);
     ModularPolynomial d = b.modular_exponent(modulus,*this);
     ModularPolynomial A = gcd(*this, d - b);
 
     if (A(0) == 0){
         results.push_back(0);
+        A /= ModularPolynomial("x",modulus);
+    }
+
+    //now check for small degree
+    if (A.degree == 0)
+        return results;
+    if (A.degree == 1){
+        temp_result = (-A.coefficients[0])/(A.coefficients[1]);
+        //TODO: the division here is not correct
+        results.push_back(temp_result);
+        return results;
+    }
+    if (A.degree == 2){
+        mpz_class d = A.coefficients[1]*A.coefficients[1] - 4*A.coefficients[0]*A.coefficients[2];
+        mpz_class e = modular_square_root(d,p); //d is guaranteed to be a QR because of us gcding with x^p-x earlier
+        results.push_back((-A.coefficients[1] + e)/(2*A.coefficients[2]));
+        results.push_back((-A.coefficients[1] - e)/(2*A.coefficients[2]));
+        return results;
     }
     //TODO: finish
+}
+
+
+ostream& operator<<(ostream& o, const NumberArray lhs){
+    NumberArray::const_iterator it;
+    cout << "hello world!\n";
+    o << "[";
+    for (it = lhs.begin(); it<lhs.end(); it++)
+        o << *it << ", ";
+    o << "]";
 }
 
 HCP::HCP()

@@ -19,6 +19,8 @@ using std::string;
 using std::vector;
 using std::ostream;
 
+typedef vector<mpz_class> NumberArray;
+
 class ModularPolynomial{
 public:
     ModularPolynomial():modulus(0),degree(-1){};
@@ -37,7 +39,7 @@ public:
     bool operator==(const ModularPolynomial&) const;
     ModularPolynomial& normalize();
     bool is_zero() const;
-    vector<mpz_class> find_roots();
+    NumberArray find_roots();
     int get_degree(){return degree;}
 private:
     mutable map<int,mpz_class> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
@@ -55,6 +57,7 @@ ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs
 
 
 ostream& operator<<(ostream& o, const ModularPolynomial& lhs);
+ostream& operator<<(ostream& o, const NumberArray lhs);
 
 class HCP{ //Hilbert class polynomials
 public:

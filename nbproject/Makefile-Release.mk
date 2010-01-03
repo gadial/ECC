@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/coordinates.o \
 	${OBJECTDIR}/curvesnisttest.o \
+	${OBJECTDIR}/zp_int.o \
 	${OBJECTDIR}/primes.o
 
 # C Compiler Flags
@@ -104,6 +105,11 @@ ${OBJECTDIR}/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk curvesnisttest.
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/curvesnisttest.o curvesnisttest.cpp
+
+${OBJECTDIR}/zp_int.o: nbproject/Makefile-${CND_CONF}.mk zp_int.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/zp_int.o zp_int.cpp
 
 ${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
 	${MKDIR} -p ${OBJECTDIR}

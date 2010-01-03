@@ -8,6 +8,7 @@
 #ifndef _PRIMES_H
 #define	_PRIMES_H
 #include <gmpxx.h>
+#include "zp_int.h"
 class RandomNumberGenerator{ //naive. very naive
 public:
     RandomNumberGenerator(unsigned long seed = 0);
@@ -16,6 +17,7 @@ public:
     //generates a random prime not larger than 2^n-1
     mpz_class generate_prime(unsigned long int n);
     mpz_class generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s);
+    zp_int generate_modulu_p(mpz_class p);
 private:
     gmp_randstate_t state;
 };

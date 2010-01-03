@@ -41,6 +41,10 @@ mpz_class RandomNumberGenerator::generate_prime(unsigned long int n){
     return 1; //failure
 }
 
+zp_int RandomNumberGenerator::generate_modulu_p(mpz_class p){
+    return zp_int(rand(p),p);
+}
+
 mpz_class RandomNumberGenerator::generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s){
     //find a p such that 4p=t^2+Ds^2 for random t,s
     for (int i=0; i<10*n; i++){

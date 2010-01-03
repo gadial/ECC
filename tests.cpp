@@ -230,3 +230,27 @@ void PolynomialTest::test_evaluations(){
     CPPUNIT_ASSERT(ModularPolynomial("x^8",113)(4) == 109);
     CPPUNIT_ASSERT(ModularPolynomial("x^8 + 7x^3 + 53",113)(4) == 45);
 }
+
+void PolynomialTest::test_root_finding(){
+    vector<mpz_class> roots;
+    cout << ModularPolynomial("x+5",113).find_roots() << endl;
+}
+
+void ZpIntTest::setUp(){
+    for (int i=0; i<NUMBER_ARRAY_LENGTH; i++)
+        numbers[i] = gen.generate_modulu_p(gen.generate_prime(100));
+}
+
+void ZpIntTest::tearDown(){
+    
+}
+void ZpIntTest::test_arithmetic(){
+    for (int i=0; i<NUMBER_ARRAY_LENGTH; i++){
+        zp_int a = numbers[i];
+        zp_int zero = zp_int(0,0);
+        CPPUNIT_ASSERT(a == (a + a ) - a);
+        CPPUNIT_ASSERT(zero == (a - a ));
+        CPPUNIT_ASSERT(a*2 == (a + a ));
+//        CPPUNIT_ASSERT(5*a == (a + a + a + 2*a ));
+    }
+}

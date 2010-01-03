@@ -13,6 +13,7 @@
 #include "primes.h"
 #include "ecprime.h"
 #include "hcp.h"
+#include "zp_int.h"
 
 class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PrimesTest );
@@ -68,6 +69,7 @@ class PolynomialTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_multiplication );
     CPPUNIT_TEST( test_divisons );
     CPPUNIT_TEST( test_evaluations );
+    CPPUNIT_TEST( test_root_finding );
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
@@ -78,6 +80,22 @@ public:
     void test_multiplication();
     void test_divisons();
     void test_evaluations();
+    void test_root_finding();
+};
+
+class ZpIntTest : public CppUnit::TestFixture{
+    CPPUNIT_TEST_SUITE( ZpIntTest );
+    CPPUNIT_TEST( test_arithmetic );
+    CPPUNIT_TEST_SUITE_END();
+private:
+    #define NUMBER_ARRAY_LENGTH 100
+    RandomNumberGenerator gen;
+    zp_int numbers[NUMBER_ARRAY_LENGTH];
+public:
+    void setUp();
+    void tearDown();
+
+    void test_arithmetic();
 };
 #endif	/* _TESTS_H */
 

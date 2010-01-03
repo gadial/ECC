@@ -61,6 +61,7 @@ int do_tests(){
   CPPUNIT_TEST_SUITE_REGISTRATION(PrimesTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(EllipticCurveTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PolynomialTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(ZpIntTest);
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
