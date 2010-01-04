@@ -16,6 +16,19 @@ using namespace std;
 
 class Poly {
 public:
+
+	static Poly zero() {
+		Poly a(0);
+		a.set_coeff(0, 0);
+		return a;
+	}
+
+	static Poly one() {
+		Poly a(0);
+		a.set_coeff(0, 1);
+		return a;
+	}
+
 	Poly() {};
 	Poly(mpz_class bin);
 	Poly(int d);
@@ -34,6 +47,7 @@ public:
 	Poly operator>>(int m);
 	Poly operator<<(int m);
 	Poly operator-();
+	bool operator==(const Poly& other);
 
 	Poly PXpPmX();
 	Poly PXmPmX();

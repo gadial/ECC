@@ -128,9 +128,7 @@ public:
 		*/
 		mpz_class even = 0;
 		mpz_class odd = 0;
-		for (int i = 0; i <= el_deg(); i += 2) {
 
-		}
 		for (int i = 0; i <= el_deg() / 2; ++i) {
 			if ((element >> (2 * i)) % 2 == 1) {
 				even |= (1 << i);
