@@ -103,6 +103,28 @@ Poly Poly::PXpPmX() {
 	return res;
 }
 
+bool Poly::operator==(const Poly& other) {
+	for (int i = 0; i < (int)coeffs.size() && i < (int)other.coeffs.size(); ++i) {
+		if (coeffs[i] != other.coeffs[i]) {
+			return false;
+		}
+	}
+	if (coeffs.size() > other.coeffs.size()) {
+		for (int i = (int)other.coeffs.size(); i < (int)coeffs.size(); ++i) {
+			if (coeffs[i] != 0) {
+				return false;
+			}
+		}
+	} else if (other.coeffs.size() > coeffs.size()) {
+		for (int i = (int)coeffs.size(); i < (int)other.coeffs.size(); ++i) {
+			if (other.coeffs[i] != 0) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 Poly Poly::PXmPmX() {
 	Poly res = Poly(degree);
 	res.coeffs[0] = coeffs[0] * 2;

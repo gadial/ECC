@@ -32,6 +32,8 @@ public:
 	Poly get_invsqrt(Poly a, Poly approx, Poly mod, int prec);
 	Poly get_sqrt(Poly a, Poly mod, int prec);
 
+	bool testsqrt(Poly sqrt, Poly in, Poly mod, int prec);
+
 
 	mpz_class get_points(mpz_class _c, mpz_class _mod, int d);
 
