@@ -184,7 +184,6 @@ void PolynomialTest::test_addition_substraction(){
     CPPUNIT_ASSERT(ModularPolynomial("x",100) + ModularPolynomial("1",100) == ModularPolynomial("x + 1",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) + ModularPolynomial("55",100) == ModularPolynomial("x^2 + 55",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2 + 3x + 7",100) + ModularPolynomial("3x^2 + 5x + 12",100) == ModularPolynomial("4x^2 + 8x + 19",100));
-
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x^2",100) == ModularPolynomial("0",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x",100) == ModularPolynomial("x^2 + 99x",100));
 }
@@ -224,6 +223,7 @@ void PolynomialTest::test_divisons(){
 }
 
 void PolynomialTest::test_evaluations(){
+    cout << ModularPolynomial("0",113)(4) << endl;
     CPPUNIT_ASSERT(ModularPolynomial("0",113)(4) == 0);
     CPPUNIT_ASSERT(ModularPolynomial("x",113)(4) == 4);
     CPPUNIT_ASSERT(ModularPolynomial("x^2",113)(4) == 16);
@@ -232,8 +232,8 @@ void PolynomialTest::test_evaluations(){
 }
 
 void PolynomialTest::test_root_finding(){
-    vector<mpz_class> roots;
-    cout << ModularPolynomial("x+5",113).find_roots() << endl;
+    NumberArray roots;
+//    cout << ModularPolynomial("x+5",113).find_roots() << endl;
 }
 
 void ZpIntTest::setUp(){
@@ -245,7 +245,12 @@ void ZpIntTest::tearDown(){
     
 }
 void ZpIntTest::test_arithmetic(){
-    cout << endl;
+//    zp_int a(0,100);
+//    zp_int b(1,100);
+//    cout << endl;
+//    cout << "a-b = " << a-b << endl;
+    CPPUNIT_ASSERT(zp_int(-2,17) == zp_int(15,17));
+
     for (int i=0; i<NUMBER_ARRAY_LENGTH; i++){
         zp_int a = numbers[i];
         zp_int zero = zp_int(0,0);

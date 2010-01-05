@@ -68,22 +68,17 @@ ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulus(p)
     int sign = 1;
 
     while (!temp_string.empty()){
-//        cout << "reading number... string is " << temp_string << endl;
         mpz_class number = read_number(temp_string);
-//        cout << "number read = " << number << endl;
-//        cout << "reading degree... string is " << temp_string << endl;
         int temp_degree = read_degree(temp_string);
         if (degree < temp_degree)
             degree = temp_degree;
-//        cout << "degree found = " << temp_degree << endl;
-//        cout << "putting " <<((sign*number) % p) << " in coefficients[" << temp_degree << "]" << endl;
-        coefficients[temp_degree] = ((sign*number) % p);
-//        cout << "reading sign... string is " << temp_string << endl;
+        coefficients[temp_degree] = zp_int((sign*number),p);
         sign = read_sign(temp_string);
-//        cout << "sign is " << sign << endl;
     }
-//    cout << "degree = " <<degree << endl;
-//    cout << coefficients[2] << endl;
+
+    for (int i=0; i<=degree; i++)
+        if (coefficients[i] == 0)
+            coefficients[i] = zp_int(0,p);
 }
 
 string ModularPolynomial::to_string() const{
@@ -123,7 +118,6 @@ ModularPolynomial& ModularPolynomial::operator+=(const ModularPolynomial& lhs){
     int max_degree = max(degree, lhs.degree);
     for (int i = max_degree; i>=0; i--){
         coefficients[i] += lhs.coefficients[i];
-        coefficients[i] %= modulus;
         if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
@@ -134,9 +128,6 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     int max_degree = max(degree, lhs.degree);
     for (int i = max_degree; i>=0; i--){
         coefficients[i] -= lhs.coefficients[i];
-        coefficients[i] %= modulus;
-        if (coefficients[i] < 0)
-            coefficients[i] += modulus ;
         if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
@@ -144,10 +135,14 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator=(const ModularPolynomial& lhs){
+//    cout << "copying to " << *this << endl;
+//    cout << "from " << lhs << endl;
     degree = lhs.degree;
     modulus = lhs.modulus;
     for (int i=0; i<= degree; i++)
         coefficients[i] = lhs.coefficients[i];
+//    cout << "lhs print: "; lhs.coefficients[degree].full_print(cout); cout << endl;
+//    cout << "print: "; coefficients[degree].full_print(cout); cout << endl;
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
@@ -157,7 +152,7 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
     int max_degree = degree + lhs.degree;
     temp.degree = max_degree;
     for (int i = max_degree; i>=0; i--){
-        temp.coefficients[i] = 0;
+        temp.coefficients[i] = zp_int(0,modulus);
         for (int j=0; j<=i; j++)
             if (i-j <= degree && j <= lhs.degree)
                 temp.coefficients[i] += coefficients[i-j]*lhs.coefficients[j];
@@ -176,32 +171,29 @@ ModularPolynomial& ModularPolynomial::operator/=(const ModularPolynomial& lhs){
 }
 
 ModularPolynomial& ModularPolynomial::normalize(){
-    mpz_class leading_coefficient_inverse;
-    mpz_invert(leading_coefficient_inverse.get_mpz_t(), coefficients[degree].get_mpz_t(),modulus.get_mpz_t());
     for (int i=0; i<=degree; i++)
-        coefficients[i] = ((coefficients[i] * leading_coefficient_inverse) % modulus);
+        coefficients[i] /= coefficients[degree];
     return *this;
 }
 void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,ModularPolynomial& R){
 //    cout << "dividing " << *this << " by " << lhs << endl;
     R = *this;
     Q = ModularPolynomial("0",modulus);
-    mpz_class lhs_leading_coefficient_inverse;
-    mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
     while (R.degree >= lhs.degree && !R.is_zero()){
+//        cout << "R.degree = " << R.degree << endl;
         int R_old_degree = R.degree;
-        mpz_class R_leading_coefficient = R.coefficients[R.degree];
-
-        Q.coefficients[R.degree - lhs.degree] += R_leading_coefficient*lhs_leading_coefficient_inverse;
-        Q.coefficients[R.degree - lhs.degree] %= Q.modulus;
+        zp_int coeff_factor = R.coefficients[R.degree] / lhs.coefficients[lhs.degree];
+//        cout << coeff_factor << endl;
+        Q.coefficients[R.degree - lhs.degree] += coeff_factor;
         if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
             Q.degree = R.degree - lhs.degree;
 
         for (int i=R.degree; i>=R.degree - lhs.degree; i--){
-            R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
-            R.coefficients[i] %= R.modulus;
-            if (R.coefficients[i] < 0)
-                R.coefficients[i] += R.modulus;
+//            cout << "i = " << i << endl;
+//            R.coefficients[i].full_print(cout); cout << endl;
+            R.coefficients[i] -= (coeff_factor*lhs.coefficients[lhs.degree - R_old_degree + i]);
+//            R.coefficients[i].full_print(cout);cout << endl;
+//            cout << "R.coefficient[i] = " << R.coefficients[i] << endl;
             if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
                 R.degree--;
         }
@@ -288,12 +280,12 @@ ostream& operator<<(ostream& o, const ModularPolynomial& lhs){
     return o;
 }
 
-mpz_class ModularPolynomial::operator()(mpz_class a) const{
-    mpz_class temp_a = 1;
-    mpz_class result = 0;
+zp_int ModularPolynomial::operator()(zp_int a) const{
+    zp_int temp_a(1,modulus);
+    zp_int result(0,modulus);
     for (int i = 0; i<=degree; i++){
-        result = (result + temp_a * coefficients[i]) % modulus;
-        temp_a = (temp_a * a) % modulus;
+        result += (temp_a * coefficients[i]);
+        temp_a *= a;
     }
     return result;
 }

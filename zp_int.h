@@ -17,18 +17,22 @@ using std::ostream;
 
 class zp_int{
 public:
-    zp_int(const mpz_class& _val = 0, const mpz_class& _p = 0):val(_val),p(_p){};
+    zp_int(const mpz_class& _val = 0, const mpz_class& _p = 0):val(_val),p(_p){normalize();};
     zp_int(int _val):val(_val),p(0){};
     bool is_equal(const zp_int&) const;
+    bool is_smaller(const zp_int&) const;
     zp_int& operator=(const zp_int&);
     zp_int& operator+=(const zp_int&);
     zp_int& operator-=(const zp_int&);
+    zp_int operator-();
     zp_int& operator*=(const zp_int&);
     zp_int& operator/=(const zp_int&);
     zp_int& operator^=(const mpz_class&); //miuse of ^ - means exponent here. WARNING: ^ has low precedence, always use parentheis!
     zp_int& invert();
     zp_int inverse() const;
     ostream& print(ostream&) const;
+    ostream& full_print(ostream&) const;
+    operator mpz_class(){return val;}
 private:
     mpz_class val;
     mpz_class p; // p=0 means we treat it as a normal integer
@@ -43,6 +47,7 @@ zp_int operator/(const zp_int&, const zp_int&);
 zp_int operator^(const zp_int&, const mpz_class&);
 bool operator==(const zp_int&, const zp_int&);
 bool operator!=(const zp_int&, const zp_int&);
+bool operator<(const zp_int&, const zp_int&);
 
 ostream& operator<<(ostream&, const zp_int&);
 

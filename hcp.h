@@ -14,12 +14,14 @@
 #include <vector>
 #include <iostream>
 
+#include "zp_int.h"
+
 using std::map;
 using std::string;
 using std::vector;
 using std::ostream;
 
-typedef vector<mpz_class> NumberArray;
+typedef vector<zp_int> NumberArray;
 
 class ModularPolynomial{
 public:
@@ -33,7 +35,7 @@ public:
     ModularPolynomial& operator*=(const ModularPolynomial&);
     ModularPolynomial& operator/=(const ModularPolynomial&);
     ModularPolynomial modular_exponent(mpz_class exp, const ModularPolynomial& mod) const;
-    mpz_class operator()(mpz_class a) const;
+    zp_int operator()(zp_int a) const;
 
     ModularPolynomial operator%(const ModularPolynomial& lhs);
     bool operator==(const ModularPolynomial&) const;
@@ -42,7 +44,7 @@ public:
     NumberArray find_roots();
     int get_degree(){return degree;}
 private:
-    mutable map<int,mpz_class> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
+    mutable map<int,zp_int> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
     mpz_class modulus;
     int degree;
 
