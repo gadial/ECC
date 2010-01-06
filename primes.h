@@ -30,7 +30,7 @@ int jacobi_symbol(mpz_class a,mpz_class b);
    
 //returns x such that x**2 = n. If none exists, returns 0
 mpz_class modular_square_root(mpz_class n, mpz_class p);
-
+zp_int modular_square_root(zp_int n);
 bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed);
 
 #endif	/* _PRIMES_H */

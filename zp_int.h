@@ -33,6 +33,7 @@ public:
     ostream& print(ostream&) const;
     ostream& full_print(ostream&) const;
     operator mpz_class(){return val;}
+    mpz_class get_p(){return p;};
 private:
     mpz_class val;
     mpz_class p; // p=0 means we treat it as a normal integer

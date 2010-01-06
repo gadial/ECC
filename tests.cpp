@@ -233,7 +233,13 @@ void PolynomialTest::test_evaluations(){
 
 void PolynomialTest::test_root_finding(){
     NumberArray roots;
-//    cout << ModularPolynomial("x+5",113).find_roots() << endl;
+    roots = ModularPolynomial("x + 33",113).find_roots();
+    for (NumberArray::iterator i = roots.begin(); i<roots.end(); i++)
+        CPPUNIT_ASSERT(*i == 80);
+    roots = ModularPolynomial("x^2 - 1",113).find_roots();
+    for (NumberArray::iterator i = roots.begin(); i<roots.end(); i++)
+        CPPUNIT_ASSERT(*i == 1 || *i == 112);
+
 }
 
 void ZpIntTest::setUp(){

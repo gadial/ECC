@@ -32,8 +32,6 @@ void printJac(const Jacobian& j) {
  * 
  */
 int main(int argc, char** argv) {
-//    cout << (ModularPolynomial("x^3 + 4x + 10",113) % ModularPolynomial("3x + 5",113)) << endl;
-//    CPPUNIT_ASSERT() == ModularPolynomial("18x^2 + 7",113));
     do_tests();
     return 0;
 }
