@@ -64,13 +64,18 @@ public:
 
 class PolynomialTest : public CppUnit::TestFixture{
     CPPUNIT_TEST_SUITE( PolynomialTest );
-    CPPUNIT_TEST( test_input_output );
-    CPPUNIT_TEST( test_addition_substraction );
-    CPPUNIT_TEST( test_multiplication );
-    CPPUNIT_TEST( test_divisons );
-    CPPUNIT_TEST( test_evaluations );
+//    CPPUNIT_TEST( test_input_output );
+//    CPPUNIT_TEST( test_addition_substraction );
+//    CPPUNIT_TEST( test_multiplication );
+//    CPPUNIT_TEST( test_divisons );
+//    CPPUNIT_TEST( test_evaluations );
     CPPUNIT_TEST( test_root_finding );
     CPPUNIT_TEST_SUITE_END();
+private:
+    #define ROOTS_ARRAY_LENGTH 4
+    RandomNumberGenerator gen;
+    mpz_class p;
+    NumberArray random_roots;
 public:
     void setUp();
     void tearDown();

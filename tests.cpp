@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <algorithm>
 #include "primes.h"
 #include "ellipticcurve.h"
 #include "tests.h"
@@ -165,7 +166,10 @@ void EllipticCurveTest::test_point_multiplication(){
 }
 
 void PolynomialTest::setUp(){
-
+    p = gen.generate_prime(10);
+    for (int i=0; i<ROOTS_ARRAY_LENGTH; i++)
+        random_roots.push_back(gen.generate_modulu_p(p));
+    sort(random_roots.begin(), random_roots.end());
 }
 
 void PolynomialTest::tearDown(){
@@ -217,9 +221,11 @@ void PolynomialTest::test_divisons(){
     CPPUNIT_ASSERT(ModularPolynomial("x^3 + 4x + 10",113) % ModularPolynomial("3x + 5",113) == ModularPolynomial("28",113));
     CPPUNIT_ASSERT(ModularPolynomial("x^7 + 34x^5 + 15x^4 + 95x^3 + 17",113) % ModularPolynomial("3x^6 + 5x^3",113) == ModularPolynomial("34x^5 + 51x^4 + 95x^3 + 17",113));
     CPPUNIT_ASSERT(ModularPolynomial("0",113) % ModularPolynomial("x",113) == ModularPolynomial("0",113));
+    CPPUNIT_ASSERT(ModularPolynomial("x^3 + 169x^2 + 256x + 118",503) % ModularPolynomial("x^2 + 329x + 406",503) == ModularPolynomial("178x + 191",503));
 
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x",113),ModularPolynomial("x",113)) == ModularPolynomial("x",113));
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x^5 + 3x^2 + x",113),ModularPolynomial("3x^4 + 2x^3 + 17",113)) == ModularPolynomial("1",113));
+    CPPUNIT_ASSERT(gcd(ModularPolynomial("x^3 + 22x^2 + 36x + 2",41),ModularPolynomial("x^2 + 8x + 2",41)) == ModularPolynomial("1",41));
 }
 
 void PolynomialTest::test_evaluations(){
@@ -240,6 +246,13 @@ void PolynomialTest::test_root_finding(){
     for (NumberArray::iterator i = roots.begin(); i<roots.end(); i++)
         CPPUNIT_ASSERT(*i == 1 || *i == 112);
 
+    ModularPolynomial p_x = ModularPolynomial::build_from_roots(random_roots,p);
+    roots = p_x.find_roots();
+    sort(roots.begin(), roots.end());
+    NumberArray::iterator i;
+    NumberArray::iterator j;
+    for (i = roots.begin(), j = random_roots.begin(); i< roots.end(); i++, j++)
+        CPPUNIT_ASSERT(*i == *j);
 }
 
 void ZpIntTest::setUp(){

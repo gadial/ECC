@@ -28,6 +28,8 @@ public:
     ModularPolynomial():modulus(0),degree(-1){};
     ModularPolynomial(string, mpz_class);
     ModularPolynomial(const ModularPolynomial&);
+    ModularPolynomial(const NumberArray&, mpz_class);
+    static ModularPolynomial build_from_roots(const NumberArray& roots, mpz_class p);
     string to_string() const;
     ModularPolynomial& operator=(const ModularPolynomial&);
     ModularPolynomial& operator+=(const ModularPolynomial&);
@@ -43,6 +45,8 @@ public:
     bool is_zero() const;
     NumberArray find_roots();
     int get_degree(){return degree;}
+    mpz_class get_modulus(){return modulus;}
+    void full_print(ostream&);
 private:
     mutable map<int,zp_int> coefficients; //mutable since otherwise we get const-correctness problem (seems like mpz_class is not very const-correct)
     mpz_class modulus;

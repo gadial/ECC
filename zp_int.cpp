@@ -51,7 +51,7 @@ bool zp_int::is_smaller(const zp_int& rhs) const{
     return (val < rhs.val);
 }
 
-zp_int zp_int::operator-(){
+zp_int zp_int::operator-() const{
     return zp_int(-val,p).normalize();
 }
 zp_int& zp_int::operator=(const zp_int& rhs){

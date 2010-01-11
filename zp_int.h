@@ -24,7 +24,7 @@ public:
     zp_int& operator=(const zp_int&);
     zp_int& operator+=(const zp_int&);
     zp_int& operator-=(const zp_int&);
-    zp_int operator-();
+    zp_int operator-() const;
     zp_int& operator*=(const zp_int&);
     zp_int& operator/=(const zp_int&);
     zp_int& operator^=(const mpz_class&); //miuse of ^ - means exponent here. WARNING: ^ has low precedence, always use parentheis!

@@ -80,6 +80,27 @@ ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulus(p)
         if (coefficients[i] == 0)
             coefficients[i] = zp_int(0,p);
 }
+ModularPolynomial::ModularPolynomial(const NumberArray& _coefficients, mpz_class p):modulus(p),degree(0){
+    int pos = 0;
+    for (NumberArray::const_iterator i = _coefficients.begin(); i<_coefficients.end(); i++){
+        coefficients[pos] = *i;
+        if (coefficients[pos] != 0)
+            degree = pos;
+        pos++;
+    }
+}
+
+ModularPolynomial ModularPolynomial::build_from_roots(const NumberArray& roots, mpz_class p){
+    ModularPolynomial result("1",p);
+    for (NumberArray::const_iterator i = roots.begin(); i< roots.end(); i++){
+        NumberArray coeff;
+        coeff.push_back(-(*i));
+        coeff.push_back(zp_int(1,p));
+        ModularPolynomial temp(coeff,p);
+        result *= temp;
+    }
+    return result;
+}
 
 string ModularPolynomial::to_string() const{
     string o = "";
@@ -179,8 +200,12 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
 //    cout << "dividing " << *this << " by " << lhs << endl;
     R = *this;
     Q = ModularPolynomial("0",modulus);
+    for (int i=degree - lhs.degree; i>=0; i--)
+        Q.coefficients[i] = zp_int(0,modulus);
+
+//    cout << "R = " << R << " , lhs = " << lhs << endl;
     while (R.degree >= lhs.degree && !R.is_zero()){
-//        cout << "R.degree = " << R.degree << endl;
+//        cout << "R.degree = " << R.degree << ", lhs.degree = " << lhs.get_degree() << endl;
         int R_old_degree = R.degree;
         zp_int coeff_factor = R.coefficients[R.degree] / lhs.coefficients[lhs.degree];
 //        cout << coeff_factor << endl;
@@ -188,7 +213,7 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
         if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
             Q.degree = R.degree - lhs.degree;
 
-        for (int i=R.degree; i>=R.degree - lhs.degree; i--){
+        for (int i=R.degree; i>=R_old_degree - lhs.degree; i--){
 //            cout << "i = " << i << endl;
 //            R.coefficients[i].full_print(cout); cout << endl;
             R.coefficients[i] -= (coeff_factor*lhs.coefficients[lhs.degree - R_old_degree + i]);
@@ -199,6 +224,7 @@ void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,Modul
         }
     }
 //    cout << "R = " << R << " , Q = " << Q << endl;
+//    R.coefficients[R.degree].full_print(cout); cout << endl;
 }
 
 ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
@@ -258,7 +284,11 @@ ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs
     ModularPolynomial B = lhs;
     ModularPolynomial R = lhs;
     while (!B.is_zero()){
+//        cout << "About to calculate A % B = " << A << ", " << B << endl;
+//        cout << "A.p = " << A.get_modulus() << ", A.degree = " << A.get_degree() << endl;
+//        cout << "B.p = " << B.get_modulus() << ", B.degree = " << B.get_degree() << endl;
         R = A % B;
+//        cout << "R after = " << R << endl;
         A = B;
         B = R;
     }
@@ -289,6 +319,10 @@ zp_int ModularPolynomial::operator()(zp_int a) const{
     }
     return result;
 }
+void ModularPolynomial::full_print(ostream& o){
+    for (int i=degree; i>=0; i--)
+        coefficients[i].full_print(o);
+}
 
 NumberArray ModularPolynomial::find_roots(){
     //pg. 37 in Cohen's book
@@ -296,6 +330,8 @@ NumberArray ModularPolynomial::find_roots(){
     //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
     //and then compute gcd(d-b,c)
     NumberArray results;
+    RandomNumberGenerator gen;
+    
     if (degree == 0)
         return results; //degree 0 polynomial is not considered to have any roots, including the zero polynomial
     mpz_class p = modulus;
@@ -324,7 +360,27 @@ NumberArray ModularPolynomial::find_roots(){
         results.push_back((-A.coefficients[1] - e)/(A.coefficients[2]*2));
         return results;
     }
-    //TODO: finish
+
+    //now do a random splitting
+    ModularPolynomial B;
+    while (true){ //keep trying until success
+        zp_int a = gen.generate_modulu_p(p);
+        NumberArray b_coeff;
+        b_coeff.push_back(a); // X + a
+        b_coeff.push_back(zp_int(1,p));
+        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A).normalize();
+//        cout << "Trying to split A = " << A << endl;
+//        cout << "gcding with b = " << b << " , p = " << p << endl;
+        B = gcd(A, b);
+//        cout << "Got B = " << B << endl;
+        if (B.degree > 0 && B.degree < A.degree)
+            break; //managed to split A
+    }
+    NumberArray results_1 = B.find_roots();
+    NumberArray results_2 = (A/B).find_roots();
+    std::copy(results_1.begin(), results_1.end(),std::back_inserter(results));
+    std::copy(results_2.begin(), results_2.end(),std::back_inserter(results));
+    return results;
 }
 
 
