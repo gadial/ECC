@@ -112,7 +112,14 @@ void adicops::do_s() {
 	invbb.print();
 
 	*/
-	cout << get_points(0b10001, 0b10000011, 7) << endl;
+	//cout << get_points(0b10001, 0x83, 7) << endl;
+
+	int deg = 7;
+	mpz_class orer = (1 << deg);
+	mpz_class tmp;
+	tmp.set_str("3", 16);
+	tmp |= orer;
+	cout << get_points(0b10001, tmp, deg) << endl;
 	/*
 	Poly M0 = M.PXpPmX();
 	M0.print();
@@ -353,6 +360,7 @@ Poly adicops::get_sqrt(Poly a, Poly mod, int prec) {
 }
 
 mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
+
 	int N = (d % 2 == 0 ? d / 2 + 3 : d / 2 + 4);
 	Poly a = Poly::one();
 
@@ -427,8 +435,13 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 bool adicops::testsqrt(Poly sqrt, Poly in, Poly mod, int prec) {
 	Poly t = sqrt * sqrt;
 	t = poly_remainder(t, mod, prec);
-	//t.print();
-	//in.print();
+
+	if (!(t == in)) {
+		cout << "t1: ";
+		t.print();
+		cout << "t2: ";
+		in.print();
+	}
 	return t == in;
 }
 
