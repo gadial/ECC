@@ -53,6 +53,50 @@ bool operator<(const zp_int&, const zp_int&);
 ostream& operator<<(ostream&, const zp_int&);
 
 
+//zp_int based coordinates
+class ZpCoordinate;
+class ZpJacobian;
+
+class ZpCoordinate {
+public:
+
+	ZpCoordinate() {}
+	ZpCoordinate(mpz_class _x, mpz_class _y, mpz_class _p):
+		X(_x,_p), Y(_y,_p),p(_p) {}
+	ZpCoordinate(const ZpJacobian& jac);
+
+        //returns the point at infinity, as is represented by this class in the context of elliptic curves
+        static ZpCoordinate infinity(){return ZpCoordinate(0,0,0);}
+
+	bool operator==(const ZpCoordinate& eqTo) {
+		return X == eqTo.X && Y == eqTo.Y;
+	}
+        bool isInfinite() {
+        	return X == 0 && Y == 0;
+        }
+        mpz_class p;
+	zp_int X, Y;
+};
+
+ostream& operator<<(ostream& out, const ZpCoordinate& rhs);
+
+class ZpJacobian {
+public:
+
+	ZpJacobian() {}
+	ZpJacobian(mpz_class _x, mpz_class _y, mpz_class _z, mpz_class _p):
+		X(_x, _p), Y(_y, _p), Z(_z, _p), p(_p) {}
+	ZpJacobian(const ZpCoordinate& rhs):
+                X(rhs.X), Y(rhs.Y), Z(1,rhs.p) {}
+
+	static ZpJacobian infinity(){return ZpJacobian(1, 1, 0, 0);}
+    bool isInfinite() {
+    	return X == 1 && Y == 1 && Z == 0;
+    }
+        mpz_class p;
+	zp_int X, Y, Z;
+};
+
 
 #endif	/* _ZP_INT_H */
 

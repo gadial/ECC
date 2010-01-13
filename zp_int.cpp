@@ -110,3 +110,14 @@ ostream& operator<<(ostream& o, const zp_int& rhs){
     return rhs.print(o);
 }
 
+
+ZpCoordinate::ZpCoordinate(const ZpJacobian& jac):X(0),Y(0),p(jac.p) {
+	int const_2 = 2, const_3 = 3;
+        X = (jac.X) / (jac.Z^const_2);
+        Y = (jac.Y) / (jac.Z^const_3);
+}
+
+ostream& operator<<(ostream& out, ZpCoordinate& rhs){
+    out << "(" << rhs.X << ", "<<rhs.Y<<")";
+    return out;
+}

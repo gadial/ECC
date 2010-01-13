@@ -9,7 +9,7 @@
 #define ECPRIME_H_
 
 #include "ellipticcurve.h"
-
+#include "zp_int.h"
 class ECPrime: public Ellipticcurve {
 public:
 	ECPrime();

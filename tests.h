@@ -72,7 +72,7 @@ class PolynomialTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_root_finding );
     CPPUNIT_TEST_SUITE_END();
 private:
-    #define ROOTS_ARRAY_LENGTH 4
+    #define ROOTS_ARRAY_LENGTH 8
     RandomNumberGenerator gen;
     mpz_class p;
     NumberArray random_roots;

@@ -170,6 +170,7 @@ void PolynomialTest::setUp(){
     for (int i=0; i<ROOTS_ARRAY_LENGTH; i++)
         random_roots.push_back(gen.generate_modulu_p(p));
     sort(random_roots.begin(), random_roots.end());
+    random_roots.erase(unique(random_roots.begin(), random_roots.end()),random_roots.end());
 }
 
 void PolynomialTest::tearDown(){
@@ -251,7 +252,7 @@ void PolynomialTest::test_root_finding(){
     sort(roots.begin(), roots.end());
     NumberArray::iterator i;
     NumberArray::iterator j;
-    for (i = roots.begin(), j = random_roots.begin(); i< roots.end(); i++, j++)
+    for (i = roots.begin(), j = random_roots.begin(); i< roots.end() || j<random_roots.end(); i++, j++)
         CPPUNIT_ASSERT(*i == *j);
 }
 
