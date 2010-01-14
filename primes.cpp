@@ -178,7 +178,7 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
 
 zp_int modular_square_root(zp_int n){
     //for now, simply use the existing implementation for mpz_class
-    return modular_square_root(n, n.get_p());
+    return zp_int(modular_square_root(n, n.get_p()),n.get_p());
 }
 bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed){
     int max_prime_num = NUM_SMALL_PRIMES;

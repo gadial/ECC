@@ -100,31 +100,32 @@ void EllipticCurveTest::tearDown()
 
 void EllipticCurveTest::test_get_point()
 {
-    Coordinate P = Coordinate::infinity();
-    mpz_class x;
-    while (P == Coordinate::infinity()){
-        x = gen.rand(random_curve.mod);
+    ZpCoordinate P = ZpCoordinate::infinity();
+    zp_int x;
+    while (P == ZpCoordinate::infinity()){
+        x = gen.generate_modulu_p(random_curve.mod);
         P = random_curve.getPoint(x);
     }
     //test if P is really on the curve
 //    cout << "x, y = " << P.X << ", " << P.Y << endl;
 //    cout << "p, a, b = " << random_curve.mod << ", " << random_curve.ECC_a << ", " <<random_curve.ECC_b << endl;
-    CPPUNIT_ASSERT((P.Y*P.Y) % random_curve.mod == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b) % random_curve.mod);
+    CPPUNIT_ASSERT((P.Y*P.Y) == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b));
     //test if getPoint really knows to return the "negative" value
-    CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == random_curve.mod);
+    CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == 0);
 }
 
 void EllipticCurveTest::test_doubling_vs_addition()
 {
-    Coordinate P = Coordinate::infinity();
-    Coordinate Q,R;
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    ZpCoordinate P = ZpCoordinate::infinity();
+    ZpCoordinate Q,R;
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
+//    cout << "(test) P.Y.p = " << P.Y.get_p() << endl;
     Q = random_curve.doubling(P);
     //first check if P+P == 2P (P+P should be computed by reduction to the computation of 2P, so shouldn't be a problem
     CPPUNIT_ASSERT(random_curve.addition(P,P) == Q);
     //now check if P + Q + P + Q == 2(P+Q)
-    Coordinate temp = P;
+    ZpCoordinate temp = P;
     temp = random_curve.addition(temp,Q); // P != Q, so ok
     temp = random_curve.addition(temp,P); // P+Q != P, so ok
     temp = random_curve.addition(temp,Q); // temp = P+Q+P+Q
@@ -133,12 +134,12 @@ void EllipticCurveTest::test_doubling_vs_addition()
 }
 
 void EllipticCurveTest::test_repeated_doubling(){
-    Coordinate P = Coordinate::infinity();
+    ZpCoordinate P = ZpCoordinate::infinity();
     
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
     
-    Coordinate temp = P;
+    ZpCoordinate temp = P;
     for (int m=1; m<10; m++){
         temp = random_curve.doubling(temp);
         CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,m));
@@ -146,15 +147,15 @@ void EllipticCurveTest::test_repeated_doubling(){
 }
 
 void EllipticCurveTest::test_point_multiplication(){
-    Coordinate P = Coordinate::infinity();
+    ZpCoordinate P = ZpCoordinate::infinity();
 
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
 
-    CPPUNIT_ASSERT(Coordinate::infinity() == random_curve.pointMultiplication(P,0));
+    CPPUNIT_ASSERT(ZpCoordinate::infinity() == random_curve.pointMultiplication(P,0));
     CPPUNIT_ASSERT(P == random_curve.pointMultiplication(P,1));
 
-    Coordinate temp = random_curve.doubling(P);
+    ZpCoordinate temp = random_curve.doubling(P);
     CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,2));
     CPPUNIT_ASSERT(random_curve.addition(P,temp) == random_curve.pointMultiplication(P,3));
 
@@ -230,7 +231,7 @@ void PolynomialTest::test_divisons(){
 }
 
 void PolynomialTest::test_evaluations(){
-    cout << ModularPolynomial("0",113)(4) << endl;
+//    cout << ModularPolynomial("0",113)(4) << endl;
     CPPUNIT_ASSERT(ModularPolynomial("0",113)(4) == 0);
     CPPUNIT_ASSERT(ModularPolynomial("x",113)(4) == 4);
     CPPUNIT_ASSERT(ModularPolynomial("x^2",113)(4) == 16);
@@ -269,6 +270,7 @@ void ZpIntTest::test_arithmetic(){
 //    zp_int b(1,100);
 //    cout << endl;
 //    cout << "a-b = " << a-b << endl;
+    CPPUNIT_ASSERT(zp_int(6,17)/2 == zp_int(3,17));
     CPPUNIT_ASSERT(zp_int(-2,17) == zp_int(15,17));
 
     for (int i=0; i<NUMBER_ARRAY_LENGTH; i++){
@@ -287,5 +289,7 @@ void ZpIntTest::test_arithmetic(){
         CPPUNIT_ASSERT(a == (a^1));
         CPPUNIT_ASSERT(1 == (a^0));
         CPPUNIT_ASSERT(a*a*a == (a^3));
+
+        CPPUNIT_ASSERT(a == (a+a)/2);
     }
 }

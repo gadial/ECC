@@ -12,7 +12,7 @@
 #define	_ZP_INT_H
 #include <iostream>
 #include <gmpxx.h>
-
+#include "coordinates.h"
 using std::ostream;
 
 class zp_int{
@@ -33,7 +33,7 @@ public:
     ostream& print(ostream&) const;
     ostream& full_print(ostream&) const;
     operator mpz_class(){return val;}
-    mpz_class get_p(){return p;};
+    mpz_class get_p() const {return p;};
 private:
     mpz_class val;
     mpz_class p; // p=0 means we treat it as a normal integer
@@ -61,9 +61,14 @@ class ZpCoordinate {
 public:
 
 	ZpCoordinate() {}
-	ZpCoordinate(mpz_class _x, mpz_class _y, mpz_class _p):
-		X(_x,_p), Y(_y,_p),p(_p) {}
+//	ZpCoordinate(mpz_class _x, mpz_class _y, mpz_class _p):
+//		X(_x,_p), Y(_y,_p),p(_p) {}
+        ZpCoordinate(zp_int _x, zp_int _y, mpz_class _p):
+		X(_x), Y(_y),p(_p) {}
 	ZpCoordinate(const ZpJacobian& jac);
+        ZpCoordinate(const Coordinate& cor, mpz_class _p):
+            X(cor.X,_p),Y(cor.Y,_p),p(_p){}
+        operator Coordinate(){return Coordinate(X,Y);}
 
         //returns the point at infinity, as is represented by this class in the context of elliptic curves
         static ZpCoordinate infinity(){return ZpCoordinate(0,0,0);}
@@ -71,7 +76,7 @@ public:
 	bool operator==(const ZpCoordinate& eqTo) {
 		return X == eqTo.X && Y == eqTo.Y;
 	}
-        bool isInfinite() {
+        bool isInfinite() const {
         	return X == 0 && Y == 0;
         }
         mpz_class p;
@@ -86,17 +91,21 @@ public:
 	ZpJacobian() {}
 	ZpJacobian(mpz_class _x, mpz_class _y, mpz_class _z, mpz_class _p):
 		X(_x, _p), Y(_y, _p), Z(_z, _p), p(_p) {}
+        ZpJacobian(zp_int _x, zp_int _y, zp_int _z):
+        	X(_x), Y(_y), Z(_z), p(_x.get_p()) {}
 	ZpJacobian(const ZpCoordinate& rhs):
-                X(rhs.X), Y(rhs.Y), Z(1,rhs.p) {}
+                X(rhs.X), Y(rhs.Y), Z(1,rhs.p),p(rhs.p) {}
 
-	static ZpJacobian infinity(){return ZpJacobian(1, 1, 0, 0);}
-    bool isInfinite() {
+	static ZpJacobian infinity(mpz_class p = 0){return ZpJacobian(1, 1, 0, p);}
+        operator Jacobian(){return Jacobian(X,Y,Z);}
+    bool isInfinite() const {
     	return X == 1 && Y == 1 && Z == 0;
     }
         mpz_class p;
 	zp_int X, Y, Z;
 };
 
+ostream& operator<<(ostream& out, const ZpJacobian& rhs);
 
 #endif	/* _ZP_INT_H */
 

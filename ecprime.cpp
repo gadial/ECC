@@ -26,44 +26,50 @@ ECPrime ECPrime::randomCurve(int number_of_bits, RandomNumberGenerator gen){
     return ECPrime(p,a,b);
 }
 
-Coordinate ECPrime::addition(Coordinate P, Coordinate Q) {
-	return Coordinate(addition(Jacobian(P), Q), mod);
+ZpCoordinate ECPrime::addition(ZpCoordinate P, ZpCoordinate Q) {
+	return ZpCoordinate(addition(ZpJacobian(P), Q));
 }
 
-Coordinate ECPrime::subtraction(Coordinate P, Coordinate Q) {
-	return Coordinate(subtraction(Jacobian(P), Q), mod);
+ZpCoordinate ECPrime::subtraction(ZpCoordinate P, ZpCoordinate Q) {
+	return ZpCoordinate(subtraction(ZpJacobian(P), Q));
 }
 
-Coordinate ECPrime::doubling(Coordinate P) {
-	return Coordinate(doubling(Jacobian(P)), mod);
+ZpCoordinate ECPrime::doubling(ZpCoordinate P) {
+//    cout << "(doubling) P.p = " << P.p << endl;
+//    cout << "(doubling) jac(P).p = " << ZpJacobian(P).Z.get_p() << endl;
+//    cout << "(doubling) d(jac(P)).p = " << doubling(ZpJacobian(P)).Z.get_p() << endl;
+//    cout << "(doubling) output.p = " << ZpCoordinate(doubling(ZpJacobian(P))).p << endl;
+	return ZpCoordinate(doubling(ZpJacobian(P)));
 }
 
-Coordinate ECPrime::repeatedDoubling(Coordinate P, int m) {
-	return Coordinate(repeatedDoubling(Jacobian(P), m), mod);
+ZpCoordinate ECPrime::repeatedDoubling(ZpCoordinate P, int m) {
+	return ZpCoordinate(repeatedDoubling(ZpJacobian(P), m));
 }
 
-Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
+ZpJacobian ECPrime::addition(ZpJacobian P, ZpCoordinate Q) {
     //We assume that P != Q,-Q
     //If P==Q use doubling
     //if P==-Q, return 0
     //I treat a**2 as simply a*a since I can't see an optimization
     //for it in gmp
 	if (P.isInfinite()) {
-		return Jacobian(Q);
+		return ZpJacobian(Q);
 	}
 	if (Q.isInfinite()) {
 		return P;
 	}
-        Coordinate temp = Coordinate(P,mod);
-        if (temp == Q)
+        ZpCoordinate temp = ZpCoordinate(P);
+        if (temp == Q){
             return doubling(P);
-        if (temp == getNegative(Q))
-            return Coordinate::infinity();
+        }
+        if (temp == getNegative(Q)){
+            return ZpJacobian::infinity(P.p);
+        }
         
-    mpz_class X3,Y3,Z3;
+    zp_int X3,Y3,Z3;
     if (ECC_a != -3){
         //pg. 89 - dealing with the general case where a != -3
-        mpz_class A,B,C,D,E,F,G,H,I;
+        zp_int A,B,C,D,E,F,G,H,I;
         A = P.Z * P.Z;
         B = P.Z * A;
         C = Q.X * A;
@@ -73,13 +79,13 @@ Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
         G = E * E;
         H = G * E;
         I = P.X * G;
-        X3 = F*F - (H+2*I); //cout << "F = " << F << ", H= " << H << ", I=" << I << endl;
+        X3 = F*F - (H+I*2); //cout << "F = " << F << ", H= " << H << ", I=" << I << endl;
         Y3 = F*(I-X3)-P.Y*H;
         Z3 = P.Z * E;
     }
     else{
         //pg. 91 - dealing with the case a == 3
-        mpz_class T1,T2,T3,T4;
+        zp_int T1,T2,T3,T4;
         T1 = P.Z * P.Z;
         T2 = T1 * P.Z;
         T1 = T1 * Q.X;
@@ -88,14 +94,14 @@ Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
         T2 = T2 - P.Y;
         if (T1 == 0)
             if (T2 == 0)
-                return doubling(Jacobian(Q));
+                return doubling(ZpJacobian(Q));
             else
-                return Coordinate::infinity();
+                return ZpCoordinate::infinity();
         Z3 = P.Z * T1;
         T3 = T1 * T1;
         T4 = T3 * T1;
         T3 = T3 * P.X;
-        T1 = 2 * T3;
+        T1 = T3 * 2;
         X3 = T2 * T2;
         X3 = X3 - T1;
         X3 = X3 - T4;
@@ -104,67 +110,64 @@ Jacobian ECPrime::addition(Jacobian P, Coordinate Q) {
         T4 = T4 * P.Y;
         Y3 = T3 - T4;
     }
-    mpz_mod(X3.get_mpz_t(), X3.get_mpz_t(), mod.get_mpz_t());
-    mpz_mod(Y3.get_mpz_t(), Y3.get_mpz_t(), mod.get_mpz_t());
-    mpz_mod(Z3.get_mpz_t(), Z3.get_mpz_t(), mod.get_mpz_t());
-    //X3 = X3 % mod;
-    //Y3 = Y3 % mod;
-    //Z3 = Z3 % mod;
-    return Jacobian(X3,Y3,Z3);
+    return ZpJacobian(X3,Y3,Z3);
 }
 
-Jacobian ECPrime::subtraction(Jacobian P, Coordinate Q) {
+ZpJacobian ECPrime::subtraction(ZpJacobian P, ZpCoordinate Q) {
 	return addition(P, getNegative(Q));
 }
 
-Jacobian ECPrime::doubling(Jacobian P) {
+ZpJacobian ECPrime::doubling(ZpJacobian P) {
     //I treat a**2 as simply a*a since I can't see an optimization
     //for it in gmp
-    mpz_class X3,Y3,Z3;
+    if (P.isInfinite())
+        return P;
+//    cout << "P = " << P << endl;
+    zp_int X3,Y3,Z3;
     if (ECC_a != -3){
         //pg. 88 - dealing with the general case where a != -3
-        mpz_class A,B,C,D;
+        zp_int A,B,C,D;
         A = P.Y * P.Y;
-        B = 4*P.X * A;
-        C = 8 * A * A;
-        D = 3*P.X*P.X + ECC_a*P.Z*P.Z*P.Z*P.Z;
-        X3 = D*D-2*B;
+        B = P.X*4 * A;
+        C = A*8 * A;
+        D = P.X*P.X*3 + P.Z*P.Z*P.Z*P.Z*ECC_a;
+        X3 = D*D-(B*2);
         Y3 = D*(B-X3) - C;
-        Z3 = 2*P.Y*P.Z;
+        Z3 = P.Y*P.Z*2;
     }
     else{
         //pg. 91 - dealing with the case a==-3
-        mpz_class T1, T2, T3;
+        zp_int T1, T2, T3;
         T1 = P.Z*P.Z;
         T2 = P.X - T1;
         T1 = P.X + T1;
         T2 = T2 * T1;
-        T2 = 3 * T2;
-        Y3 = 2 * P.Y;
+        T2 = T2 * 3;
+        Y3 = P.Y * 2;
         Z3 = Y3 * P.Z;
         Y3 = Y3 * Y3;
         T3 = Y3 * P.X;
         Y3 = Y3 * Y3;
         Y3 = Y3 / 2;
         X3 = T2 * T2;
-        T1 = 2 * T3;
+        T1 = T3 * 2;
         X3 = X3 - T1;
         T1 = T3 - X3;
         T1 = T1 * T2;
         Y3 = T1 - Y3;
     }
-    X3 = X3 % mod;
-    Y3 = Y3 % mod;
-    Z3 = Z3 % mod;
-    return Jacobian(X3,Y3,Z3);
+//    X3 = X3 % mod;
+//    Y3 = Y3 % mod;
+//    Z3 = Z3 % mod;
+    return ZpJacobian(X3,Y3,Z3);
 }
 
-Coordinate ECPrime::pointMultiplication(Coordinate P, mpz_class k) {
+ZpCoordinate ECPrime::pointMultiplication(ZpCoordinate P, mpz_class k) {
 
 	// implementation according to p.99
 
 	std::vector<int> naf = getNAF(k);
-	Jacobian Q = Jacobian::infinity();
+	ZpJacobian Q = ZpJacobian::infinity(P.p);
 	for (int i = naf.size() - 1; i >= 0; --i) {
 		Q = doubling(Q);
 		if (naf[i] == 1) {
@@ -173,50 +176,62 @@ Coordinate ECPrime::pointMultiplication(Coordinate P, mpz_class k) {
 			Q = subtraction(Q, P);
 		}
 	}
-	return Coordinate(Q, mod);
+	return ZpCoordinate(Q);
 }
 
-Jacobian ECPrime::repeatedDoubling(Jacobian P, int m) {
+ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, int m) {
 	// TODO: test...
 
 	if (P.isInfinite()) {
 		return P;
         } else if (ECC_a != -3){ //naive, for the case a != -3
-            Jacobian temp = P;
+            ZpJacobian temp = P;
             for (int i=1; i<=m; i++)
                 temp = doubling(temp);
             return temp;
 	} else { // For the case a==-3
-		mpz_class Y, W, A, B, X, Z, tmp_W;
+		zp_int Y, W, A, B, X, Z, tmp_W;
 		X = P.X; Y = P.Y; Z = P.Z;
 		mpz_class const_4 = 4;
 
 		Y *= 2;
-		mpz_powm(W.get_mpz_t(), P.Z.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
+                W = (P.Z^const_4);
 		while (m > 0) {
-			A = 3 * (X*X - W);
+			A = (X*X - W) * 3;
 			B = X * Y * Y;
-			X = A*A - 2*B;
+			X = A*A - B*2;
 			Z = Z * Y;
 			if (--m > 0) {
 				tmp_W = W;
-				mpz_powm(W.get_mpz_t(), Y.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
-
+                                W = (Y^const_4);
 				// avoid computing y^4 two times -> W is now Y^4
-				Y = 2*A * (B - X) - W;
+				Y = A * (B - X) * 2 - W;
 
 				W = tmp_W * W;
 			} else {
 				// Y <-mod Y^4
-				mpz_powm(Y.get_mpz_t(), Y.get_mpz_t(), const_4.get_mpz_t(), mod.get_mpz_t());
-				Y = 2*A * (B - X) - Y;
+                                Y = (Y^const_4);
+				Y = A * (B - X) * 2 - Y;
 			}
 		}
 
-		X = X % mod;
-		Y = (Y / 2) % mod;
-		Z = Z % mod;
+		Y = (Y / 2);
 
-		return Jacobian(X, Y, Z);
+		return ZpJacobian(X, Y, Z);
 	}
+}
+
+ZpCoordinate ECPrime::getPoint(zp_int x, bool negative_value){
+//    cout << "generating modulu x.p = " << x.get_p() << endl;
+    zp_int y = modular_square_root(x*x*x + ECC_a*x + ECC_b);
+//    cout << "generating modulu y.p = " << y.get_p() << endl;
+    if (y == 0)
+        return ZpCoordinate::infinity();
+    if (negative_value)
+        return ZpCoordinate(x,-y,mod);
+    return ZpCoordinate(x,y,mod);
+}
+
+ZpCoordinate ECPrime::getNegative(const ZpCoordinate& P){
+    return ZpCoordinate(P.X, -P.Y,P.p);
 }

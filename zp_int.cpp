@@ -19,7 +19,10 @@ zp_int& zp_int::operator*=(const zp_int& rhs){
 }
 
 zp_int& zp_int::operator/=(const zp_int& rhs){
-    val *= rhs.inverse().val;
+    if (p == rhs.p)
+        val *= rhs.inverse().val;
+    else
+        val *= zp_int(rhs.val,p).inverse().val;
     return normalize();
 }
 
@@ -60,6 +63,7 @@ zp_int& zp_int::operator=(const zp_int& rhs){
 }
 
 zp_int& zp_int::operator^=(const mpz_class& exp){
+//    cout << "val = " << val << ", exp = " << exp << ", p = " << p << endl;
     mpz_powm(val.get_mpz_t(),val.get_mpz_t(),exp.get_mpz_t(),p.get_mpz_t());
     return *this;
 }
@@ -112,12 +116,22 @@ ostream& operator<<(ostream& o, const zp_int& rhs){
 
 
 ZpCoordinate::ZpCoordinate(const ZpJacobian& jac):X(0),Y(0),p(jac.p) {
-	int const_2 = 2, const_3 = 3;
+    if (jac.isInfinite()){
+        *this = ZpCoordinate::infinity();
+    }
+    else{
+        int const_2 = 2, const_3 = 3;
         X = (jac.X) / (jac.Z^const_2);
         Y = (jac.Y) / (jac.Z^const_3);
+    }
 }
 
-ostream& operator<<(ostream& out, ZpCoordinate& rhs){
+ostream& operator<<(ostream& out, const ZpCoordinate& rhs){
     out << "(" << rhs.X << ", "<<rhs.Y<<")";
+    return out;
+}
+
+ostream& operator<<(ostream& out, const ZpJacobian& rhs){
+    out << "(" << rhs.X << ", "<<rhs.Y<<", " <<rhs.Z<<")";
     return out;
 }
