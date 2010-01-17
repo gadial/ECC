@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <algorithm>
 #include "primes.h"
 #include "ellipticcurve.h"
 #include "tests.h"
@@ -99,31 +100,32 @@ void EllipticCurveTest::tearDown()
 
 void EllipticCurveTest::test_get_point()
 {
-    Coordinate P = Coordinate::infinity();
-    mpz_class x;
-    while (P == Coordinate::infinity()){
-        x = gen.rand(random_curve.mod);
+    ZpCoordinate P = ZpCoordinate::infinity();
+    zp_int x;
+    while (P == ZpCoordinate::infinity()){
+        x = gen.generate_modulu_p(random_curve.mod);
         P = random_curve.getPoint(x);
     }
     //test if P is really on the curve
 //    cout << "x, y = " << P.X << ", " << P.Y << endl;
 //    cout << "p, a, b = " << random_curve.mod << ", " << random_curve.ECC_a << ", " <<random_curve.ECC_b << endl;
-    CPPUNIT_ASSERT((P.Y*P.Y) % random_curve.mod == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b) % random_curve.mod);
+    CPPUNIT_ASSERT((P.Y*P.Y) == (P.X*P.X*P.X + random_curve.ECC_a*P.X + random_curve.ECC_b));
     //test if getPoint really knows to return the "negative" value
-    CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == random_curve.mod);
+    CPPUNIT_ASSERT(P.Y + random_curve.getPoint(x,true).Y == 0);
 }
 
 void EllipticCurveTest::test_doubling_vs_addition()
 {
-    Coordinate P = Coordinate::infinity();
-    Coordinate Q,R;
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    ZpCoordinate P = ZpCoordinate::infinity();
+    ZpCoordinate Q,R;
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
+//    cout << "(test) P.Y.p = " << P.Y.get_p() << endl;
     Q = random_curve.doubling(P);
     //first check if P+P == 2P (P+P should be computed by reduction to the computation of 2P, so shouldn't be a problem
     CPPUNIT_ASSERT(random_curve.addition(P,P) == Q);
     //now check if P + Q + P + Q == 2(P+Q)
-    Coordinate temp = P;
+    ZpCoordinate temp = P;
     temp = random_curve.addition(temp,Q); // P != Q, so ok
     temp = random_curve.addition(temp,P); // P+Q != P, so ok
     temp = random_curve.addition(temp,Q); // temp = P+Q+P+Q
@@ -132,12 +134,12 @@ void EllipticCurveTest::test_doubling_vs_addition()
 }
 
 void EllipticCurveTest::test_repeated_doubling(){
-    Coordinate P = Coordinate::infinity();
+    ZpCoordinate P = ZpCoordinate::infinity();
     
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
     
-    Coordinate temp = P;
+    ZpCoordinate temp = P;
     for (int m=1; m<10; m++){
         temp = random_curve.doubling(temp);
         CPPUNIT_ASSERT(temp == random_curve.repeatedDoubling(P,m));
@@ -145,15 +147,15 @@ void EllipticCurveTest::test_repeated_doubling(){
 }
 
 void EllipticCurveTest::test_point_multiplication(){
-    Coordinate P = Coordinate::infinity();
+    ZpCoordinate P = ZpCoordinate::infinity();
 
-    while (P == Coordinate::infinity())
-        P = random_curve.getPoint(gen.rand(random_curve.mod));
+    while (P == ZpCoordinate::infinity())
+        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
 
-    CPPUNIT_ASSERT(Coordinate::infinity() == random_curve.pointMultiplication(P,0));
+    CPPUNIT_ASSERT(ZpCoordinate::infinity() == random_curve.pointMultiplication(P,0));
     CPPUNIT_ASSERT(P == random_curve.pointMultiplication(P,1));
 
-    Coordinate temp = random_curve.doubling(P);
+    ZpCoordinate temp = random_curve.doubling(P);
     CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,2));
     CPPUNIT_ASSERT(random_curve.addition(P,temp) == random_curve.pointMultiplication(P,3));
 
@@ -165,7 +167,11 @@ void EllipticCurveTest::test_point_multiplication(){
 }
 
 void PolynomialTest::setUp(){
-
+    p = gen.generate_prime(10);
+    for (int i=0; i<ROOTS_ARRAY_LENGTH; i++)
+        random_roots.push_back(gen.generate_modulu_p(p));
+    sort(random_roots.begin(), random_roots.end());
+    random_roots.erase(unique(random_roots.begin(), random_roots.end()),random_roots.end());
 }
 
 void PolynomialTest::tearDown(){
@@ -184,7 +190,6 @@ void PolynomialTest::test_addition_substraction(){
     CPPUNIT_ASSERT(ModularPolynomial("x",100) + ModularPolynomial("1",100) == ModularPolynomial("x + 1",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) + ModularPolynomial("55",100) == ModularPolynomial("x^2 + 55",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2 + 3x + 7",100) + ModularPolynomial("3x^2 + 5x + 12",100) == ModularPolynomial("4x^2 + 8x + 19",100));
-
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x^2",100) == ModularPolynomial("0",100));
     CPPUNIT_ASSERT(ModularPolynomial("x^2",100) - ModularPolynomial("x",100) == ModularPolynomial("x^2 + 99x",100));
 }
@@ -218,15 +223,73 @@ void PolynomialTest::test_divisons(){
     CPPUNIT_ASSERT(ModularPolynomial("x^3 + 4x + 10",113) % ModularPolynomial("3x + 5",113) == ModularPolynomial("28",113));
     CPPUNIT_ASSERT(ModularPolynomial("x^7 + 34x^5 + 15x^4 + 95x^3 + 17",113) % ModularPolynomial("3x^6 + 5x^3",113) == ModularPolynomial("34x^5 + 51x^4 + 95x^3 + 17",113));
     CPPUNIT_ASSERT(ModularPolynomial("0",113) % ModularPolynomial("x",113) == ModularPolynomial("0",113));
+    CPPUNIT_ASSERT(ModularPolynomial("x^3 + 169x^2 + 256x + 118",503) % ModularPolynomial("x^2 + 329x + 406",503) == ModularPolynomial("178x + 191",503));
 
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x",113),ModularPolynomial("x",113)) == ModularPolynomial("x",113));
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x^5 + 3x^2 + x",113),ModularPolynomial("3x^4 + 2x^3 + 17",113)) == ModularPolynomial("1",113));
+    CPPUNIT_ASSERT(gcd(ModularPolynomial("x^3 + 22x^2 + 36x + 2",41),ModularPolynomial("x^2 + 8x + 2",41)) == ModularPolynomial("1",41));
 }
 
 void PolynomialTest::test_evaluations(){
+//    cout << ModularPolynomial("0",113)(4) << endl;
     CPPUNIT_ASSERT(ModularPolynomial("0",113)(4) == 0);
     CPPUNIT_ASSERT(ModularPolynomial("x",113)(4) == 4);
     CPPUNIT_ASSERT(ModularPolynomial("x^2",113)(4) == 16);
     CPPUNIT_ASSERT(ModularPolynomial("x^8",113)(4) == 109);
     CPPUNIT_ASSERT(ModularPolynomial("x^8 + 7x^3 + 53",113)(4) == 45);
+}
+
+void PolynomialTest::test_root_finding(){
+    NumberArray roots;
+    roots = ModularPolynomial("x + 33",113).find_roots();
+    for (NumberArray::iterator i = roots.begin(); i<roots.end(); i++)
+        CPPUNIT_ASSERT(*i == 80);
+    roots = ModularPolynomial("x^2 - 1",113).find_roots();
+    for (NumberArray::iterator i = roots.begin(); i<roots.end(); i++)
+        CPPUNIT_ASSERT(*i == 1 || *i == 112);
+
+    ModularPolynomial p_x = ModularPolynomial::build_from_roots(random_roots,p);
+    roots = p_x.find_roots();
+    sort(roots.begin(), roots.end());
+    NumberArray::iterator i;
+    NumberArray::iterator j;
+    for (i = roots.begin(), j = random_roots.begin(); i< roots.end() || j<random_roots.end(); i++, j++)
+        CPPUNIT_ASSERT(*i == *j);
+}
+
+void ZpIntTest::setUp(){
+    for (int i=0; i<NUMBER_ARRAY_LENGTH; i++)
+        numbers[i] = gen.generate_modulu_p(gen.generate_prime(100));
+}
+
+void ZpIntTest::tearDown(){
+    
+}
+void ZpIntTest::test_arithmetic(){
+//    zp_int a(0,100);
+//    zp_int b(1,100);
+//    cout << endl;
+//    cout << "a-b = " << a-b << endl;
+    CPPUNIT_ASSERT(zp_int(6,17)/2 == zp_int(3,17));
+    CPPUNIT_ASSERT(zp_int(-2,17) == zp_int(15,17));
+
+    for (int i=0; i<NUMBER_ARRAY_LENGTH; i++){
+        zp_int a = numbers[i];
+        zp_int zero = zp_int(0,0);
+        CPPUNIT_ASSERT(a == (a + a ) - a);
+        CPPUNIT_ASSERT(zero == (a - a ));
+        CPPUNIT_ASSERT(a*2 == (a + a ));
+        CPPUNIT_ASSERT(a*7 == (a*3 + a + a + a*2));
+        CPPUNIT_ASSERT(a*13 == (a*54 - a*41));
+
+        if (a != 0){
+            CPPUNIT_ASSERT(1 == (a / a));
+            CPPUNIT_ASSERT(2 == (a*2 / a));
+        }
+        CPPUNIT_ASSERT(a == (a^1));
+        CPPUNIT_ASSERT(1 == (a^0));
+        CPPUNIT_ASSERT(a*a*a == (a^3));
+
+        CPPUNIT_ASSERT(a == (a+a)/2);
+    }
 }

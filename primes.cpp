@@ -41,6 +41,10 @@ mpz_class RandomNumberGenerator::generate_prime(unsigned long int n){
     return 1; //failure
 }
 
+zp_int RandomNumberGenerator::generate_modulu_p(mpz_class p){
+    return zp_int(rand(p),p);
+}
+
 mpz_class RandomNumberGenerator::generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s){
     //find a p such that 4p=t^2+Ds^2 for random t,s
     for (int i=0; i<10*n; i++){
@@ -172,6 +176,10 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         return x % p;
 }
 
+zp_int modular_square_root(zp_int n){
+    //for now, simply use the existing implementation for mpz_class
+    return zp_int(modular_square_root(n, n.get_p()),n.get_p());
+}
 bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed){
     int max_prime_num = NUM_SMALL_PRIMES;
     if (smoothness_allowed < NUM_SMALL_PRIMES && smoothness_allowed > 0)

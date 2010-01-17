@@ -6,6 +6,7 @@
  */
 
 #include "curvesnisttest.h"
+#include "zp_int.h"
 
 CurvesNISTTest::CurvesNISTTest() {
 
@@ -80,6 +81,10 @@ void CurvesNISTTest::p192Doubling() {
 	Coordinate doublingTestData = Coordinate(P192_2S_X, NIST_TESTDATA_BASE,
 			P192_2S_Y, NIST_TESTDATA_BASE);
 	Coordinate doublingCalc = curveP192->doubling(p192S);
+        zp_int x1(p192S.X,curveP192->mod);
+        zp_int y1(p192S.Y,curveP192->mod);
+        zp_int x3 = ((((x1^2)*3+curveP192->ECC_a)^2)-x1*(y1^2)*8)/((y1^2)*4);
+        zp_int y3 = (((((x1^2)*3+curveP192->ECC_a))/(y1*2))*(x1-x3))-y1;       
 	CPPUNIT_ASSERT(doublingTestData == doublingCalc);
 }
 

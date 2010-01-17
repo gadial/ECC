@@ -32,25 +32,6 @@ void printJac(const Jacobian& j) {
  * 
  */
 int main(int argc, char** argv) {
-
-    /*
-    Coordinate c1(27,27);
-    Jacobian j1(c1);
-    Coordinate c2(j1, 29);
-    printCd(c1); printJac(j1); printCd(c1);
-    */
-
-//    Ellipticcurve* ellC = new ECPrime(29, 4, 20);
-//    Coordinate add = ellC->addition(Coordinate::infinity(), Coordinate(16, 27));
-//    Coordinate doub = ellC->doubling(Coordinate(1,5));
-//    //Jacobian mult = ellC->pointMultiplication(Coordinate(1,5), 33);
-//
-//
-//    printCd(add);
-//    printCd(doub);
-//
-//    delete ellC;
-
     do_tests();
     return 0;
 }
@@ -61,6 +42,7 @@ int do_tests(){
   CPPUNIT_TEST_SUITE_REGISTRATION(PrimesTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(EllipticCurveTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PolynomialTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(ZpIntTest);
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();

@@ -1,4 +1,5 @@
 #include "hcp.h"
+#include "primes.h"
 
 using std::cout;
 using std::endl;
@@ -67,22 +68,38 @@ ModularPolynomial::ModularPolynomial(string poly_string, mpz_class p):modulus(p)
     int sign = 1;
 
     while (!temp_string.empty()){
-//        cout << "reading number... string is " << temp_string << endl;
         mpz_class number = read_number(temp_string);
-//        cout << "number read = " << number << endl;
-//        cout << "reading degree... string is " << temp_string << endl;
         int temp_degree = read_degree(temp_string);
         if (degree < temp_degree)
             degree = temp_degree;
-//        cout << "degree found = " << temp_degree << endl;
-//        cout << "putting " <<((sign*number) % p) << " in coefficients[" << temp_degree << "]" << endl;
-        coefficients[temp_degree] = ((sign*number) % p);
-//        cout << "reading sign... string is " << temp_string << endl;
+        coefficients[temp_degree] = zp_int((sign*number),p);
         sign = read_sign(temp_string);
-//        cout << "sign is " << sign << endl;
     }
-//    cout << "degree = " <<degree << endl;
-//    cout << coefficients[2] << endl;
+
+    for (int i=0; i<=degree; i++)
+        if (coefficients[i] == 0)
+            coefficients[i] = zp_int(0,p);
+}
+ModularPolynomial::ModularPolynomial(const NumberArray& _coefficients, mpz_class p):modulus(p),degree(0){
+    int pos = 0;
+    for (NumberArray::const_iterator i = _coefficients.begin(); i<_coefficients.end(); i++){
+        coefficients[pos] = *i;
+        if (coefficients[pos] != 0)
+            degree = pos;
+        pos++;
+    }
+}
+
+ModularPolynomial ModularPolynomial::build_from_roots(const NumberArray& roots, mpz_class p){
+    ModularPolynomial result("1",p);
+    for (NumberArray::const_iterator i = roots.begin(); i< roots.end(); i++){
+        NumberArray coeff;
+        coeff.push_back(-(*i));
+        coeff.push_back(zp_int(1,p));
+        ModularPolynomial temp(coeff,p);
+        result *= temp;
+    }
+    return result;
 }
 
 string ModularPolynomial::to_string() const{
@@ -122,7 +139,6 @@ ModularPolynomial& ModularPolynomial::operator+=(const ModularPolynomial& lhs){
     int max_degree = max(degree, lhs.degree);
     for (int i = max_degree; i>=0; i--){
         coefficients[i] += lhs.coefficients[i];
-        coefficients[i] %= modulus;
         if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
@@ -133,9 +149,6 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     int max_degree = max(degree, lhs.degree);
     for (int i = max_degree; i>=0; i--){
         coefficients[i] -= lhs.coefficients[i];
-        coefficients[i] %= modulus;
-        if (coefficients[i] < 0)
-            coefficients[i] += modulus ;
         if (i == max_degree && coefficients[i] == 0 && max_degree > 0)
             max_degree--;
     }
@@ -143,10 +156,14 @@ ModularPolynomial& ModularPolynomial::operator-=(const ModularPolynomial& lhs){
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator=(const ModularPolynomial& lhs){
+//    cout << "copying to " << *this << endl;
+//    cout << "from " << lhs << endl;
     degree = lhs.degree;
     modulus = lhs.modulus;
     for (int i=0; i<= degree; i++)
         coefficients[i] = lhs.coefficients[i];
+//    cout << "lhs print: "; lhs.coefficients[degree].full_print(cout); cout << endl;
+//    cout << "print: "; coefficients[degree].full_print(cout); cout << endl;
     return *this;
 }
 ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
@@ -156,7 +173,7 @@ ModularPolynomial& ModularPolynomial::operator*=(const ModularPolynomial& lhs){
     int max_degree = degree + lhs.degree;
     temp.degree = max_degree;
     for (int i = max_degree; i>=0; i--){
-        temp.coefficients[i] = 0;
+        temp.coefficients[i] = zp_int(0,modulus);
         for (int j=0; j<=i; j++)
             if (i-j <= degree && j <= lhs.degree)
                 temp.coefficients[i] += coefficients[i-j]*lhs.coefficients[j];
@@ -175,37 +192,39 @@ ModularPolynomial& ModularPolynomial::operator/=(const ModularPolynomial& lhs){
 }
 
 ModularPolynomial& ModularPolynomial::normalize(){
-    mpz_class leading_coefficient_inverse;
-    mpz_invert(leading_coefficient_inverse.get_mpz_t(), coefficients[degree].get_mpz_t(),modulus.get_mpz_t());
     for (int i=0; i<=degree; i++)
-        coefficients[i] = ((coefficients[i] * leading_coefficient_inverse) % modulus);
+        coefficients[i] /= coefficients[degree];
     return *this;
 }
 void ModularPolynomial::divide(ModularPolynomial lhs, ModularPolynomial& Q,ModularPolynomial& R){
 //    cout << "dividing " << *this << " by " << lhs << endl;
     R = *this;
     Q = ModularPolynomial("0",modulus);
-    mpz_class lhs_leading_coefficient_inverse;
-    mpz_invert(lhs_leading_coefficient_inverse.get_mpz_t(), lhs.coefficients[lhs.degree].get_mpz_t(),modulus.get_mpz_t());
-    while (R.degree >= lhs.degree && !R.is_zero()){
-        int R_old_degree = R.degree;
-        mpz_class R_leading_coefficient = R.coefficients[R.degree];
+    for (int i=degree - lhs.degree; i>=0; i--)
+        Q.coefficients[i] = zp_int(0,modulus);
 
-        Q.coefficients[R.degree - lhs.degree] += R_leading_coefficient*lhs_leading_coefficient_inverse;
-        Q.coefficients[R.degree - lhs.degree] %= Q.modulus;
+//    cout << "R = " << R << " , lhs = " << lhs << endl;
+    while (R.degree >= lhs.degree && !R.is_zero()){
+//        cout << "R.degree = " << R.degree << ", lhs.degree = " << lhs.get_degree() << endl;
+        int R_old_degree = R.degree;
+        zp_int coeff_factor = R.coefficients[R.degree] / lhs.coefficients[lhs.degree];
+//        cout << coeff_factor << endl;
+        Q.coefficients[R.degree - lhs.degree] += coeff_factor;
         if (Q.coefficients[R.degree - lhs.degree] != 0 && Q.degree < R.degree - lhs.degree)
             Q.degree = R.degree - lhs.degree;
 
-        for (int i=R.degree; i>=R.degree - lhs.degree; i--){
-            R.coefficients[i] -= (R_leading_coefficient*lhs_leading_coefficient_inverse*lhs.coefficients[lhs.degree - R_old_degree + i]);
-            R.coefficients[i] %= R.modulus;
-            if (R.coefficients[i] < 0)
-                R.coefficients[i] += R.modulus;
+        for (int i=R.degree; i>=R_old_degree - lhs.degree; i--){
+//            cout << "i = " << i << endl;
+//            R.coefficients[i].full_print(cout); cout << endl;
+            R.coefficients[i] -= (coeff_factor*lhs.coefficients[lhs.degree - R_old_degree + i]);
+//            R.coefficients[i].full_print(cout);cout << endl;
+//            cout << "R.coefficient[i] = " << R.coefficients[i] << endl;
             if (i == R.degree && R.coefficients[i] == 0 && R.degree > 0)
                 R.degree--;
         }
     }
 //    cout << "R = " << R << " , Q = " << Q << endl;
+//    R.coefficients[R.degree].full_print(cout); cout << endl;
 }
 
 ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
@@ -265,7 +284,11 @@ ModularPolynomial gcd(const ModularPolynomial& rhs, const ModularPolynomial& lhs
     ModularPolynomial B = lhs;
     ModularPolynomial R = lhs;
     while (!B.is_zero()){
+//        cout << "About to calculate A % B = " << A << ", " << B << endl;
+//        cout << "A.p = " << A.get_modulus() << ", A.degree = " << A.get_degree() << endl;
+//        cout << "B.p = " << B.get_modulus() << ", B.degree = " << B.get_degree() << endl;
         R = A % B;
+//        cout << "R after = " << R << endl;
         A = B;
         B = R;
     }
@@ -287,31 +310,86 @@ ostream& operator<<(ostream& o, const ModularPolynomial& lhs){
     return o;
 }
 
-mpz_class ModularPolynomial::operator()(mpz_class a) const{
-    mpz_class temp_a = 1;
-    mpz_class result = 0;
+zp_int ModularPolynomial::operator()(zp_int a) const{
+    zp_int temp_a(1,modulus);
+    zp_int result(0,modulus);
     for (int i = 0; i<=degree; i++){
-        result = (result + temp_a * coefficients[i]) % modulus;
-        temp_a = (temp_a * a) % modulus;
+        result += (temp_a * coefficients[i]);
+        temp_a *= a;
     }
     return result;
 }
+void ModularPolynomial::full_print(ostream& o){
+    for (int i=degree; i>=0; i--)
+        coefficients[i].full_print(o);
+}
 
-vector<mpz_class> ModularPolynomial::find_roots(){
+NumberArray ModularPolynomial::find_roots(){
     //pg. 37 in Cohen's book
     //first stage: isolating roots in F_p
     //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
     //and then compute gcd(d-b,c)
-    vector<mpz_class> results;
+    NumberArray results;
+    RandomNumberGenerator gen;
+    
+    if (degree == 0)
+        return results; //degree 0 polynomial is not considered to have any roots, including the zero polynomial
     mpz_class p = modulus;
+    zp_int temp_result(0,p);
     ModularPolynomial b("x", p);
     ModularPolynomial d = b.modular_exponent(modulus,*this);
     ModularPolynomial A = gcd(*this, d - b);
 
     if (A(0) == 0){
         results.push_back(0);
+        A /= ModularPolynomial("x",modulus);
     }
-    //TODO: finish
+
+    //now check for small degree
+    if (A.degree == 0)
+        return results;
+    if (A.degree == 1){
+        temp_result = (-A.coefficients[0])/(A.coefficients[1]);
+        results.push_back(temp_result);
+        return results;
+    }
+    if (A.degree == 2){
+        zp_int d = A.coefficients[1]*A.coefficients[1] - A.coefficients[0]*A.coefficients[2]*4;
+        zp_int e = modular_square_root(d); //d is guaranteed to be a QR because of us gcding with x^p-x earlier
+        results.push_back((-A.coefficients[1] + e)/(A.coefficients[2]*2));
+        results.push_back((-A.coefficients[1] - e)/(A.coefficients[2]*2));
+        return results;
+    }
+
+    //now do a random splitting
+    ModularPolynomial B;
+    while (true){ //keep trying until success
+        zp_int a = gen.generate_modulu_p(p);
+        NumberArray b_coeff;
+        b_coeff.push_back(a); // X + a
+        b_coeff.push_back(zp_int(1,p));
+        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A).normalize();
+//        cout << "Trying to split A = " << A << endl;
+//        cout << "gcding with b = " << b << " , p = " << p << endl;
+        B = gcd(A, b);
+//        cout << "Got B = " << B << endl;
+        if (B.degree > 0 && B.degree < A.degree)
+            break; //managed to split A
+    }
+    NumberArray results_1 = B.find_roots();
+    NumberArray results_2 = (A/B).find_roots();
+    std::copy(results_1.begin(), results_1.end(),std::back_inserter(results));
+    std::copy(results_2.begin(), results_2.end(),std::back_inserter(results));
+    return results;
+}
+
+
+ostream& operator<<(ostream& o, const NumberArray lhs){
+    NumberArray::const_iterator it;
+    o << "[";
+    for (it = lhs.begin(); it<lhs.end(); it++)
+        o << *it << ", ";
+    o << "]";
 }
 
 HCP::HCP()
