@@ -43,7 +43,8 @@ public:
 	Poly operator*(const Poly& other);
 	void operator*=(int s);
 	void operator/=(int s);
-	void operator%=(mpz_class m);
+	//void operator%=(mpz_class m);
+	void operator%=(int logm);
 	Poly operator>>(int m);
 	Poly operator<<(int m);
 	Poly operator-();

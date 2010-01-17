@@ -114,8 +114,19 @@ void adicops::do_s() {
 	*/
 	//cout << get_points(0b10001, 0x83, 7) << endl;
 
-	int deg = 7;
-	mpz_class orer = (1 << deg);
+	/*
+	mpz_class const1 = 1;
+	mpz_class rr = 34;
+	mpz_class val;
+	val.set_str("17179869185666", 10);
+	val %= (const1 << 34);
+	cout << val << endl;
+	return;
+	*/
+
+	int deg = 163;
+	mpz_class c1 = 1;
+	mpz_class orer = (c1 << deg);
 	mpz_class tmp;
 	tmp.set_str("3", 16);
 	tmp |= orer;
@@ -145,7 +156,7 @@ Poly adicops::get_teichmuller_modulus(Poly in, int N) {
 	Poly M;
 	if (N == 1) {
 		M = in;
-		M %= 2;
+		M %= 1;
 
 		cout << "----------------" << endl << "N = " << N << endl;
 
@@ -161,7 +172,7 @@ Poly adicops::get_teichmuller_modulus(Poly in, int N) {
 
 		Poly M0 = M.PXpPmX();
 		M0 /= 2;
-		M0 %= (1 << N);
+		M0 %= N;
 		M0 = M0.sqSubst();
 
 		cout << "M0: ";
@@ -170,7 +181,7 @@ Poly adicops::get_teichmuller_modulus(Poly in, int N) {
 		Poly M1 = M.PXmPmX();
 		M1 = (M1 >> 1);
 		M1 /= 2;
-		M1 %= (1 << N);
+		M1 %= N;
 		M1 = M1.sqSubst();
 
 		cout << "M1: ";
@@ -184,7 +195,7 @@ Poly adicops::get_teichmuller_modulus(Poly in, int N) {
 		// V %= (1 << (N - newN));
 		V = V + (Xpoly * M1sq);
 		V /= (1 << newN);
-		V %= (1 << (N - newN));
+		V %= (N - newN);
 
 		cout << "V: ";
 		V.print();
@@ -196,7 +207,7 @@ Poly adicops::get_teichmuller_modulus(Poly in, int N) {
 		delta *= (1 << newN);
 
 		M = M + delta;
-		M %= (1 << N);
+		M %= N;
 
 		cout << "M: ";
 		M.print();
@@ -210,20 +221,20 @@ Poly adicops::teichmuller_modulus_increment(const Poly& M0
 	if (N == 1) {
 		Poly nu(1);
 		delta = nu - V;
-		delta %= 2;
+		delta %= 1;
 	} else {
 		int newN = (N % 2 == 0 ? N / 2 : N / 2 + 1);
 		delta = teichmuller_modulus_increment(M0, M1, V, newN);
 
 		Poly delta0 = delta.PXpPmX();
 		delta0 /= 2;
-		delta0 %= (1 << N);
+		delta0 %= N;
 		delta0 = delta0.sqSubst();
 
 		Poly delta1 = delta.PXmPmX();
 		delta1 = (delta1 >> 1);
 		delta1 /= 2;
-		delta1 %= (1 << N);
+		delta1 %= N;
 		delta1 = delta1.sqSubst();
 
 		Poly XPoly = Poly(1);
@@ -232,13 +243,13 @@ Poly adicops::teichmuller_modulus_increment(const Poly& M0
 		tmp *= 2;
 		Poly Vnew = delta + V - tmp;
 		Vnew /= (1 << newN);
-		Vnew %= (1 << (N - newN));
+		Vnew %= (N - newN);
 
 		Poly bigDelta = teichmuller_modulus_increment(M0, M1, Vnew, N - newN);
 		bigDelta *= (1 << newN);
 
 		delta = bigDelta + delta;
-		delta %= (1 << N);
+		delta %= N;
 	}
 
 	return delta;
@@ -256,7 +267,7 @@ Poly adicops::poly_invert(Poly f, int N, int prec) {
 		//cout << "N: " << N << endl;
 		//c.print();
 		c = c.modXpowm(N);
-		c %= (1 << prec);
+		c %= prec;
 		//c.print();
 		return c;
 	}
@@ -264,7 +275,7 @@ Poly adicops::poly_invert(Poly f, int N, int prec) {
 
 Poly adicops::poly_remainder(Poly a, Poly b, int prec) {
 	if (a.degree < b.degree) {
-		a %= (1 << prec);
+		a %= prec;
 		return a;
 	} else {
 		int n = a.degree - b.degree + 1;
@@ -273,12 +284,12 @@ Poly adicops::poly_remainder(Poly a, Poly b, int prec) {
 		Poly c = poly_invert(b.reverse(), n, prec);
 		//c.print();
 		Poly qq = a.reverse() * c;
-		qq %= (1 << prec);
+		qq %= prec;
 		qq = qq.modXpowm(n);
 		Poly q = qq.reverse();
 		Poly r = (a - b*q);
 		//cout << "r before, "; r.print();
-		r %= (1 << prec);
+		r %= prec;
 		//cout << "r after, "; r.print();
 		r = r.modXpowm(b.degree);
 		return r;
@@ -372,8 +383,8 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 
 	c = poly_remainder(b, mod, 4);
 
-	cout << "4 a: "; a.print();
-	cout << "4 b: "; b.print();
+	//cout << "4 a: "; a.print();
+	//cout << "4 b: "; b.print();
 
 	for (int i = 5; i <= N; ++i) {
 		Poly olda = a;
@@ -386,8 +397,8 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 		assert(testsqrt(b, ab, mod, i));
 		//Poly re = b * b;
 		//re = poly_remainder(re, mod, i);
-		cout << i << " a: "; a.print();
-		cout << i << " b: "; b.print();
+		//cout << i << " a: "; a.print();
+		//cout << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}
@@ -407,28 +418,29 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 		Poly re = b * b;
 		re = poly_remainder(re, mod, N);
 		assert(testsqrt(b, ab, mod, N));
-		cout << i << " a: "; a.print();
-		cout << i << " b: "; b.print();
+		//cout << i << " a: "; a.print();
+		//cout << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}
 
-	a0 %= (1 << (N - 1));
-	a %= (1 << (N - 1));
+	a0 %= (N - 1);
+	a %= (N - 1);
 	Poly inva = get_inverse(a, mod, N - 1);
 	Poly t = a0 * inva;
 	t = poly_remainder(t, mod, N - 1);
 
+	mpz_class c1 = 1;
 	mpz_class mt = t.coeffs[0];
-	if ((mt * mt) > (1 << (d + 2))) {
-		mt = mt - (1 << (N - 1));
+	if ((mt * mt) > (c1 << (d + 2))) {
+		mt = mt - (c1 << (N - 1));
 	}
-	a0.print();
-	a.print();
+	//a0.print();
+	//a.print();
 
-	t.print();
+	//t.print();
 
-	return (1 << d) + 1 - mt;
+	return (c1 << d) + 1 - mt;
 	//mod.print();
 }
 

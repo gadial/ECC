@@ -62,12 +62,20 @@ Poly Poly::operator*(const Poly& other) {
 	}
 	return res;
 }
-
+/*
 void Poly::operator%=(mpz_class m) {
 	for (int i = 0; i < degree + 1; ++i) {
 		mpz_mod(coeffs[i].get_mpz_t(), coeffs[i].get_mpz_t(), m.get_mpz_t());
 		//int aa = coeffs[i] % m;
 		//coeffs[i] = (aa < 0 ? m + aa : aa);
+	}
+}
+*/
+void Poly::operator%=(int logm) {
+	mpz_class c1 = 1;
+	mpz_class m = c1 << logm;
+	for (int i = 0; i < degree + 1; ++i) {
+		mpz_mod(coeffs[i].get_mpz_t(), coeffs[i].get_mpz_t(), m.get_mpz_t());
 	}
 }
 
