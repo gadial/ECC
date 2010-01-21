@@ -124,13 +124,13 @@ void adicops::do_s() {
 	return;
 	*/
 
-	int deg = 163;
+	int deg = 7;
 	mpz_class c1 = 1;
 	mpz_class orer = (c1 << deg);
 	mpz_class tmp;
 	tmp.set_str("3", 16);
 	tmp |= orer;
-	cout << get_points(0b10001, tmp, deg) << endl;
+	cout << get_points_AGM_bivariate(0b10001, tmp, deg) << endl;
 	/*
 	Poly M0 = M.PXpPmX();
 	M0.print();
@@ -296,7 +296,33 @@ Poly adicops::poly_remainder(Poly a, Poly b, int prec) {
 	}
 }
 
+Poly adicops::poly_division(Poly a, Poly b, int prec) {
+	if (a.degree < b.degree) {
+		return Poly::zero();
+	} else {
+		int n = a.degree - b.degree + 1;
+		//Poly powpoly = Poly(b.degree);
+		//powpoly.set_coeff(b.degree, 1);
+		Poly c = poly_invert(b.reverse(), n, prec);
+		//c.print();
+		Poly qq = a.reverse() * c;
+		qq %= prec;
+		qq = qq.modXpowm(n);
+		Poly q = qq.reverse();
+		return q;
+	}
+}
+
+Poly adicops::poly_division(Poly num, Poly denom, Poly mod, int prec) {
+	//cout << "inv.. "; denom.print();
+	Poly invDenom = get_inverse(denom, mod, prec);
+	Poly div = num * invDenom;
+	div = poly_remainder(div, mod, prec);
+	return div;
+}
+
 Poly adicops::get_inverse(Poly a, Poly mod, int prec) {
+	cout << "inv: "; a.print();
 	if (prec == 1) {
 		GFE gfe = GFE(a.to_gfe_el(), mod.to_gfe_el());
 		GFE invGfe = !gfe;
@@ -370,7 +396,41 @@ Poly adicops::get_sqrt(Poly a, Poly mod, int prec) {
 	return poly_remainder(invsqrt, mod, prec);
 }
 
-mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
+mpz_class adicops::get_points_AGM_univariate(mpz_class _c, mpz_class _mod, int d) {
+	int N = (d % 2 == 0 ? d / 2 + 3 : d / 2 + 4);
+	Poly one = Poly::one();
+
+	Poly c = Poly(_c);
+	Poly mod = Poly(_mod);
+
+	c *= 8;
+	Poly b = one + c;
+	Poly eps = poly_remainder(b, mod, 4);
+	cout << 4 << " eps: "; eps.print();
+
+	for (int i = 5; i <= N; ++i) {
+		Poly sqrtEps = get_sqrt(eps, mod, i);
+		assert(testsqrt(sqrtEps, eps, mod, i));
+		//sqrtEps *= 2;
+		//sqrtEps = poly_remainder(sqrtEps, mod, i);
+		Poly t = one + eps;
+		t /= 2;
+		eps = poly_division(t, sqrtEps, mod, i);
+		//sqrtEps = poly_remainder(sqrtEps, mod, i);
+		//sqrtEps = get_inverse(sqrtEps, mod, i);
+		//eps = one + eps;
+		//eps = eps * sqrtEps;
+		//eps = poly_remainder(eps, mod, i);
+		cout << i << " eps: "; eps.print();
+	}
+
+	Poly num = eps;
+	num *= 2;
+	Poly t = poly_division(num, one + eps, mod, N - 1);
+	return t.coeffs[0];
+}
+
+mpz_class adicops::get_points_AGM_bivariate(mpz_class _c, mpz_class _mod, int d) {
 
 	int N = (d % 2 == 0 ? d / 2 + 3 : d / 2 + 4);
 	Poly a = Poly::one();
@@ -394,11 +454,11 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 		Poly ab = olda * oldb;
 		ab = poly_remainder(ab, mod, i);
 		b = get_sqrt(ab, mod, i);
-		assert(testsqrt(b, ab, mod, i));
+		//assert(testsqrt(b, ab, mod, i));
 		//Poly re = b * b;
 		//re = poly_remainder(re, mod, i);
-		//cout << i << " a: "; a.print();
-		//cout << i << " b: "; b.print();
+		cout << i << " a: "; a.print();
+		cout << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}
@@ -418,27 +478,41 @@ mpz_class adicops::get_points(mpz_class _c, mpz_class _mod, int d) {
 		Poly re = b * b;
 		re = poly_remainder(re, mod, N);
 		assert(testsqrt(b, ab, mod, N));
-		//cout << i << " a: "; a.print();
-		//cout << i << " b: "; b.print();
+		cout << i << " a: "; a.print();
+		cout << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}
 
 	a0 %= (N - 1);
 	a %= (N - 1);
+
+	/*
+	a0.set_coeff(0, 5);a0.set_coeff(1, 36);a0.set_coeff(2, 16);
+	a0.set_coeff(3, 8);a0.set_coeff(4, 32);a0.set_coeff(5, 0);
+	a0.set_coeff(6, 16);
+
+	a.set_coeff(0, 57);a.set_coeff(1, 52);a.set_coeff(2, 48);
+	a.set_coeff(3, 40);a.set_coeff(4, 32);a.set_coeff(5, 32);
+	a.set_coeff(6, 48);
+	*/
+
 	Poly inva = get_inverse(a, mod, N - 1);
 	Poly t = a0 * inva;
 	t = poly_remainder(t, mod, N - 1);
+	//Poly t = poly_division(a0, a, N - 2);
+	t.print();
 
 	mpz_class c1 = 1;
 	mpz_class mt = t.coeffs[0];
+	//mpz_class mt = t.to_gfe_el();
 	if ((mt * mt) > (c1 << (d + 2))) {
 		mt = mt - (c1 << (N - 1));
 	}
-	//a0.print();
-	//a.print();
+	cout << "a0: "; a0.print();
+	cout << "a1: "; a.print();
 
-	//t.print();
+	cout << "t: "; t.print();
 
 	return (c1 << d) + 1 - mt;
 	//mod.print();

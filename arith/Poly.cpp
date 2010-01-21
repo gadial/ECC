@@ -62,6 +62,7 @@ Poly Poly::operator*(const Poly& other) {
 	}
 	return res;
 }
+
 /*
 void Poly::operator%=(mpz_class m) {
 	for (int i = 0; i < degree + 1; ++i) {
