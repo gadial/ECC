@@ -15,7 +15,7 @@
 #define CURVESNISTTEST_H_
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "curvesnist.h"
+#include "../curvesnist.h"
 
 #define NIST_TESTDATA_BASE 16
 

@@ -6,7 +6,7 @@
  */
 
 #include "curvesnisttest.h"
-#include "zp_int.h"
+#include "../zp_int.h"
 
 CurvesNISTTest::CurvesNISTTest() {
 

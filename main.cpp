@@ -10,8 +10,10 @@
 #include "ellipticcurve.h"
 #include "curvesnist.h"
 #include "primes.h"
-#include "curvesnisttest.h"
+#include "tests/curvesnisttest.h"
+#include "tests/padictest.h"
 #include "tests.h"
+#include "adicops.h"
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -43,6 +45,7 @@ int do_tests(){
   CPPUNIT_TEST_SUITE_REGISTRATION(EllipticCurveTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(PolynomialTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(ZpIntTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(Padictest);
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
