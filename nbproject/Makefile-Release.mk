@@ -31,16 +31,19 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/ellipticcurve.o \
 	${OBJECTDIR}/ecprime.o \
-	${OBJECTDIR}/hcp.o \
-	${OBJECTDIR}/ecbinary.o \
+	${OBJECTDIR}/adicops.o \
+	${OBJECTDIR}/tests/padictest.o \
+	${OBJECTDIR}/tests/curvesnisttest.o \
 	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/coordinates.o \
-	${OBJECTDIR}/curvesnisttest.o \
-	${OBJECTDIR}/zp_int.o \
-	${OBJECTDIR}/primes.o
+	${OBJECTDIR}/primes.o \
+	${OBJECTDIR}/ellipticcurve.o \
+	${OBJECTDIR}/arith/Poly.o \
+	${OBJECTDIR}/hcp.o \
+	${OBJECTDIR}/ecbinary.o \
+	${OBJECTDIR}/zp_int.o
 
 # C Compiler Flags
 CFLAGS=
@@ -66,25 +69,25 @@ dist/Release/GNU-Linux-x86/ecc: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ecc ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
-
 ${OBJECTDIR}/ecprime.o: nbproject/Makefile-${CND_CONF}.mk ecprime.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecprime.o ecprime.cpp
 
-${OBJECTDIR}/hcp.o: nbproject/Makefile-${CND_CONF}.mk hcp.cpp 
+${OBJECTDIR}/adicops.o: nbproject/Makefile-${CND_CONF}.mk adicops.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/hcp.o hcp.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/adicops.o adicops.cpp
 
-${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/tests/padictest.o: nbproject/Makefile-${CND_CONF}.mk tests/padictest.cpp 
+	${MKDIR} -p ${OBJECTDIR}/tests
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecbinary.o ecbinary.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tests/padictest.o tests/padictest.cpp
+
+${OBJECTDIR}/tests/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk tests/curvesnisttest.cpp 
+	${MKDIR} -p ${OBJECTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tests/curvesnisttest.o tests/curvesnisttest.cpp
 
 ${OBJECTDIR}/tests.o: nbproject/Makefile-${CND_CONF}.mk tests.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -101,20 +104,35 @@ ${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
 
-${OBJECTDIR}/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk curvesnisttest.cpp 
+${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/curvesnisttest.o curvesnisttest.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/primes.o primes.cpp
+
+${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
+
+${OBJECTDIR}/arith/Poly.o: nbproject/Makefile-${CND_CONF}.mk arith/Poly.cpp 
+	${MKDIR} -p ${OBJECTDIR}/arith
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/arith/Poly.o arith/Poly.cpp
+
+${OBJECTDIR}/hcp.o: nbproject/Makefile-${CND_CONF}.mk hcp.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/hcp.o hcp.cpp
+
+${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecbinary.o ecbinary.cpp
 
 ${OBJECTDIR}/zp_int.o: nbproject/Makefile-${CND_CONF}.mk zp_int.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/zp_int.o zp_int.cpp
-
-${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/primes.o primes.cpp
 
 # Subprojects
 .build-subprojects:
