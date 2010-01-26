@@ -5,6 +5,8 @@
 #include "ellipticcurve.h"
 #include "tests.h"
 #include "small_primes.h"
+#include "curvesnist.h"
+
 using namespace std;
 
 void PrimesTest::setUp()
@@ -166,8 +168,17 @@ void EllipticCurveTest::test_point_multiplication(){
     CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,goal));
 }
 
-void EllipticCurveTest::test_check_order(){
-    
+void EllipticCurveTest::test_check_order() {
+    CurveNISTp192 p192;
+    CPPUNIT_ASSERT(p192.check_order(p192.getOrder()));
+    CurveNISTp224 p224;
+    CPPUNIT_ASSERT(p224.check_order(p224.getOrder()));
+    CurveNISTp256 p256;
+    CPPUNIT_ASSERT(p256.check_order(p256.getOrder()));
+    CurveNISTp384 p384;
+    CPPUNIT_ASSERT(p384.check_order(p384.getOrder()));
+    CurveNISTp521 p521;
+    CPPUNIT_ASSERT(p521.check_order(p521.getOrder()));
 }
 
 void PolynomialTest::setUp(){

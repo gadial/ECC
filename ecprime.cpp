@@ -30,8 +30,12 @@ bool ECPrime::check_order(mpz_class order_candidate){
     //a somewhat naive test... is there something better?
     RandomNumberGenerator gen;
     for (int i=0; i<10; i++){
-        zp_int x = gen.generate_modulu_p(mod);
-        ZpCoordinate P = getPoint(x);
+        zp_int x;
+        ZpCoordinate P;
+        do {
+        	x = gen.generate_modulu_p(mod);
+        	P = getPoint(x);
+        } while (P.isInfinite());
         if (!pointMultiplication(P,order_candidate).isInfinite())
             return false;
     }
@@ -209,6 +213,9 @@ ZpCoordinate ECPrime::pointMultiplication(ZpCoordinate P, mpz_class k) {
 
 	// implementation according to p.99
 
+	if (P.isInfinite()) {
+		return ZpCoordinate::infinity();
+	}
 	std::vector<int> naf = getNAF(k);
 	ZpJacobian Q = ZpJacobian::infinity(P.p);
 	for (int i = naf.size() - 1; i >= 0; --i) {
