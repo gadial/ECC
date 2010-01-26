@@ -91,7 +91,7 @@ public:
 	 * Repeated doubling of a point P in jacobian coordinates
 	 * (m times) -> 2^m P
 	 */
-	Coordinate repeatedDoubling(Coordinate P, mpz_class m);
+	Coordinate repeatedDoubling(Coordinate P, int m);
 
 	/**
 	 * Point multiplication (k times)

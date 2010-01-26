@@ -48,7 +48,7 @@ public:
 	 * Repeated doubling of a point P in jacobian coordinates
 	 * (m times) -> 2^m P
 	 */
-	ZpCoordinate repeatedDoubling(ZpCoordinate P, mpz_class m);
+	ZpCoordinate repeatedDoubling(ZpCoordinate P, int m);
 
 	/**
 	 * Point multiplication (k times)
@@ -62,7 +62,7 @@ public:
         Coordinate addition(Coordinate P, Coordinate Q){return addition(ZpCoordinate(P,mod),ZpCoordinate(Q,mod));}
 	Coordinate subtraction(Coordinate P, Coordinate Q){return subtraction(ZpCoordinate(P,mod),ZpCoordinate(Q,mod));}
 	Coordinate doubling(Coordinate P){return doubling(ZpCoordinate(P,mod));}
-	Coordinate repeatedDoubling(Coordinate P, mpz_class m){return repeatedDoubling(ZpCoordinate(P,mod),m);}
+	Coordinate repeatedDoubling(Coordinate P, int m){return repeatedDoubling(ZpCoordinate(P,mod),m);}
 	Coordinate pointMultiplication(Coordinate P, mpz_class k){return pointMultiplication(ZpCoordinate(P,mod),k);}
         bool check_order(mpz_class order_candidate);
 private:
@@ -88,7 +88,7 @@ private:
 	 * Repeated doubling of a point P in jacobian coordinates
 	 * (m times) -> 2^m P
 	 */
-	ZpJacobian repeatedDoubling(ZpJacobian P, mpz_class m);
+	ZpJacobian repeatedDoubling(ZpJacobian P, int m);
 
 protected:
     ZpCoordinate getNegative(const ZpCoordinate& P);

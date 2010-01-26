@@ -78,7 +78,7 @@ ZpCoordinate ECPrime::doubling(ZpCoordinate P) {
 	return ZpCoordinate(doubling(ZpJacobian(P)));
 }
 
-ZpCoordinate ECPrime::repeatedDoubling(ZpCoordinate P, mpz_class m) {
+ZpCoordinate ECPrime::repeatedDoubling(ZpCoordinate P, int m) {
 	return ZpCoordinate(repeatedDoubling(ZpJacobian(P), m));
 }
 
@@ -215,7 +215,7 @@ ZpCoordinate ECPrime::pointMultiplication(ZpCoordinate P, mpz_class k) {
 	return ZpCoordinate(Q);
 }
 
-ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, mpz_class m) {
+ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, int m) {
 	// TODO: test...
 
 	if (P.isInfinite()) {
