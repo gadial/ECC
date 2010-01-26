@@ -62,7 +62,11 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
     zp_int b = k*(c^3);
 
     ECPrime candidate(p,a,b);
-
+    if (!candidate.check_order(u)){
+        zp_int e = gen.generate_qnr_modulu_p(p);
+        candidate = ECPrime(p,a*(e^2),b*(e^3));
+    }
+    return candidate;
 }
 
 ZpCoordinate ECPrime::addition(ZpCoordinate P, ZpCoordinate Q) {
