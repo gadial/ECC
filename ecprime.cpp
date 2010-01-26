@@ -6,6 +6,7 @@
  */
 
 #include "ecprime.h"
+#include "hcp.h"
 
 ECPrime::ECPrime() {
 	// TODO Auto-generated constructor stub
@@ -25,6 +26,41 @@ ECPrime ECPrime::randomCurve(int number_of_bits, RandomNumberGenerator gen){
 
     return ECPrime(p,a,b);
 }
+bool ECPrime::check_order(mpz_class order_candidate){
+    RandomNumberGenerator gen;
+    for (int i=0; i<10; i++){
+        zp_int x = gen.generate_modulu_p(mod);
+        ZpCoordinate P = getPoint(x);
+        
+    }
+}
+static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, RandomNumberGenerator gen){
+    #define SMOOTHNESS_ALLOWED 2
+    #define MIN_SIZE_ALLOWED 10000
+    mpz_class t,s;
+    mpz_class u1,u2;
+    mpz_class p;
+    mpz_class u = 0;
+    while (u == 0){
+        p = gen.generate_prime_for_discriminant(number_of_bits,D, t,s); //4p=t^2+Ds^2
+        u1 = p+1-t;
+        u2 = p+1+t;
+
+        if (is_near_prime(u1,SMOOTHNESS_ALLOWED,MIN_SIZE_ALLOWED))
+            u = u1;
+        if (is_near_prime(u2,SMOOTHNESS_ALLOWED,MIN_SIZE_ALLOWED))
+            u = u2;
+    }
+    ModularPolynomial pol = ModularPolynomial::build_hcp_from_discriminant(D,p);
+    zp_int j0 = pol.find_one_root();
+    zp_int k = j0/(zp_int(1728,p)-j0);
+    zp_int c = gen.generate_modulu_p(p);
+    zp_int a = k*3*(c^2);
+    zp_int b = k*(c^3);
+
+    ECPrime candidate(p,a,b);
+
+}
 
 ZpCoordinate ECPrime::addition(ZpCoordinate P, ZpCoordinate Q) {
 	return ZpCoordinate(addition(ZpJacobian(P), Q));
@@ -42,7 +78,7 @@ ZpCoordinate ECPrime::doubling(ZpCoordinate P) {
 	return ZpCoordinate(doubling(ZpJacobian(P)));
 }
 
-ZpCoordinate ECPrime::repeatedDoubling(ZpCoordinate P, int m) {
+ZpCoordinate ECPrime::repeatedDoubling(ZpCoordinate P, mpz_class m) {
 	return ZpCoordinate(repeatedDoubling(ZpJacobian(P), m));
 }
 
@@ -179,7 +215,7 @@ ZpCoordinate ECPrime::pointMultiplication(ZpCoordinate P, mpz_class k) {
 	return ZpCoordinate(Q);
 }
 
-ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, int m) {
+ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, mpz_class m) {
 	// TODO: test...
 
 	if (P.isInfinite()) {

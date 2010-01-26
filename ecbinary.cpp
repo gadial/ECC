@@ -24,7 +24,7 @@ Coordinate ECBinary::doubling(Coordinate P) {
 	return toCoordinate(doubling(LD(P)));
 }
 
-Coordinate ECBinary::repeatedDoubling(Coordinate P, int m) {
+Coordinate ECBinary::repeatedDoubling(Coordinate P, mpz_class m) {
 	// not implemented...
 }
 
