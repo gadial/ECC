@@ -17,6 +17,7 @@ void Padictest::setUp() {
 	M.set_coeff(8, 1);
 
 	ad = new Adicops(M);
+	//GFE::init(M.to_gfe_el());
 	ad->set_teichmuller_modulus(M, 10);
 
 
@@ -109,6 +110,8 @@ void Padictest::inverse() {
 	veriInvA.set_coeff(1, 321);
 	veriInvA.set_coeff(0, 60);
 
+	//invA.print();
+	//veriInvA.print();
 	CPPUNIT_ASSERT(invA == veriInvA);
 }
 

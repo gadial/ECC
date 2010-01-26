@@ -211,7 +211,7 @@ Coordinate ECBinary::toCoordinate(const LD& ld) {
 	resX = ldX * resX;
 	resY = ldY * resY;
 
-	return Coordinate(resX.element, resY.element);
+	return Coordinate(resX.get_element(), resY.get_element());
 
 }
 

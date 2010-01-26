@@ -8,6 +8,7 @@
 #include "adicops.h"
 #include <iostream>
 #include <cassert>
+//#include <NTL/GF2X.h>
 
 Adicops::Adicops(Poly _mod) {
 	mod = _mod;
@@ -22,6 +23,7 @@ void Adicops::do_s() {
 	tmp.set_str("3", 16);
 	tmp |= orer;
 	Adicops a(tmp);
+	//GFE::init(tmp);
 	cout << a.get_points_AGM_bivariate(0b10001, deg) << " points!" << endl;
 }
 
@@ -215,8 +217,14 @@ Poly Adicops::get_inverse(Poly a, int prec) {
 	//cout << "inv: "; a.print();
 	if (prec == 1) {
 		GFE gfe = GFE(a.to_gfe_el(), mod.to_gfe_el());
+		//gfe.print();
 		GFE invGfe = !gfe;
-		Poly res = Poly(invGfe.element);
+		//invGfe.print();
+
+		//(gfe * invGfe).print();
+		//mpz_class asd = invGfe.get_element();
+		//cout << asd << endl;
+		Poly res = Poly(invGfe.get_element());
 		//cout << "N = " << prec << ":"; res.print();
 		return res;
 	} else {
@@ -257,12 +265,13 @@ Poly Adicops::get_sqrt(Poly a, int prec) {
 	// binary inverse sqrt...
 	GFE z = GFE(a.to_gfe_el(), mod.to_gfe_el());
 	// TODO: ...
-	z = z.get_sqrt(GFE::get_sqrtx(7, 1, mod.to_gfe_el()));
+	GFE sqrtx = GFE::get_sqrtx(7, 1, mod.to_gfe_el());
+	z = z.get_sqrt(sqrtx);
 	z = !z;
 
 	// Computing b=(1/a + z^2) / 4
 	Poly inva = get_inverse(a, prec);
-	Poly polyz = Poly(z.element);
+	Poly polyz = Poly(z.get_element());
 	Poly b = inva - (polyz * polyz);
 	b = poly_remainder(b, prec);
 	b /= 4;
@@ -271,8 +280,7 @@ Poly Adicops::get_sqrt(Poly a, int prec) {
 	GFE bgfe = GFE(b.to_gfe_el(), mod.to_gfe_el());
 	GFE bigdelta = GFE::solve_quad_eq(z, bgfe);
 
-
-	Poly polybigdelta = Poly(bigdelta.element);
+	Poly polybigdelta = Poly(bigdelta.get_element());
 	polybigdelta *= 2;
 
 	// approx root to prec 2 is z+2*Delta
@@ -344,7 +352,8 @@ mpz_class Adicops::get_points_AGM_bivariate(mpz_class _c, int d) {
 		Poly ab = olda * oldb;
 		ab = poly_remainder(ab, i);
 		b = get_sqrt(ab, i);
-		//assert(testsqrt(b, ab, mod, i));
+		//ab.print();
+		assert(testsqrt(b, ab, mod, i));
 		//Poly re = b * b;
 		//re = poly_remainder(re, mod, i);
 		cout << "N=" << i << " a: "; a.print();
