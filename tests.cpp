@@ -166,6 +166,10 @@ void EllipticCurveTest::test_point_multiplication(){
     CPPUNIT_ASSERT(temp == random_curve.pointMultiplication(P,goal));
 }
 
+void EllipticCurveTest::test_check_order(){
+    
+}
+
 void PolynomialTest::setUp(){
     p = gen.generate_prime(10);
     for (int i=0; i<ROOTS_ARRAY_LENGTH; i++)

@@ -27,12 +27,15 @@ ECPrime ECPrime::randomCurve(int number_of_bits, RandomNumberGenerator gen){
     return ECPrime(p,a,b);
 }
 bool ECPrime::check_order(mpz_class order_candidate){
+    //a somewhat naive test... is there something better?
     RandomNumberGenerator gen;
     for (int i=0; i<10; i++){
         zp_int x = gen.generate_modulu_p(mod);
         ZpCoordinate P = getPoint(x);
-        
+        if (!pointMultiplication(P,order_candidate).isInfinite())
+            return false;
     }
+    return true;
 }
 static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, RandomNumberGenerator gen){
     #define SMOOTHNESS_ALLOWED 2
