@@ -383,6 +383,45 @@ NumberArray ModularPolynomial::find_roots(){
     return results;
 }
 
+zp_int ModularPolynomial::find_one_root(){
+    //pg. 37 in Cohen's book
+    RandomNumberGenerator gen;
+
+    if (degree == 0)
+        throw "no roots"; //degree 0 polynomial is not considered to have any roots, including the zero polynomial
+    mpz_class p = modulus;
+    zp_int temp_result(0,p);
+    ModularPolynomial b("x", p);
+    ModularPolynomial d = b.modular_exponent(modulus,*this);
+    ModularPolynomial A = gcd(*this, d - b);
+
+    if (A(0) == 0)
+        return 0;
+
+    //now check for small degree
+    if (A.degree == 1)
+        return (-A.coefficients[0])/(A.coefficients[1]);
+    
+    if (A.degree == 2)
+        return A.coefficients[1]*A.coefficients[1] - A.coefficients[0]*A.coefficients[2]*4;
+
+    //now do a random splitting
+    ModularPolynomial B;
+    while (true){ //keep trying until success
+        zp_int a = gen.generate_modulu_p(p);
+        NumberArray b_coeff;
+        b_coeff.push_back(a); // X + a
+        b_coeff.push_back(zp_int(1,p));
+        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A).normalize();
+        B = gcd(A, b);
+        if (B.degree > 0 && B.degree < A.degree)
+            break; //managed to split A
+   }
+    if (B.degree < A.degree - B.degree)
+        return B.find_one_root();
+    else
+        return (A/B).find_one_root();
+}
 
 ostream& operator<<(ostream& o, const NumberArray lhs){
     NumberArray::const_iterator it;
@@ -390,6 +429,13 @@ ostream& operator<<(ostream& o, const NumberArray lhs){
     for (it = lhs.begin(); it<lhs.end(); it++)
         o << *it << ", ";
     o << "]";
+}
+
+
+ModularPolynomial ModularPolynomial::build_hcp_from_discriminant(int D, mpz_class p){
+    HCP temp;
+    ModularPolynomial pol(temp.H[D],p);
+    return pol;
 }
 
 HCP::HCP()

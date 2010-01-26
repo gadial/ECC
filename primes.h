@@ -18,6 +18,7 @@ public:
     mpz_class generate_prime(unsigned long int n);
     mpz_class generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s);
     zp_int generate_modulu_p(mpz_class p);
+    zp_int generate_qnr_modulu_p(mpz_class p);
 private:
     gmp_randstate_t state;
 };

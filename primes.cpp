@@ -45,6 +45,17 @@ zp_int RandomNumberGenerator::generate_modulu_p(mpz_class p){
     return zp_int(rand(p),p);
 }
 
+zp_int RandomNumberGenerator::generate_qnr_modulu_p(mpz_class p){
+    #define NUMBER_OF_ATTEMPTS_FOR_QNR_GENERATION 20
+    zp_int temp;
+    for (int i=0; i<NUMBER_OF_ATTEMPTS_FOR_QNR_GENERATION; i++){
+        temp = generate_modulu_p(p);
+        if (legendre_symbol(temp,p) == -1)
+            return temp;
+    }
+    return 0;
+}
+
 mpz_class RandomNumberGenerator::generate_prime_for_discriminant(unsigned long int n, mpz_class D, mpz_class& t, mpz_class& s){
     //find a p such that 4p=t^2+Ds^2 for random t,s
     for (int i=0; i<10*n; i++){
@@ -123,17 +134,8 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
         //we now remain in the "hard" case of p % 8 == 1, and use Shanks-Tonelli
 
         //first step - obtain a non-quadratic residue
-        int number_of_attempts = 20; // we have a chance of 1/2 to stumble upon a QNR, so 20 is more than enough
-        mpz_class qnr = 0;
-        mpz_class temp;
         RandomNumberGenerator gen;
-        for (int i=0; i<number_of_attempts; i++){
-            temp = gen.rand(p-2) + 2;
-            if (legendre_symbol(temp,p) == -1){
-                qnr = temp;
-                break;
-            }
-        }
+        mpz_class qnr = gen.generate_qnr_modulu_p(p);
         if (qnr == 0) // could not find a QNR
             return -1;
 //        cout << "n, p = " << n << ", " << p <<endl;
@@ -153,6 +155,7 @@ mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's co
 //        cout << "z = " << z <<endl;
         //finished the "pre-processing" (up to step 1 in the algorithm, pg. 33)
         mpz_class x,y,b;
+        mpz_class temp;
         mpz_powm(y.get_mpz_t(),n.get_mpz_t(),t.get_mpz_t(),p.get_mpz_t());
         temp = (t + 1) / 2;
         mpz_powm(x.get_mpz_t(),n.get_mpz_t(),temp.get_mpz_t(),p.get_mpz_t());

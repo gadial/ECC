@@ -24,6 +24,8 @@ public:
 	static ECPrime randomCurve(int number_of_bits,
 			RandomNumberGenerator gen);
 
+        static ECPrime randomCurveFromDiscriminant(int D, int number_of_bits,
+			RandomNumberGenerator gen);
 	/**
 	 * Addition P+Q of a jacobian coordinate
 	 * P and an affine coordinate Q
@@ -62,7 +64,7 @@ public:
 	Coordinate doubling(Coordinate P){return doubling(ZpCoordinate(P,mod));}
 	Coordinate repeatedDoubling(Coordinate P, int m){return repeatedDoubling(ZpCoordinate(P,mod),m);}
 	Coordinate pointMultiplication(Coordinate P, mpz_class k){return pointMultiplication(ZpCoordinate(P,mod),k);}
-
+        bool check_order(mpz_class order_candidate);
 private:
 	/**
 	 * Addition P+Q of a jacobian coordinate

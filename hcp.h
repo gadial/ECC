@@ -30,6 +30,7 @@ public:
     ModularPolynomial(const ModularPolynomial&);
     ModularPolynomial(const NumberArray&, mpz_class);
     static ModularPolynomial build_from_roots(const NumberArray& roots, mpz_class p);
+    static ModularPolynomial build_hcp_from_discriminant(int D, mpz_class p);
     string to_string() const;
     ModularPolynomial& operator=(const ModularPolynomial&);
     ModularPolynomial& operator+=(const ModularPolynomial&);
@@ -44,6 +45,7 @@ public:
     ModularPolynomial& normalize();
     bool is_zero() const;
     NumberArray find_roots();
+    zp_int find_one_root();
     int get_degree(){return degree;}
     mpz_class get_modulus(){return modulus;}
     void full_print(ostream&);
@@ -68,7 +70,6 @@ ostream& operator<<(ostream& o, const NumberArray lhs);
 class HCP{ //Hilbert class polynomials
 public:
     HCP();
-private:
     map<int, string> H;
 };
 

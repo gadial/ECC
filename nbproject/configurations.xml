@@ -4,13 +4,17 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>arith/GFE.h</itemPath>
+      <itemPath>arith/Poly.h</itemPath>
+      <itemPath>adicops.h</itemPath>
       <itemPath>coordinates.h</itemPath>
       <itemPath>curvesnist.h</itemPath>
-      <itemPath>curvesnisttest.h</itemPath>
+      <itemPath>tests/curvesnisttest.h</itemPath>
       <itemPath>ecbinary.h</itemPath>
       <itemPath>ecprime.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>hcp.h</itemPath>
+      <itemPath>tests/padictest.h</itemPath>
       <itemPath>primes.h</itemPath>
       <itemPath>small_primes.h</itemPath>
       <itemPath>tests.h</itemPath>
@@ -23,16 +27,21 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>arith/Poly.cpp</itemPath>
+      <itemPath>adicops.cpp</itemPath>
       <itemPath>coordinates.cpp</itemPath>
-      <itemPath>curvesnisttest.cpp</itemPath>
+      <itemPath>tests/curvesnisttest.cpp</itemPath>
       <itemPath>ecbinary.cpp</itemPath>
       <itemPath>ecprime.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>hcp.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>tests/padictest.cpp</itemPath>
       <itemPath>primes.cpp</itemPath>
       <itemPath>tests.cpp</itemPath>
       <itemPath>zp_int.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="tests" displayName="tests" projectFiles="true">
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -40,6 +49,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>tests</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
