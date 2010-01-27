@@ -5,6 +5,8 @@
  *      Author: bhess
  */
 
+#include <stdlib.h>
+
 #include "ecprime.h"
 #include "hcp.h"
 
@@ -70,6 +72,7 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
         zp_int e = gen.generate_qnr_modulu_p(p);
         candidate = ECPrime(p,a*(e^2),b*(e^3));
     }
+    candidate.setOrder(u);
     return candidate;
 }
 
@@ -79,6 +82,22 @@ ZpCoordinate ECPrime::addition(ZpCoordinate P, ZpCoordinate Q) {
 
 ZpCoordinate ECPrime::subtraction(ZpCoordinate P, ZpCoordinate Q) {
 	return ZpCoordinate(subtraction(ZpJacobian(P), Q));
+}
+
+ZpCoordinate ECPrime::getPointFromCompressedForm(string form){
+    int y_mod_2;
+    switch (form[0]){
+        case '+': y_mod_2 = 1; break;
+        case '-': y_mod_2 = 0; break;
+        default: throw "form is not legal";
+    }
+    form.erase(0,1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
+    mpz_class x;
+    mpz_set_str(x.get_mpz_t(), form.c_str(), 10);
+    ZpCoordinate result = getPoint(x);
+    if ((result.Y) % 2 != y_mod_2)
+        result = getPoint(x,true);
+    return result;
 }
 
 ZpCoordinate ECPrime::doubling(ZpCoordinate P) {
@@ -272,6 +291,7 @@ ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, int m) {
 }
 
 ZpCoordinate ECPrime::getPoint(zp_int x, bool negative_value){
+//    cout << "finding out y for x = " << x << endl;
 //    cout << "generating modulu x.p = " << x.get_p() << endl;
     zp_int y = modular_square_root(x*x*x + ECC_a*x + ECC_b);
 //    cout << "generating modulu y.p = " << y.get_p() << endl;

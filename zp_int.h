@@ -30,10 +30,12 @@ public:
     zp_int& operator^=(const mpz_class&); //miuse of ^ - means exponent here. WARNING: ^ has low precedence, always use parentheis!
     zp_int& invert();
     zp_int inverse() const;
+    int operator%(const int n) const {mpz_class temp = val % n; return temp.get_ui();}
     ostream& print(ostream&) const;
     ostream& full_print(ostream&) const;
     operator mpz_class(){return val;}
     mpz_class get_p() const {return p;};
+    string to_s(int base = 10) const;
 private:
     mpz_class val;
     mpz_class p; // p=0 means we treat it as a normal integer
@@ -69,7 +71,7 @@ public:
         ZpCoordinate(const Coordinate& cor, mpz_class _p):
             X(cor.X,_p),Y(cor.Y,_p),p(_p){}
         operator Coordinate(){return Coordinate(X,Y);}
-
+        string toCompressedForm();
         //returns the point at infinity, as is represented by this class in the context of elliptic curves
         static ZpCoordinate infinity(){return ZpCoordinate(0,0,0);}
 

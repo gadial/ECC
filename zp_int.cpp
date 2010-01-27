@@ -78,6 +78,10 @@ ostream& zp_int::full_print(ostream& o) const{
     return o;
 }
 
+string zp_int::to_s(int base) const{
+    return val.get_str(base);
+}
+
 zp_int operator+(const zp_int& lhs, const zp_int& rhs){
     zp_int temp = lhs;
     return (temp += rhs);
@@ -124,6 +128,16 @@ ZpCoordinate::ZpCoordinate(const ZpJacobian& jac):X(0),Y(0),p(jac.p) {
         X = (jac.X) / (jac.Z^const_2);
         Y = (jac.Y) / (jac.Z^const_3);
     }
+}
+
+string ZpCoordinate::toCompressedForm(){
+    string result;
+    switch (Y % 2){
+        case 0: result += '-'; break;
+        case 1: result += '+'; break;
+    }
+    result += X.to_s();
+    return result;
 }
 
 ostream& operator<<(ostream& out, const ZpCoordinate& rhs){

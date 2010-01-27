@@ -58,7 +58,8 @@ public:
 
 	virtual ~ECPrime();
         ZpCoordinate getPoint(zp_int x, bool negative_value = false);
-        
+        ZpCoordinate getPoint(mpz_class x, bool negative_value = false){return getPoint(zp_int(x,mod),negative_value);}
+        ZpCoordinate getPointFromCompressedForm(string form);
         Coordinate addition(Coordinate P, Coordinate Q){return addition(ZpCoordinate(P,mod),ZpCoordinate(Q,mod));}
 	Coordinate subtraction(Coordinate P, Coordinate Q){return subtraction(ZpCoordinate(P,mod),ZpCoordinate(Q,mod));}
 	Coordinate doubling(Coordinate P){return doubling(ZpCoordinate(P,mod));}

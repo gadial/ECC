@@ -106,6 +106,7 @@ int jacobi_symbol(mpz_class a,mpz_class b){
 
 //returns x such that x**2 = n. If none exists, returns 0. On failure, returns -1
 mpz_class modular_square_root(mpz_class n, mpz_class p){ // we follow Cohen's computational number theory book, pg. 32
+//    cout << "about to compute jacobi symbol for n = " << n << ", p = " << p << endl;
     if (jacobi_symbol(n,p) != 1)
         return 0;
     mpz_class result;

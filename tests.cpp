@@ -181,6 +181,18 @@ void EllipticCurveTest::test_check_order() {
     CPPUNIT_ASSERT(p521.check_order(p521.getOrder()));
 }
 
+void EllipticCurveTest::test_coordinate_compressed_form(){
+    ZpCoordinate P = ZpCoordinate::infinity();
+    zp_int x;
+    while (P == ZpCoordinate::infinity()){
+        x = gen.generate_modulu_p(random_curve.mod);
+        P = random_curve.getPoint(x);
+    }
+    string form = P.toCompressedForm();
+    ZpCoordinate Q = random_curve.getPointFromCompressedForm(form);
+    CPPUNIT_ASSERT(P == Q);
+}
+
 void PolynomialTest::setUp(){
     p = gen.generate_prime(10);
     for (int i=0; i<ROOTS_ARRAY_LENGTH; i++)

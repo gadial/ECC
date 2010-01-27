@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/arith/Poly.o \
 	${OBJECTDIR}/hcp.o \
 	${OBJECTDIR}/ecbinary.o \
+	${OBJECTDIR}/arith/GFE.o \
 	${OBJECTDIR}/zp_int.o
 
 # C Compiler Flags
@@ -128,6 +129,11 @@ ${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ecbinary.o ecbinary.cpp
+
+${OBJECTDIR}/arith/GFE.o: nbproject/Makefile-${CND_CONF}.mk arith/GFE.cpp 
+	${MKDIR} -p ${OBJECTDIR}/arith
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/arith/GFE.o arith/GFE.cpp
 
 ${OBJECTDIR}/zp_int.o: nbproject/Makefile-${CND_CONF}.mk zp_int.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -48,6 +48,7 @@ class EllipticCurveTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_repeated_doubling );
     CPPUNIT_TEST( test_point_multiplication );
     CPPUNIT_TEST( test_check_order );
+    CPPUNIT_TEST( test_coordinate_compressed_form );
     CPPUNIT_TEST_SUITE_END();
 private:
     RandomNumberGenerator gen;
@@ -61,6 +62,7 @@ public:
         void test_repeated_doubling();
         void test_point_multiplication();
         void test_check_order();
+        void test_coordinate_compressed_form();
 
 };
 

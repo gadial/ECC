@@ -40,7 +40,16 @@ Coordinate::Coordinate(const char* _x, int basex,
 	X.set_str(_x, basex);
 	Y.set_str(_y, basey);
 }
-
+string Coordinate::toCompressedForm(){
+    string result;
+    mpz_class temp = Y % 2;
+    switch (temp.get_ui()){
+        case 0: result += '-'; break;
+        case 1: result += '+'; break;
+    }
+    result += X.get_str(10);
+    return result;
+}
 ostream& operator<<(ostream& out, Coordinate& rhs){
     out << "(" << rhs.X << ", "<<rhs.Y<<")";
     return out;

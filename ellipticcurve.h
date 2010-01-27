@@ -50,6 +50,10 @@ public:
 	virtual mpz_class getOrder() {
 	}
 
+        virtual mpz_class setOrder(mpz_class _order) {
+            order = _order;
+	}
+
 	//static Ellipticcurve randomCurve(int number_of_bits,
 	//		RandomNumberGenerator gen);
 

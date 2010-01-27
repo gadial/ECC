@@ -32,6 +32,8 @@ public:
         //returns the point at infinity, as is represented by this class in the context of elliptic curves
         static Coordinate infinity(){return Coordinate(0,0);}
 
+        string toCompressedForm();
+
 	bool operator==(const Coordinate& eqTo) {
 		return X == eqTo.X && Y == eqTo.Y;
 	}
