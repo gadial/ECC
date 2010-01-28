@@ -14,7 +14,7 @@ class ECPrime : public Ellipticcurve{
 public:
 	ECPrime();
 	ECPrime(mpz_class _mod, mpz_class _ECC_a, mpz_class _ECC_b) :
-            Ellipticcurve(_mod, _ECC_a, _ECC_b) {}
+            Ellipticcurve(_mod, _ECC_a, _ECC_b) {point = get_random_point();}
         ECPrime(const char* _mod, int _mod_base, const char* _order,
             int _order_base, const char* _ecc_a, int _ecc_a_base,
             const char* _ecc_b, int _ecc_b_base, const char* _px, int _px_base,
@@ -65,6 +65,8 @@ public:
 	Coordinate doubling(Coordinate P){return doubling(ZpCoordinate(P,mod));}
 	Coordinate repeatedDoubling(Coordinate P, int m){return repeatedDoubling(ZpCoordinate(P,mod),m);}
 	Coordinate pointMultiplication(Coordinate P, mpz_class k){return pointMultiplication(ZpCoordinate(P,mod),k);}
+        
+        ZpCoordinate get_random_point();
         bool check_order(mpz_class order_candidate);
 private:
 	/**

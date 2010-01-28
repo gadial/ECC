@@ -12,6 +12,7 @@
       <itemPath>tests/curvesnisttest.h</itemPath>
       <itemPath>ecbinary.h</itemPath>
       <itemPath>ecprime.h</itemPath>
+      <itemPath>elgamal.h</itemPath>
       <itemPath>ellipticcurve.h</itemPath>
       <itemPath>hcp.h</itemPath>
       <itemPath>tests/padictest.h</itemPath>
@@ -34,6 +35,7 @@
       <itemPath>tests/curvesnisttest.cpp</itemPath>
       <itemPath>ecbinary.cpp</itemPath>
       <itemPath>ecprime.cpp</itemPath>
+      <itemPath>elgamal.cpp</itemPath>
       <itemPath>ellipticcurve.cpp</itemPath>
       <itemPath>hcp.cpp</itemPath>
       <itemPath>main.cpp</itemPath>

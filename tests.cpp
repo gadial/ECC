@@ -118,10 +118,8 @@ void EllipticCurveTest::test_get_point()
 
 void EllipticCurveTest::test_doubling_vs_addition()
 {
-    ZpCoordinate P = ZpCoordinate::infinity();
+    ZpCoordinate P = random_curve.get_random_point();
     ZpCoordinate Q,R;
-    while (P == ZpCoordinate::infinity())
-        P = random_curve.getPoint(gen.generate_modulu_p(random_curve.mod));
 //    cout << "(test) P.Y.p = " << P.Y.get_p() << endl;
     Q = random_curve.doubling(P);
     //first check if P+P == 2P (P+P should be computed by reduction to the computation of 2P, so shouldn't be a problem
@@ -182,12 +180,7 @@ void EllipticCurveTest::test_check_order() {
 }
 
 void EllipticCurveTest::test_coordinate_compressed_form(){
-    ZpCoordinate P = ZpCoordinate::infinity();
-    zp_int x;
-    while (P == ZpCoordinate::infinity()){
-        x = gen.generate_modulu_p(random_curve.mod);
-        P = random_curve.getPoint(x);
-    }
+    ZpCoordinate P = random_curve.get_random_point();
     string form = P.toCompressedForm();
     ZpCoordinate Q = random_curve.getPointFromCompressedForm(form);
     CPPUNIT_ASSERT(P == Q);

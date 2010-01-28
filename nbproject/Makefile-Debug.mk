@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/coordinates.o \
+	${OBJECTDIR}/elgamal.o \
 	${OBJECTDIR}/primes.o \
 	${OBJECTDIR}/ellipticcurve.o \
 	${OBJECTDIR}/arith/Poly.o \
@@ -104,6 +105,11 @@ ${OBJECTDIR}/coordinates.o: nbproject/Makefile-${CND_CONF}.mk coordinates.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordinates.o coordinates.cpp
+
+${OBJECTDIR}/elgamal.o: nbproject/Makefile-${CND_CONF}.mk elgamal.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/elgamal.o elgamal.cpp
 
 ${OBJECTDIR}/primes.o: nbproject/Makefile-${CND_CONF}.mk primes.cpp 
 	${MKDIR} -p ${OBJECTDIR}

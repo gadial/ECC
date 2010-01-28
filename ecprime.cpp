@@ -11,7 +11,6 @@
 #include "hcp.h"
 
 ECPrime::ECPrime() {
-	// TODO Auto-generated constructor stub
 
 }
 
@@ -74,6 +73,16 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
     }
     candidate.setOrder(u);
     return candidate;
+}
+ZpCoordinate ECPrime::get_random_point(){
+    RandomNumberGenerator gen;
+    ZpCoordinate P = ZpCoordinate::infinity();
+    zp_int x;
+    while (P == ZpCoordinate::infinity()){
+        x = gen.generate_modulu_p(mod);
+        P = getPoint(x);
+    }
+    return P;
 }
 
 ZpCoordinate ECPrime::addition(ZpCoordinate P, ZpCoordinate Q) {
