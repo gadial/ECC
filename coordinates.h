@@ -21,6 +21,10 @@ class LD;
 class Coordinate {
 public:
 
+	static Coordinate fromCompressedForm(string comp) {
+		// Todo: implement
+	}
+
 	Coordinate() {}
 	Coordinate(const char* _x, int basex,
 			const char* _y, int basey);
