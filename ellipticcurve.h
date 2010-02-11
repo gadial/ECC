@@ -106,6 +106,12 @@ public:
 	 * If there is no corresponding point, returns the infinity
 	 */
 	Coordinate getPoint(mpz_class x, bool negative_value = false);
+
+	/*
+	 * Gets the point from compressed format
+	 * see IEEE P1363 / D8 E.2.3.1
+	 */
+	virtual Coordinate getPointCompressedForm(string from) = 0;
 protected:
 
 	/*

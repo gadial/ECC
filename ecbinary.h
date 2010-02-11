@@ -107,6 +107,10 @@ public:
 
 	mpz_class satohfgh_point_counting();
 
+	Coordinate getPointCompressedForm(string from) {
+		// TODO: implement...
+	}
+
 private:
 
 	/*

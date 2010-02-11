@@ -7,7 +7,6 @@
 
 #include "coordinates.h"
 
-
 Coordinate::Coordinate(const Jacobian& jac, const mpz_class mod) {
 	mpz_class const_2 = 2, const_3 = 3;
 

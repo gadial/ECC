@@ -50,8 +50,8 @@ string ECC_ElGamal::decrypt(string c) {
 	string res;
 	for (unsigned int i = 0; i < ciphers.size(); i += 2) {
 		ECC_ElGamal_Ciphertext ec;
-		ec.C1 = Coordinate::fromCompressedForm(ciphers[i]);
-		ec.C2 = Coordinate::fromCompressedForm(ciphers[i + 1]);
+		ec.C1 = ell->getPointCompressedForm(ciphers[i]);
+		ec.C2 = ell->getPointCompressedForm(ciphers[i + 1]);
 		ECC_ElGamal_Plaintext ep = decrypt_element(ec);
 		// removing padding...
 		ep.P.X >>= 8;
