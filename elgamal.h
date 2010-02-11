@@ -23,6 +23,19 @@ class ECC_ElGamal{
 public:
     ECC_ElGamal(Ellipticcurve* E);
 
+    static void StringSplit(string str, string delim, vector<string> results) {
+		int cutAt;
+		while( (cutAt = str.find_first_of(delim)) != str.npos ) {
+			if(cutAt > 0) {
+				results.push_back(str.substr(0,cutAt));
+			}
+			str = str.substr(cutAt+1);
+		}
+		if(str.length() > 0) {
+			results.push_back(str);
+		}
+	}
+
     Coordinate get_public_key() const{return Q;}
     mpz_class get_private_key() const{return d;}
     void set_keys(Coordinate _Q, mpz_class _d){Q = _Q; d = _d;}

@@ -37,27 +37,25 @@ string ECC_ElGamal::encrypt(string m) {
 		 * TODO: some better output format?
 		 */
 		res.append(cipher.C1.toCompressedForm());
+		res.append(",");
 		res.append(cipher.C2.toCompressedForm());
+		res.append(",");
 	}
 	return res;
 }
 
 string ECC_ElGamal::decrypt(string c) {
-	int str_length_bits = c.length();
-	int max_point_length_effective = str_length_bits - 1;
-	int vec_el = (str_length_bits % max_point_length_effective == 0 ?
-			str_length_bits / max_point_length_effective : (str_length_bits / max_point_length_effective) + 1);
-	//vector<ECC_ElGamal_Plaintext> res(vec_el);
+	vector<string> ciphers;
+	StringSplit(c, ",", ciphers);
 	string res;
-	for (int i = 0; i < vec_el; ++i) {
-		// TODO: ciphertext has not always maximum length...
+	for (unsigned int i = 0; i < ciphers.size(); i += 2) {
 		ECC_ElGamal_Ciphertext ec;
-		string s1 = c.substr(2 * i * max_point_length, max_point_length);
-		ec.C1 = Coordinate::fromCompressedForm(s1);
-		string s2 = c.substr((2 * i + 1) * max_point_length, max_point_length);
-		ec.C2 = Coordinate::fromCompressedForm(s2);
+		ec.C1 = Coordinate::fromCompressedForm(ciphers[i]);
+		ec.C2 = Coordinate::fromCompressedForm(ciphers[i + 1]);
 		ECC_ElGamal_Plaintext ep = decrypt_element(ec);
-		res.append(ep.P.toCompressedForm());
+		// removing padding...
+		ep.P.X >>= 8;
+		res.append(ep.P.X.get_str(256));
 	}
 	return res;
 }
