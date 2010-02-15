@@ -95,3 +95,8 @@ Coordinate ECC_ElGamal::get_point_with_padding(mpz_class str, int padding_length
 	} while(c.isInfinite());
 	return c;
 }
+
+void ECC_ElGamal::generate_random_keypair() {
+	d = rand.rand(ell->getOrder() - 1);
+	Q = ell->pointMultiplication(ell->point, d);
+}

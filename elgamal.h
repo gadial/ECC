@@ -39,6 +39,12 @@ public:
     Coordinate get_public_key() const{return Q;}
     mpz_class get_private_key() const{return d;}
     void set_keys(Coordinate _Q, mpz_class _d){Q = _Q; d = _d;}
+
+    /*
+     * Generates a random pk/sk key pair according to Algorithm 1.12 in
+     * "Guide to Elliptic Curve Cryptography"
+     */
+    void generate_random_keypair();
     ECC_ElGamal_Ciphertext encrypt_element(ECC_ElGamal_Plaintext m);
     ECC_ElGamal_Plaintext decrypt_element (ECC_ElGamal_Ciphertext ciphertext);
 
