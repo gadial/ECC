@@ -47,6 +47,8 @@ public:
 	 */
 	Coordinate point;
 
+	int get_bits();
+
 	virtual mpz_class getOrder() {
 	}
 

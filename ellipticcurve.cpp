@@ -67,3 +67,7 @@ Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
         return Coordinate(x,mod-y);
     return Coordinate(x,y);
 }
+
+int Ellipticcurve::get_bits() {
+	return mpz_sizeinbase(mod.get_mpz_t(), 2);
+}

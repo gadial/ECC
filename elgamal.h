@@ -23,8 +23,9 @@ class ECC_ElGamal{
 public:
     ECC_ElGamal(Ellipticcurve* E);
 
-    static void StringSplit(string str, string delim, vector<string> results) {
+    static vector<string> StringSplit(string str, string delim) {
 		int cutAt;
+		vector<string> results;
 		while( (cutAt = str.find_first_of(delim)) != str.npos ) {
 			if(cutAt > 0) {
 				results.push_back(str.substr(0,cutAt));
@@ -34,6 +35,7 @@ public:
 		if(str.length() > 0) {
 			results.push_back(str);
 		}
+		return results;
 	}
 
     Coordinate get_public_key() const{return Q;}
@@ -70,11 +72,18 @@ public:
      */
     Coordinate get_point_with_padding(mpz_class str, int padding_length);
 
+    void print_keypair() {
+    	cout << "private key: " << get_private_key() << endl;
+    	cout << "public key: " << get_public_key().X << "," << get_public_key().Y << endl;
+    }
+
 private:
     Coordinate Q;
     mpz_class d;
     Ellipticcurve* ell;
     RandomNumberGenerator rand;
+
+    string to_string(mpz_class mpz);
 
     /*
      * Max. length of a point in bytes
