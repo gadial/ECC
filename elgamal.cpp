@@ -24,6 +24,10 @@ ECC_ElGamal_Ciphertext ECC_ElGamal::encrypt_element(ECC_ElGamal_Plaintext m) {
 	return eco;
 }
 
+ECC_ElGamal_Ciphertext ECC_ElGamal::encrypt_element(string m) {
+	return encrypt_element(ECC_ElGamal_Plaintext(to_point(m)));
+}
+
 ECC_ElGamal_Plaintext ECC_ElGamal::decrypt_element (ECC_ElGamal_Ciphertext ciphertext) {
 	ECC_ElGamal_Plaintext ep;
 	Coordinate dC1 = ell->pointMultiplication(ciphertext.C1, d);
@@ -42,10 +46,13 @@ string ECC_ElGamal::encrypt(string m) {
 
 		//cout << "C1: " << cipher.C1 << endl << "C1-comp: " << cipher.C1.toCompressedForm() << endl;
 		//cout << "C2: " << cipher.C2 << endl << "C2-comp: " << cipher.C2.toCompressedForm() << endl;
+		/*
 		res.append(cipher.C1.toCompressedForm());
 		res.append(",");
 		res.append(cipher.C2.toCompressedForm());
 		res.append(",");
+		*/
+		res.append(cipher.to_string());
 	}
 	return res;
 }
@@ -64,15 +71,25 @@ string ECC_ElGamal::decrypt(string c) {
 		ECC_ElGamal_Plaintext ep = decrypt_element(ec);
 		//cout << ep.P << endl;
 		// removing padding...
+
+		/*
 		ep.P.X >>= 8;
 		res.append(to_string(ep.P.X));
+		*/
+
+		res.append(remove_padding(ep));
 	}
 	return res;
 }
 
+string ECC_ElGamal::remove_padding(ECC_ElGamal_Plaintext& ep) {
+	return to_string(ep.P.X >> 8);
+}
+
 vector<ECC_ElGamal_Plaintext> ECC_ElGamal::split_msg(string msg) {
 	int str_length_bits = msg.length();
-	int max_point_length_effective = ell->get_bits() - 1;
+	int max_point_length_effective = get_max_point_length();
+	//cout << max_point_length_effective << endl;
 	int vec_el = (str_length_bits % max_point_length_effective == 0 ?
 			str_length_bits / max_point_length_effective : (str_length_bits / max_point_length_effective) + 1);
 	vector<ECC_ElGamal_Plaintext> res(vec_el);
@@ -85,6 +102,10 @@ vector<ECC_ElGamal_Plaintext> ECC_ElGamal::split_msg(string msg) {
 		res[i] = ep;
 	}
 	return res;
+}
+
+int ECC_ElGamal::get_max_point_length() {
+	return (ell->get_bits() / 8) - 2;
 }
 
 Coordinate ECC_ElGamal::to_point(string str) {

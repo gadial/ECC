@@ -9,13 +9,50 @@
 #define	_ELGAMAL_H
 #include "ellipticcurve.h"
 
+static vector<string> StringSplit(string str, string delim) {
+	int cutAt;
+	vector<string> results;
+	while ((cutAt = str.find_first_of(delim)) != str.npos) {
+		if (cutAt > 0) {
+			results.push_back(str.substr(0, cutAt));
+		}
+		str = str.substr(cutAt + 1);
+	}
+	if (str.length() > 0) {
+		results.push_back(str);
+	}
+	return results;
+}
+
 class ECC_ElGamal_Ciphertext{
 public:
+
+	static ECC_ElGamal_Ciphertext from_string(string str, Ellipticcurve* el) {
+		ECC_ElGamal_Ciphertext res;
+		cout << str << endl;
+		vector<string> v = StringSplit(str, ",");
+		res.C1 = el->getPointCompressedForm(v[0]);
+		res.C2 = el->getPointCompressedForm(v[1]);
+		return res;
+	}
+
     Coordinate C1, C2;
+
+    string to_string() {
+    	string res;
+    	res.append(C1.toCompressedForm());
+    	res.append(",");
+    	res.append(C2.toCompressedForm());
+    	//res.append();
+    	return res;
+    }
 };
 
 class ECC_ElGamal_Plaintext {
 public:
+	ECC_ElGamal_Plaintext() {}
+	ECC_ElGamal_Plaintext(Coordinate _P) : P(_P) {}
+
 	Coordinate P;
 };
 
@@ -23,24 +60,11 @@ class ECC_ElGamal{
 public:
     ECC_ElGamal(Ellipticcurve* E);
 
-    static vector<string> StringSplit(string str, string delim) {
-		int cutAt;
-		vector<string> results;
-		while( (cutAt = str.find_first_of(delim)) != str.npos ) {
-			if(cutAt > 0) {
-				results.push_back(str.substr(0,cutAt));
-			}
-			str = str.substr(cutAt+1);
-		}
-		if(str.length() > 0) {
-			results.push_back(str);
-		}
-		return results;
-	}
-
     Coordinate get_public_key() const{return Q;}
     mpz_class get_private_key() const{return d;}
     void set_keys(Coordinate _Q, mpz_class _d){Q = _Q; d = _d;}
+    void set_public_key(Coordinate _Q) {Q = _Q;}
+    void set_private_key(mpz_class _d) {d = _d;}
 
     /*
      * Generates a random pk/sk key pair according to Algorithm 1.12 in
@@ -48,6 +72,7 @@ public:
      */
     void generate_random_keypair();
     ECC_ElGamal_Ciphertext encrypt_element(ECC_ElGamal_Plaintext m);
+    ECC_ElGamal_Ciphertext encrypt_element(string m);
     ECC_ElGamal_Plaintext decrypt_element (ECC_ElGamal_Ciphertext ciphertext);
 
     string encrypt(string m);
@@ -77,10 +102,14 @@ public:
     	cout << "public key: " << get_public_key().X << "," << get_public_key().Y << endl;
     }
 
+    string remove_padding(ECC_ElGamal_Plaintext& ep);
+
+    int get_max_point_length();
+    Ellipticcurve* ell;
+
 private:
     Coordinate Q;
     mpz_class d;
-    Ellipticcurve* ell;
     RandomNumberGenerator rand;
 
     string to_string(mpz_class mpz);

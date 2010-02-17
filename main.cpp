@@ -14,6 +14,10 @@
 #include "tests/padictest.h"
 #include "tests.h"
 #include "adicops.h"
+#include "elgamal.h"
+#include "cmd.h"
+
+//#include <NTL/GF2EX.h>
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -31,10 +35,11 @@ void printJac(const Jacobian& j) {
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
     do_tests();
+	Cmd(argc, argv);
     return 0;
 }
 
