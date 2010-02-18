@@ -49,10 +49,15 @@ public:
 
 	int get_bits();
 
-	virtual mpz_class getOrder() {
+	void set_point_compressed(string cpoint) {
+		point = getPointCompressedForm(cpoint);
 	}
 
-        virtual mpz_class setOrder(mpz_class _order) {
+	mpz_class getOrder() {
+		return order;
+	}
+
+    void setOrder(mpz_class _order) {
             order = _order;
 	}
 

@@ -29,7 +29,7 @@ public:
 
 	static ECC_ElGamal_Ciphertext from_string(string str, Ellipticcurve* el) {
 		ECC_ElGamal_Ciphertext res;
-		cout << str << endl;
+		//cout << str << endl;
 		vector<string> v = StringSplit(str, ",");
 		res.C1 = el->getPointCompressedForm(v[0]);
 		res.C2 = el->getPointCompressedForm(v[1]);

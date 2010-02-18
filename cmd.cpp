@@ -12,28 +12,31 @@
 
 Cmd::Cmd(int argc, char** argv) {
 
-	bool pk = false; string pk_path;
-	bool sk = false; string sk_path;
-	bool gen_key = false;
-	bool enc = false; string enc_path;
-	bool dec = false; string dec_path;
-	bool ec_rand = false; bool ec_prime = false;
-	string ec_name;
+	print_usg = false;
+	do_tests = false;
+	pk = false;// string pk_path;
+	sk = false;// string sk_path;
+	gen_key = false;
+	enc = false;// string enc_path;
+	dec = false;// string dec_path;
+	ec_rand = false;
+	ec_prime = false;
+	//string ec_name;
 
 
 	if (argc <= 1) {
-		print_usage();
+		print_usg = true;
 		return;
 	}
 	for (int i = 1; i < argc; ++i) {
 		string str = string(argv[i]);
-		if (str == "-e") {
+		if (str == "-enc") {
 			if (argc <= ++i) {
 				cout << "Specify file to encrypt after -e !" << endl;
 				return;
 			}
 			enc = true; enc_path = argv[i];
-		} else if (str == "-d") {
+		} else if (str == "-dec") {
 			if (argc <= ++i) {
 				cout << "Specify file to decrypt after -d !" << endl;
 				return;
@@ -70,18 +73,27 @@ Cmd::Cmd(int argc, char** argv) {
 				return;
 			}
 			ec_name = argv[i];
+		} else if (str == "-t") {
+			do_tests = true;
+			return;
 		}
+	}
+}
+
+void Cmd::execute() {
+
+	if (print_usg) {
+		print_usage();
+		return;
 	}
 
 	Ellipticcurve* ell;
 
 	// either pk, sk, or keypair-generation should be defined
 	if (pk) {
-		use_public_key(pk_path);
-		// TODO: load elliptic curve from config...
+		use_public_key( pk_path);
 	} else if (sk) {
-		use_private_key(sk_path);
-		// TODO: load...
+		use_private_key( sk_path);
 	} else if (gen_key) {
 		// now the curve should be defined...
 		if (ec_rand) {
@@ -98,7 +110,7 @@ Cmd::Cmd(int argc, char** argv) {
 			} else if (ec_name == "p521") {
 				ell = new CurveNISTp521();
 			} else if (ec_name == "b163") {
-				ell = new CurveNISTb163;
+				ell = new CurveNISTb163();
 			} else {
 				cout << "Unknown Curve (" << ec_name << ")!" << endl;
 				return;
@@ -112,11 +124,10 @@ Cmd::Cmd(int argc, char** argv) {
 		cout << "Either define sk, pk or key-generation" << endl;
 	}
 
-
 	if (enc) {
-		encrypt_message(enc_path);
+		encrypt_message( enc_path);
 	} else if (dec) {
-		decrypt_message(dec_path);
+		decrypt_message( dec_path);
 	}
 
 }
@@ -177,6 +188,7 @@ void Cmd::decrypt_message(string file_name) {
 void Cmd::use_public_key(string file_name) {
 	ifstream is;
 	is.open(file_name.c_str());
+	use_elliptic_curve(is);
 	string line;
 	getline(is, line);
 	elg->set_public_key(elg->ell->getPointCompressedForm(line));
@@ -186,6 +198,7 @@ void Cmd::use_public_key(string file_name) {
 void Cmd::use_private_key(string file_name) {
 	ifstream is;
 	is.open(file_name.c_str());
+	use_elliptic_curve(is);
 	string line;
 	getline(is, line);
 	mpz_class sk;
@@ -204,12 +217,15 @@ void Cmd::gen_random_keypair() {
 	time(&rawtime);
 	timeinfo = localtime(&rawtime);
 
-	strftime(buffer, 20, "%Y%m%d%H%M%S", timeinfo);
+	strftime(buffer, 20, "%Y%m%d%H%M", timeinfo);
 	string time_str = string(buffer);
 	//cout << time_str << endl;
 
 	ofstream of_public;
 	of_public.open(("public_key_" + time_str + ".txt").c_str());
+
+	write_elliptic_curve(of_public);
+
 	Coordinate pk = elg->get_public_key();
 	of_public << pk.toCompressedForm() << endl;
 	of_public.flush();
@@ -217,9 +233,59 @@ void Cmd::gen_random_keypair() {
 
 	ofstream of_private;
 	of_private.open(("private_key_" + time_str + ".txt").c_str());
+
+	write_elliptic_curve(of_private);
+
 	of_private << elg->get_private_key() << endl;
 	of_private.flush();
 	of_private.close();
+}
+
+void Cmd::use_elliptic_curve(ifstream& in) {
+	string line;
+	// first line: prime/binary
+	getline(in, line);
+	// TODO: handle binary
+
+	// 2. line: modulus
+	getline(in, line);
+	mpz_class modulus;
+	modulus.set_str(line, 10);
+
+	// 3. line: a
+	getline(in, line);
+	mpz_class a;
+	a.set_str(line, 10);
+
+	// 4. line: b
+	getline(in, line);
+	mpz_class b;
+	b.set_str(line, 10);
+
+	// 5. line: point on EC
+	getline(in, line);
+	string compr_point = line;
+
+	// 6. line: EC order
+	getline(in, line);
+	mpz_class order;
+	order.set_str(line, 10);
+
+	Ellipticcurve* ec = new ECPrime(modulus, a, b);
+	ec->setOrder(order);
+	ec->set_point_compressed(compr_point);
+
+	elg = new ECC_ElGamal(ec);
+}
+
+void Cmd::write_elliptic_curve(ofstream& out) {
+	Ellipticcurve* ec = elg->ell;
+	out << "prime" << endl;
+	out << ec->mod << endl;
+	out << ec->ECC_a << endl;
+	out << ec->ECC_b << endl;
+	out << ec->point.toCompressedForm() << endl;
+	out << ec->getOrder() << endl;
 }
 
 Cmd::~Cmd() {

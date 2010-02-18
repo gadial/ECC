@@ -73,9 +73,9 @@ public:
 			P192_POINT_X, 16,
 			P192_POINT_Y, 16) {}
 
-	mpz_class getOrder() {
-		return order;
-	}
+	//mpz_class getOrder() {
+		//return order;
+	//}
 };
 
 class CurveNISTp224 : public ECPrime {
@@ -87,9 +87,6 @@ public:
 			P224_POINT_X, 16,
 			P224_POINT_Y, 16) {}
 
-	mpz_class getOrder() {
-		return order;
-	}
 };
 
 class CurveNISTp256 : public ECPrime {
@@ -101,9 +98,6 @@ public:
 			P256_POINT_X, 16,
 			P256_POINT_Y, 16) {}
 
-	mpz_class getOrder() {
-		return order;
-	}
 };
 
 class CurveNISTp384 : public ECPrime {
@@ -115,9 +109,6 @@ public:
 			P384_POINT_X, 16,
 			P384_POINT_Y, 16) {}
 
-	mpz_class getOrder() {
-		return order;
-	}
 };
 
 class CurveNISTp521 : public ECPrime {
@@ -129,9 +120,6 @@ public:
 			P521_POINT_X, 16,
 			P521_POINT_Y, 16) {}
 
-	mpz_class getOrder() {
-		return order;
-	}
 };
 
 class CurveNISTb163 : public ECBinary {
@@ -144,9 +132,6 @@ public:
 			B163_POINT_Y_POLYBASIS, 16) {
 	}
 
-	mpz_class getOrder() {
-		return order;
-	}
 
 };
 
