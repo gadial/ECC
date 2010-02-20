@@ -109,12 +109,14 @@ int ECC_ElGamal::get_max_point_length() {
 }
 
 Coordinate ECC_ElGamal::to_point(string str) {
-	mpz_class res;
+	mpz_class res = 0;
 	// 8 bit encoding of a character, as in ASCII...
 	//res.set_str(str, 256);
 	for (int i = str.length() - 1; i >= 0; --i) {
 		res |= (int)str[i];
-		res <<= 8;
+		if (i > 0) {
+			res <<= 8;
+		}
 	}
 	return get_point_with_padding(res, 1);
 }
