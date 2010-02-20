@@ -105,7 +105,7 @@ vector<ECC_ElGamal_Plaintext> ECC_ElGamal::split_msg(string msg) {
 }
 
 int ECC_ElGamal::get_max_point_length() {
-	return (ell->get_bits() / 8) - 2;
+	return (ell->get_bits() / 8) - 1;
 }
 
 Coordinate ECC_ElGamal::to_point(string str) {
