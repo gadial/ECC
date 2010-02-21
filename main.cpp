@@ -38,7 +38,7 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-	Cmd* cmd = new Cmd(argc, argv);
+    	Cmd* cmd = new Cmd(argc, argv);
 	if (cmd->do_tests) {
 		do_tests();
 	} else {

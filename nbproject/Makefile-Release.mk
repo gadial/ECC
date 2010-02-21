@@ -41,11 +41,12 @@ OBJECTFILES= \
 	${OBJECTDIR}/elgamal.o \
 	${OBJECTDIR}/primes.o \
 	${OBJECTDIR}/ellipticcurve.o \
-	${OBJECTDIR}/arith/Poly.o \
 	${OBJECTDIR}/hcp.o \
+	${OBJECTDIR}/arith/Poly.o \
 	${OBJECTDIR}/ecbinary.o \
 	${OBJECTDIR}/arith/GFE.o \
-	${OBJECTDIR}/zp_int.o
+	${OBJECTDIR}/zp_int.o \
+	${OBJECTDIR}/cmd.o
 
 # C Compiler Flags
 CFLAGS=
@@ -121,15 +122,15 @@ ${OBJECTDIR}/ellipticcurve.o: nbproject/Makefile-${CND_CONF}.mk ellipticcurve.cp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ellipticcurve.o ellipticcurve.cpp
 
-${OBJECTDIR}/arith/Poly.o: nbproject/Makefile-${CND_CONF}.mk arith/Poly.cpp 
-	${MKDIR} -p ${OBJECTDIR}/arith
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/arith/Poly.o arith/Poly.cpp
-
 ${OBJECTDIR}/hcp.o: nbproject/Makefile-${CND_CONF}.mk hcp.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/hcp.o hcp.cpp
+
+${OBJECTDIR}/arith/Poly.o: nbproject/Makefile-${CND_CONF}.mk arith/Poly.cpp 
+	${MKDIR} -p ${OBJECTDIR}/arith
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/arith/Poly.o arith/Poly.cpp
 
 ${OBJECTDIR}/ecbinary.o: nbproject/Makefile-${CND_CONF}.mk ecbinary.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -145,6 +146,11 @@ ${OBJECTDIR}/zp_int.o: nbproject/Makefile-${CND_CONF}.mk zp_int.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/zp_int.o zp_int.cpp
+
+${OBJECTDIR}/cmd.o: nbproject/Makefile-${CND_CONF}.mk cmd.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/cmd.o cmd.cpp
 
 # Subprojects
 .build-subprojects:

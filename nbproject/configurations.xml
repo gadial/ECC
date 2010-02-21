@@ -7,6 +7,7 @@
       <itemPath>arith/GFE.h</itemPath>
       <itemPath>arith/Poly.h</itemPath>
       <itemPath>adicops.h</itemPath>
+      <itemPath>cmd.h</itemPath>
       <itemPath>coordinates.h</itemPath>
       <itemPath>curvesnist.h</itemPath>
       <itemPath>tests/curvesnisttest.h</itemPath>
@@ -31,6 +32,7 @@
       <itemPath>arith/GFE.cpp</itemPath>
       <itemPath>arith/Poly.cpp</itemPath>
       <itemPath>adicops.cpp</itemPath>
+      <itemPath>cmd.cpp</itemPath>
       <itemPath>coordinates.cpp</itemPath>
       <itemPath>tests/curvesnisttest.cpp</itemPath>
       <itemPath>ecbinary.cpp</itemPath>

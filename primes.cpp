@@ -198,3 +198,13 @@ bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allow
     return mpz_probab_prime_p(p.get_mpz_t(), MILLER_RABIN_REPEATS);
 }
 
+mpz_class mersenne_prime(int n){
+    #define MERSENNE_NUMERS_SIZE 20
+    int p_values[MERSENNE_NUMERS_SIZE] = {2,3,5,7,13,17,19,31,61,89,107,127,521,607,1279,2203,2281,3217,4253,4423};
+    if (n > MERSENNE_NUMERS_SIZE)
+        return 0;
+    mpz_class result;
+    mpz_class base = 2;
+    mpz_pow_ui(result.get_mpz_t(),base.get_mpz_t(),p_values[n-1]);
+    return (result - 1);
+}
