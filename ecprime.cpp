@@ -74,6 +74,48 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
     candidate.setOrder(u);
     return candidate;
 }
+
+ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p, RandomNumberGenerator gen){
+    #define SMOOTHNESS_ALLOWED 2
+    #define MIN_SIZE_ALLOWED 10000
+    mpz_class t,s;
+    mpz_class u1,u2;
+    if (!extended_cornacchia(p,D,t,s))
+        throw "No suitable curve can be found";
+
+    u1 = p+1-t;
+    u2 = p+1+t;
+
+    ModularPolynomial pol = ModularPolynomial::build_hcp_from_discriminant(D,p);
+    zp_int j0 = pol.find_one_root();
+    zp_int k = j0/(zp_int(1728,p)-j0);
+    //TODO: need to choose c such that we'll get a = -3
+    zp_int c = gen.generate_modulu_p(p);
+    zp_int a = k*3*(c^2);
+    zp_int b = k*(c^3);
+
+    ECPrime candidate(p,a,b);
+    if (candidate.check_order(u1)){
+        candidate.setOrder(u1);
+        return candidate;
+    }
+    if (candidate.check_order(u2)){
+        candidate.setOrder(u1);
+        return candidate;
+    }
+    zp_int e = gen.generate_qnr_modulu_p(p);
+    candidate = ECPrime(p,a*(e^2),b*(e^3));
+    if (candidate.check_order(u1)){
+        candidate.setOrder(u1);
+        return candidate;
+    }
+    if (candidate.check_order(u2)){
+        candidate.setOrder(u1);
+        return candidate;
+    }
+    throw "No suitable curve can be found";
+}
+
 ZpCoordinate ECPrime::get_random_point(){
     RandomNumberGenerator gen;
     ZpCoordinate P = ZpCoordinate::infinity();
@@ -256,7 +298,6 @@ ZpCoordinate ECPrime::pointMultiplication(ZpCoordinate P, mpz_class k) {
 	}
 	return ZpCoordinate(Q);
 }
-
 ZpJacobian ECPrime::repeatedDoubling(ZpJacobian P, int m) {
 	// TODO: test...
 

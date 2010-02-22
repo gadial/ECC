@@ -208,3 +208,50 @@ mpz_class mersenne_prime(int n){
     mpz_pow_ui(result.get_mpz_t(),base.get_mpz_t(),p_values[n-1]);
     return (result - 1);
 }
+
+//finds t,s such that t^2+|D|y^2=4p, D is negative and equivalent to 0 or 1 modulo 4, and |D| < 4p
+bool extended_cornacchia(mpz_class p, int D, mpz_class& t,mpz_class& s){
+    if (p == 2){
+        switch (D+8){
+            case 0: t = 0; s = 1; return true;
+            case 1: t = 1; s = 1; return true;
+            case 4: t = 2; s = 1; return true;
+            default: return false;
+        }
+    }
+
+    if (legendre_symbol(D,p) == -1)
+        return false;
+
+    mpz_class d = (D < 0)?(-D):(D);
+    mpz_class x0 = modular_square_root(D,p);
+    if (x0 % 2 != d % 2)
+        x0 = p - x0;
+
+    mpz_class a,b,l,r;
+    a = 2*p;
+    b = x0;
+    mpz_root(l.get_mpz_t(),p.get_mpz_t(),2);
+    l*=2;
+
+    while (b > l){
+        r = a % b;
+        a = b;
+        b = r;
+    }
+
+    
+    mpz_class c = 4*p-b*b;
+
+    if (c % d != 0)
+        return false;
+    c/= d;
+
+    mpz_class result;
+    if (mpz_root(result.get_mpz_t(), c.get_mpz_t(),2)){
+        t = b;
+        s = result;
+        return true;
+    }
+    return false;
+}

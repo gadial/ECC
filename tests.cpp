@@ -90,6 +90,15 @@ void PrimesTest::test_is_near_prime(){
     CPPUNIT_ASSERT(is_near_prime(p*small_primes[NUM_SMALL_PRIMES - 10],NUM_SMALL_PRIMES - 10,min_size) == false);
 }
 
+void PrimesTest::test_extended_cornacchia(){
+    mpz_class t,s;
+    CPPUNIT_ASSERT(extended_cornacchia(31,-3,t,s) == true && t == 7 && s == 5);
+    CPPUNIT_ASSERT(extended_cornacchia(281,-28,t,s) == true && t == 26 && s == 4);
+    CPPUNIT_ASSERT(extended_cornacchia(11719,-43,t,s) == true && t == 7 && s == 33);
+    CPPUNIT_ASSERT(extended_cornacchia(577,-9,t,s) == true && t == 2 && s == 16);
+    CPPUNIT_ASSERT(extended_cornacchia(73,-37,t,s) == true && t == 12 && s == 2);
+}
+
 void EllipticCurveTest::setUp()
 {
     random_curve = ECPrime::randomCurve(10, gen);

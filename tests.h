@@ -24,6 +24,7 @@ class PrimesTest : public CppUnit::TestFixture{
     CPPUNIT_TEST( test_square_root );
     CPPUNIT_TEST( test_generate_prime_for_discriminant );
     CPPUNIT_TEST( test_is_near_prime );
+    CPPUNIT_TEST( test_extended_cornacchia );
     CPPUNIT_TEST_SUITE_END();
 private:
     RandomNumberGenerator gen;
@@ -39,6 +40,7 @@ public:
     void test_small_primes();
     void test_generate_prime_for_discriminant();
     void test_is_near_prime();
+    void test_extended_cornacchia();
 };
 
 class EllipticCurveTest : public CppUnit::TestFixture{

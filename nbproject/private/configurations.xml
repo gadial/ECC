@@ -11,7 +11,7 @@
       <gizmo_options version="1">
       </gizmo_options>
       <runprofile version="5">
-        <args></args>
+        <args>-t</args>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>

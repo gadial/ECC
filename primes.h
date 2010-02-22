@@ -35,5 +35,7 @@ zp_int modular_square_root(zp_int n);
 bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed);
 
 mpz_class mersenne_prime(int n);
+
+bool extended_cornacchia(mpz_class p, int D, mpz_class& t,mpz_class& s);
 #endif	/* _PRIMES_H */
 
