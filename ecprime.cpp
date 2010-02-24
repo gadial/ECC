@@ -75,7 +75,7 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
     return candidate;
 }
 
-ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p, RandomNumberGenerator gen){
+ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
     #define SMOOTHNESS_ALLOWED 2
     #define MIN_SIZE_ALLOWED 10000
     mpz_class t,s;
@@ -90,8 +90,10 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p, Ran
     zp_int j0 = pol.find_one_root();
     zp_int k = j0/(zp_int(1728,p)-j0);
     //TODO: need to choose c such that we'll get a = -3
-    zp_int c = gen.generate_modulu_p(p);
-    zp_int a = k*3*(c^2);
+    zp_int c = modular_square_root((-k).inverse());
+    if (c == 0)
+        throw "No suitable curve can be found";
+    zp_int a = k*3*(c^2); //should be -3
     zp_int b = k*(c^3);
 
     ECPrime candidate(p,a,b);
@@ -103,16 +105,16 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p, Ran
         candidate.setOrder(u1);
         return candidate;
     }
-    zp_int e = gen.generate_qnr_modulu_p(p);
-    candidate = ECPrime(p,a*(e^2),b*(e^3));
-    if (candidate.check_order(u1)){
-        candidate.setOrder(u1);
-        return candidate;
-    }
-    if (candidate.check_order(u2)){
-        candidate.setOrder(u1);
-        return candidate;
-    }
+//    zp_int e = gen.generate_qnr_modulu_p(p);
+//    candidate = ECPrime(p,a*(e^2),b*(e^3));
+//    if (candidate.check_order(u1)){
+//        candidate.setOrder(u1);
+//        return candidate;
+//    }
+//    if (candidate.check_order(u2)){
+//        candidate.setOrder(u1);
+//        return candidate;
+//    }
     throw "No suitable curve can be found";
 }
 

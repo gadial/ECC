@@ -32,6 +32,7 @@
       <itemPath>arith/GFE.cpp</itemPath>
       <itemPath>arith/Poly.cpp</itemPath>
       <itemPath>adicops.cpp</itemPath>
+      <itemPath>challange_crack.cpp</itemPath>
       <itemPath>cmd.cpp</itemPath>
       <itemPath>coordinates.cpp</itemPath>
       <itemPath>tests/curvesnisttest.cpp</itemPath>
@@ -53,6 +54,7 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>challange_crack.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>tests</Elem>

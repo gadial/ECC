@@ -34,6 +34,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ecprime.o \
 	${OBJECTDIR}/adicops.o \
 	${OBJECTDIR}/tests/padictest.o \
+	${OBJECTDIR}/challange_crack.o \
 	${OBJECTDIR}/tests/curvesnisttest.o \
 	${OBJECTDIR}/tests.o \
 	${OBJECTDIR}/main.o \
@@ -86,6 +87,11 @@ ${OBJECTDIR}/tests/padictest.o: nbproject/Makefile-${CND_CONF}.mk tests/padictes
 	${MKDIR} -p ${OBJECTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/tests/padictest.o tests/padictest.cpp
+
+${OBJECTDIR}/challange_crack.o: nbproject/Makefile-${CND_CONF}.mk challange_crack.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/challange_crack.o challange_crack.cpp
 
 ${OBJECTDIR}/tests/curvesnisttest.o: nbproject/Makefile-${CND_CONF}.mk tests/curvesnisttest.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tests

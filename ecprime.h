@@ -27,8 +27,7 @@ public:
         static ECPrime randomCurveFromDiscriminant(int D, int number_of_bits,
 			RandomNumberGenerator gen);
 
-        static ECPrime normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p,
-			RandomNumberGenerator gen);
+        static ECPrime normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p);
 	/**
 	 * Addition P+Q of a jacobian coordinate
 	 * P and an affine coordinate Q

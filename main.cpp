@@ -16,6 +16,7 @@
 #include "adicops.h"
 #include "elgamal.h"
 #include "cmd.h"
+#include "challange_crack.h"
 
 //#include <NTL/GF2EX.h>
 
@@ -38,13 +39,14 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-    	Cmd* cmd = new Cmd(argc, argv);
-	if (cmd->do_tests) {
-		do_tests();
-	} else {
-		cmd->execute();
-	}
-	delete cmd;
+    try_all_curves_on_cipher("bla", "bla", "bla");
+//    	Cmd* cmd = new Cmd(argc, argv);
+//	if (cmd->do_tests) {
+//		do_tests();
+//	} else {
+//		cmd->execute();
+//	}
+//	delete cmd;
     return 0;
 }
 
