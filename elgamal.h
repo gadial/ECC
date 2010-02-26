@@ -99,7 +99,24 @@ public:
 
     /*
      * Converts a string of length 'max_point_length'-1 to an gmp integer
-     */
+     *
+     * More specifically:
+     *
+     * Encodes a string to a point on the Elliptic Curve, including
+	 * one byte random padding. In the following way:
+	 *
+	 * The string corresponds to the X-coordinate of the point,
+	 * random padding is choosen in such a way that a Y coordinate exists
+	 *
+	 * --------------------------
+	 * Format of the X-Coordinate
+	 * --------------------------
+	 *
+	 * ASCII(char) means the ascii code of a character (in binary format)
+	 * rand() is a random (one byte) character
+	 *
+	 * Example: "abc" <-> ASCII(c)|ASCII(b)|ASCII(a)|ASCII(rand())
+	 */
     Coordinate to_point(string str);
 
     /*
