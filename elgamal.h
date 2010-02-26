@@ -26,7 +26,6 @@ static vector<string> StringSplit(string str, string delim) {
 
 class ECC_ElGamal_Ciphertext{
 public:
-
 	static ECC_ElGamal_Ciphertext from_string(string str, Ellipticcurve* el) {
 		ECC_ElGamal_Ciphertext res;
 		//cout << str << endl;
@@ -73,9 +72,20 @@ public:
     void generate_random_keypair();
     ECC_ElGamal_Ciphertext encrypt_element(ECC_ElGamal_Plaintext m);
     ECC_ElGamal_Ciphertext encrypt_element(string m);
+
     ECC_ElGamal_Plaintext decrypt_element (ECC_ElGamal_Ciphertext ciphertext);
 
+    /*
+     * Encrypts a given string 'm'
+     * 'm' must be no longer than 'get_max_point_length()'
+     */
     string encrypt(string m);
+
+    /*
+     * decrypts 'c'
+     * 'c' is a ciphertext in the following format: C1,C2
+     * Where C1 and C2 are in compressed format
+     */
     string decrypt(string c);
 
     /*

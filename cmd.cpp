@@ -157,10 +157,14 @@ void Cmd::encrypt_message(string file_name) {
 	while (is.good()) {
 		is.read(str, mpl);
 		streamsize bytes_read = is.gcount();
-		ECC_ElGamal_Ciphertext cipher = elg->encrypt_element(
-				bytes_read < mpl ? string(str).substr(0, bytes_read) : string(
-						str));
-		os << cipher.to_string() << endl;
+		ECC_ElGamal_Ciphertext cipher;
+		if (bytes_read < mpl) {
+			cipher = elg->encrypt_element(string(str).substr(0, bytes_read));
+			os << cipher.to_string() << endl;
+		} else {
+			cipher = elg->encrypt_element(string(str));
+			os << cipher.to_string() << endl;
+		}
 	}
 	is.close();
 	os.flush();
@@ -176,8 +180,7 @@ void Cmd::decrypt_message(string file_name) {
 	while (!is.eof()) {
 		getline(is, line);
 		if (line.empty()) continue;
-		ECC_ElGamal_Plaintext ep = elg->decrypt_element(ECC_ElGamal_Ciphertext::from_string(line, elg->ell));
-		string remp = elg->remove_padding(ep);
+		string remp = elg->decrypt(line);
 		os << remp;
 	}
 	is.close();
@@ -246,6 +249,7 @@ void Cmd::use_elliptic_curve(ifstream& in) {
 	// first line: prime/binary
 	getline(in, line);
 	// TODO: handle binary
+	string type = line;
 
 	// 2. line: modulus
 	getline(in, line);
@@ -271,7 +275,14 @@ void Cmd::use_elliptic_curve(ifstream& in) {
 	mpz_class order;
 	order.set_str(line, 10);
 
-	Ellipticcurve* ec = new ECPrime(modulus, a, b);
+	Ellipticcurve* ec;
+	if (type == "prime") {
+		ec = new ECPrime(modulus, a, b);
+	} else if (type == "binary") {
+		ec = new ECBinary(modulus, a, b);
+	} else {
+		cout << "EC type neither 'prime' nor 'binary'!" << endl;
+	}
 	ec->setOrder(order);
 	ec->set_point_compressed(compr_point);
 
@@ -280,7 +291,13 @@ void Cmd::use_elliptic_curve(ifstream& in) {
 
 void Cmd::write_elliptic_curve(ofstream& out) {
 	Ellipticcurve* ec = elg->ell;
-	out << "prime" << endl;
+	if (dynamic_cast<ECPrime*>(ec)) {
+		out << "prime" << endl;
+	} else if (dynamic_cast<ECBinary*>(ec)) {
+		out << "binary" << endl;
+	} else {
+		cerr << "EC has no valid type!" << endl;
+	}
 	out << ec->mod << endl;
 	out << ec->ECC_a << endl;
 	out << ec->ECC_b << endl;

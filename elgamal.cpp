@@ -10,7 +10,6 @@
 ECC_ElGamal::ECC_ElGamal(Ellipticcurve* E) { ell = E;}
 
 ECC_ElGamal_Ciphertext ECC_ElGamal::encrypt_element(ECC_ElGamal_Plaintext m) {
-	//cout << "Message: " << m.P << endl;
 	ECC_ElGamal_Ciphertext eco;
 	Coordinate M = m.P;
 	Coordinate P = ell->point;
@@ -19,14 +18,14 @@ ECC_ElGamal_Ciphertext ECC_ElGamal::encrypt_element(ECC_ElGamal_Plaintext m) {
 	eco.C1 = ell->pointMultiplication(P, k);
 	Coordinate kQ = ell->pointMultiplication(Q, k);
 	eco.C2 = ell->addition(M, kQ);
-	//Coordinate ccc = ell->getPoint(M.X);
-	//cout << "getpoint c2: " << M << endl;
 	return eco;
 }
+
 
 ECC_ElGamal_Ciphertext ECC_ElGamal::encrypt_element(string m) {
 	return encrypt_element(ECC_ElGamal_Plaintext(to_point(m)));
 }
+
 
 ECC_ElGamal_Plaintext ECC_ElGamal::decrypt_element (ECC_ElGamal_Ciphertext ciphertext) {
 	ECC_ElGamal_Plaintext ep;
@@ -36,50 +35,14 @@ ECC_ElGamal_Plaintext ECC_ElGamal::decrypt_element (ECC_ElGamal_Ciphertext ciphe
 }
 
 string ECC_ElGamal::encrypt(string m) {
-	vector<ECC_ElGamal_Plaintext> co = split_msg(m);
-	string res;
-	for (unsigned int i = 0; i < co.size(); ++i) {
-		ECC_ElGamal_Ciphertext cipher = encrypt_element(co[i]);
-		/*
-		 * TODO: some better output format?
-		 */
-
-		//cout << "C1: " << cipher.C1 << endl << "C1-comp: " << cipher.C1.toCompressedForm() << endl;
-		//cout << "C2: " << cipher.C2 << endl << "C2-comp: " << cipher.C2.toCompressedForm() << endl;
-		/*
-		res.append(cipher.C1.toCompressedForm());
-		res.append(",");
-		res.append(cipher.C2.toCompressedForm());
-		res.append(",");
-		*/
-		res.append(cipher.to_string());
-	}
-	return res;
+	ECC_ElGamal_Ciphertext ec = encrypt_element(ECC_ElGamal_Plaintext(to_point(m)));
+	return ec.to_string();
 }
 
 string ECC_ElGamal::decrypt(string c) {
-
-	vector<string> ciphers = StringSplit(c, ",");
-	//cout << "size: " << ciphers.size() << endl;
-	string res;
-	for (unsigned int i = 0; i < ciphers.size(); i += 2) {
-		ECC_ElGamal_Ciphertext ec;
-		ec.C1 = ell->getPointCompressedForm(ciphers[i]);
-		ec.C2 = ell->getPointCompressedForm(ciphers[i + 1]);
-		//cout << "C1: " << ciphers[i] << endl << ec.C1 << endl;
-		//cout << "C2: " << ciphers[i + 1] << endl << ec.C2 << endl;
-		ECC_ElGamal_Plaintext ep = decrypt_element(ec);
-		//cout << ep.P << endl;
-		// removing padding...
-
-		/*
-		ep.P.X >>= 8;
-		res.append(to_string(ep.P.X));
-		*/
-
-		res.append(remove_padding(ep));
-	}
-	return res;
+	ECC_ElGamal_Ciphertext ct = ECC_ElGamal_Ciphertext::from_string(c, ell);
+	ECC_ElGamal_Plaintext ep = decrypt_element(ct);
+	return remove_padding(ep);
 }
 
 string ECC_ElGamal::remove_padding(ECC_ElGamal_Plaintext& ep) {
