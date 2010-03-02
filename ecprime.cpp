@@ -81,7 +81,7 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
     mpz_class t,s;
     mpz_class u1,u2;
     if (!extended_cornacchia(p,D,t,s))
-        throw "No suitable curve can be found";
+        throw "No suitable curve can be found (reason: Cornacchia failed)";
 
     u1 = p+1-t;
     u2 = p+1+t;
@@ -92,7 +92,7 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
     //TODO: need to choose c such that we'll get a = -3
     zp_int c = modular_square_root((-k).inverse());
     if (c == 0)
-        throw "No suitable curve can be found";
+        throw "No suitable curve can be found (reason: given k, could not compute c)";
     zp_int a = k*3*(c^2); //should be -3
     zp_int b = k*(c^3);
 
@@ -115,7 +115,7 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
 //        candidate.setOrder(u1);
 //        return candidate;
 //    }
-    throw "No suitable curve can be found";
+    throw "No suitable curve can be found (reason: not of suitable order)";
 }
 
 ZpCoordinate ECPrime::get_random_point(){

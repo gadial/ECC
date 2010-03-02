@@ -319,7 +319,7 @@ void ModularPolynomial::full_print(ostream& o){
 }
 
 NumberArray ModularPolynomial::find_roots(){
-//    cout << "about to find roots for p_x = " << *this << endl;
+    cout << "about to find roots for p_x = " << *this << endl;
     //pg. 37 in Cohen's book
     //first stage: isolating roots in F_p
     //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
@@ -355,7 +355,7 @@ NumberArray ModularPolynomial::find_roots(){
         results.push_back((-A.coefficients[1] - e)/(A.coefficients[2]*2));
         return results;
     }
-//    cout << "got to the splitting part" << endl;
+    cout << "got to the splitting part" << endl;
 //    cout << "p = " << p << endl;
     //now do a random splitting
     ModularPolynomial B;
@@ -412,8 +412,9 @@ zp_int ModularPolynomial::find_one_root(){
         NumberArray b_coeff;
         b_coeff.push_back(a); // X + a
         b_coeff.push_back(zp_int(1,p));
-        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A).normalize();
-        B = gcd(A, b);
+        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A);
+        ModularPolynomial unit("1",p);
+        B = gcd(A, b - unit);
         if (B.degree > 0 && B.degree < A.degree)
             break; //managed to split A
    }
