@@ -39,14 +39,14 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-    try_all_curves_on_cipher("bla", "bla", "bla");
-//    	Cmd* cmd = new Cmd(argc, argv);
-//	if (cmd->do_tests) {
-//		do_tests();
-//	} else {
-//		cmd->execute();
-//	}
-//	delete cmd;
+//    try_challange_1();
+    	Cmd* cmd = new Cmd(argc, argv);
+	if (cmd->do_tests) {
+		do_tests();
+	} else {
+		cmd->execute();
+	}
+	delete cmd;
     return 0;
 }
 

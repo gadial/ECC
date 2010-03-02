@@ -235,21 +235,15 @@ ModularPolynomial ModularPolynomial::operator%(const ModularPolynomial& lhs){
 
 ModularPolynomial ModularPolynomial::modular_exponent(mpz_class exp, const ModularPolynomial& mod) const{
     ModularPolynomial result("1",modulus);
-//    cout << "result = " << result << endl;
     ModularPolynomial y = *this;
     mpz_class n = exp;
     while (n > 0){
-        if (n % 2 == 1)
-            result = ((result * y) % mod);
-//        cout << "prev y = " << y << " degree = " << y.degree << endl;
-//        cout << "y * y = " << y * y << endl;
-//        cout << "mod = " << mod << endl;
+        if (n % 2 == 1){
+          result = ((result * y) % mod);
+        }
         y = ((y * y) % mod);
-//        cout << "next y = " << y << " degree = " << y.degree << endl;
         n /= 2;
-//        cout << "result = " << result << endl;
     }
-//    cout << "result = " << result << endl;
     return result;
 }
 
@@ -325,6 +319,7 @@ void ModularPolynomial::full_print(ostream& o){
 }
 
 NumberArray ModularPolynomial::find_roots(){
+//    cout << "about to find roots for p_x = " << *this << endl;
     //pg. 37 in Cohen's book
     //first stage: isolating roots in F_p
     //based on Cohen's suggestion, instead of computing gcd(u^n-b,c) we compute d = u^n (mod c) quickly
@@ -360,7 +355,8 @@ NumberArray ModularPolynomial::find_roots(){
         results.push_back((-A.coefficients[1] - e)/(A.coefficients[2]*2));
         return results;
     }
-
+//    cout << "got to the splitting part" << endl;
+//    cout << "p = " << p << endl;
     //now do a random splitting
     ModularPolynomial B;
     while (true){ //keep trying until success
@@ -368,10 +364,14 @@ NumberArray ModularPolynomial::find_roots(){
         NumberArray b_coeff;
         b_coeff.push_back(a); // X + a
         b_coeff.push_back(zp_int(1,p));
-        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A).normalize();
+        ModularPolynomial unit("1",p);
+        ModularPolynomial b = ModularPolynomial(b_coeff, p).modular_exponent((p-1) / 2,A);
 //        cout << "Trying to split A = " << A << endl;
-//        cout << "gcding with b = " << b << " , p = " << p << endl;
-        B = gcd(A, b);
+//        cout << "gcding with b = " << b << ", a = " << a << ", p = " << p << endl;
+//        cout << "A = " << A << " , p = " << p << endl;
+//        cout << "b - unit = " << b - unit << endl;
+//        cout << "a = " << a << endl;
+        B = gcd(A, b - unit);
 //        cout << "Got B = " << B << endl;
         if (B.degree > 0 && B.degree < A.degree)
             break; //managed to split A

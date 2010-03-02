@@ -2,7 +2,7 @@
 #include "hcp.h"
 #include "elgamal.h"
 
-#define MERSENNE_PRIME_NUMBER 13
+#define MERSENNE_PRIME_NUMBER 8
 ECPrime candidate_elliptic_curve(int mersenne_prime_number, int D, string ECPoint){
     ECPrime curve = ECPrime::normalizedCurveFromDiscriminantAndPrime(D, mersenne_prime(mersenne_prime_number));
     curve.set_point_compressed(ECPoint);
@@ -22,6 +22,7 @@ void try_all_curves_on_cipher(string ECPoint, string d_string, string cipher){
     HCP temp;
     mpz_class d;
     mpz_set_str(d.get_mpz_t(), d_string.c_str(), 10);
+    cout << mersenne_prime(MERSENNE_PRIME_NUMBER) << endl;
     for (int D=-1; D>LOWER_LIMIT; D--){
         if ((temp.H.find(D)) != temp.H.end()){//this gives something to work with
             ECPrime curve;

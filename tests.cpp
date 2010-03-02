@@ -230,6 +230,7 @@ void PolynomialTest::test_multiplication(){
     CPPUNIT_ASSERT(ModularPolynomial("x + 1",100) * ModularPolynomial("x + 1",100) == ModularPolynomial("x^2 + 2x + 1",100));
     CPPUNIT_ASSERT(ModularPolynomial("0",113) * ModularPolynomial("0",113) == ModularPolynomial("0",113));
     CPPUNIT_ASSERT((ModularPolynomial("x",113).modular_exponent(4,ModularPolynomial("x^2",113))) == ModularPolynomial("0",113));
+    CPPUNIT_ASSERT((ModularPolynomial("x^4 + 790*x^3 + 463*x^2 + 755*x + 641",821)*ModularPolynomial("x^4 + 790*x^3 + 463*x^2 + 755*x + 641",821)) == ModularPolynomial("x^8 + 759x^7 + 245x^6 + 718x^5 + 536x^4 + 125x^3 + 234x^2 + 772x + 381",821));
     CPPUNIT_ASSERT((ModularPolynomial("x + 1",113).modular_exponent(2,ModularPolynomial("x^2",113))) == ModularPolynomial("2x + 1",113));
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(8,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("18x^2 + 7",113));
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(17,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("73x^2 + 34",113));
@@ -238,6 +239,7 @@ void PolynomialTest::test_multiplication(){
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(10000,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("25x^2 + 28",113));
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(100000,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("23x^2 + 30",113));
     CPPUNIT_ASSERT((ModularPolynomial("x^2 + 3",113).modular_exponent(1000000,ModularPolynomial("x^3 + 5x",113))) == ModularPolynomial("83x^2 + 106",113));
+    CPPUNIT_ASSERT((ModularPolynomial("x + 608",821).modular_exponent(410,ModularPolynomial("x^6 + 257x^5 + 812x^4 + 190x^3 + 280x^2 + 142x + 708",821))) == ModularPolynomial("784*x^5 + 656*x^4 + 109*x^3 + 502*x^2 + 482*x + 808",821));
 }
 
 void PolynomialTest::test_divisons(){
@@ -253,10 +255,12 @@ void PolynomialTest::test_divisons(){
     CPPUNIT_ASSERT(ModularPolynomial("x^7 + 34x^5 + 15x^4 + 95x^3 + 17",113) % ModularPolynomial("3x^6 + 5x^3",113) == ModularPolynomial("34x^5 + 51x^4 + 95x^3 + 17",113));
     CPPUNIT_ASSERT(ModularPolynomial("0",113) % ModularPolynomial("x",113) == ModularPolynomial("0",113));
     CPPUNIT_ASSERT(ModularPolynomial("x^3 + 169x^2 + 256x + 118",503) % ModularPolynomial("x^2 + 329x + 406",503) == ModularPolynomial("178x + 191",503));
+    CPPUNIT_ASSERT(ModularPolynomial("x^3 + 169x^2 + 256x + 118",503) % ModularPolynomial("x^2 + 329x + 406",503) == ModularPolynomial("178x + 191",503));
 
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x",113),ModularPolynomial("x",113)) == ModularPolynomial("x",113));
     CPPUNIT_ASSERT(gcd(ModularPolynomial("x^5 + 3x^2 + x",113),ModularPolynomial("3x^4 + 2x^3 + 17",113)) == ModularPolynomial("1",113));
-    CPPUNIT_ASSERT(gcd(ModularPolynomial("x^3 + 22x^2 + 36x + 2",41),ModularPolynomial("x^2 + 8x + 2",41)) == ModularPolynomial("1",41));
+    CPPUNIT_ASSERT((ModularPolynomial("x^8 + 759x^7 + 245x^6 + 718x^5 + 536x^4 + 125x^3 + 234x^2 + 772x + 381",821) % ModularPolynomial("x^6 + 257x^5 + 812x^4 + 190x^3 + 280x^2 + 708",821)) == ModularPolynomial("214x^5 + 524x^4 + 198x^3 + 574x^2 + 28x + 263",821));
+    CPPUNIT_ASSERT(((ModularPolynomial("x^4 + 790*x^3 + 463*x^2 + 755*x + 641",821)*ModularPolynomial("x^4 + 790*x^3 + 463*x^2 + 755*x + 641",821)) % ModularPolynomial("x^6 + 257x^5 + 812x^4 + 190x^3 + 280x^2 + 708",821)) == ModularPolynomial("214x^5 + 524x^4 + 198x^3 + 574x^2 + 28x + 263",821));
 }
 
 void PolynomialTest::test_evaluations(){
@@ -284,6 +288,9 @@ void PolynomialTest::test_root_finding(){
     NumberArray::iterator j;
     for (i = roots.begin(), j = random_roots.begin(); i< roots.end() || j<random_roots.end(); i++, j++)
         CPPUNIT_ASSERT(*i == *j);
+
+    p_x = ModularPolynomial::build_hcp_from_discriminant(-31,2147483647);
+    roots = p_x.find_roots(); //to check if we get an infinite loop (had a bug that caused this once)
 }
 
 void ZpIntTest::setUp(){
