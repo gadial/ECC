@@ -75,7 +75,7 @@ static ECPrime::ECPrime randomCurveFromDiscriminant(int D, int number_of_bits, R
     return candidate;
 }
 
-ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
+ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p, int HCP_root_number){
     #define SMOOTHNESS_ALLOWED 2
     #define MIN_SIZE_ALLOWED 10000
     mpz_class t,s;
@@ -87,9 +87,12 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
     u2 = p+1+t;
 
     ModularPolynomial pol = ModularPolynomial::build_hcp_from_discriminant(D,p);
-    zp_int j0 = pol.find_one_root();
+    NumberArray roots = pol.find_roots();
+    if (roots.size() <= HCP_root_number)
+        throw "no root of the specified index";
+    zp_int j0 = roots[HCP_root_number];
+
     zp_int k = j0/(zp_int(1728,p)-j0);
-    //TODO: need to choose c such that we'll get a = -3
     zp_int c = modular_square_root((-k).inverse());
     if (c == 0)
         throw "No suitable curve can be found (reason: given k, could not compute c)";

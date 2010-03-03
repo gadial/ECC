@@ -71,6 +71,7 @@ class HCP{ //Hilbert class polynomials
 public:
     HCP();
     map<int, string> H;
+    int degree(int D);
 };
 
 

@@ -39,7 +39,7 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-    try_challange_1();
+    try_challange_2();
 //    	Cmd* cmd = new Cmd(argc, argv);
 //	if (cmd->do_tests) {
 //		do_tests();

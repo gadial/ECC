@@ -439,6 +439,10 @@ ModularPolynomial ModularPolynomial::build_hcp_from_discriminant(int D, mpz_clas
     return pol;
 }
 
+int HCP::degree(int D){
+    return read_degree(H[D]);
+}
+
 HCP::HCP()
 
 {
