@@ -7,6 +7,7 @@
       <itemPath>arith/GFE.h</itemPath>
       <itemPath>arith/Poly.h</itemPath>
       <itemPath>adicops.h</itemPath>
+      <itemPath>challange_crack.h</itemPath>
       <itemPath>cmd.h</itemPath>
       <itemPath>coordinates.h</itemPath>
       <itemPath>curvesnist.h</itemPath>
@@ -54,7 +55,6 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>challange_crack.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>tests</Elem>

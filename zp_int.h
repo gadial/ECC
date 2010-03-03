@@ -101,7 +101,8 @@ public:
 	static ZpJacobian infinity(mpz_class p = 0){return ZpJacobian(1, 1, 0, p);}
         operator Jacobian(){return Jacobian(X,Y,Z);}
     bool isInfinite() const {
-    	return X == 1 && Y == 1 && Z == 0;
+//    	return X == 1 && Y == 1 && Z == 0;
+        return Z == 0; //it's possible to get X,Y != 1
     }
         mpz_class p;
 	zp_int X, Y, Z;

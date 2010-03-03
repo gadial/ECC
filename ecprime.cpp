@@ -94,7 +94,7 @@ ECPrime ECPrime::normalizedCurveFromDiscriminantAndPrime(int D, mpz_class p){
     if (c == 0)
         throw "No suitable curve can be found (reason: given k, could not compute c)";
     zp_int a = k*3*(c^2); //should be -3
-    zp_int b = k*(c^3);
+    zp_int b = k*2*(c^3);
 
     ECPrime candidate(p,a,b);
     if (candidate.check_order(u1)){
@@ -138,6 +138,7 @@ ZpCoordinate ECPrime::subtraction(ZpCoordinate P, ZpCoordinate Q) {
 }
 
 ZpCoordinate ECPrime::getPointFromCompressedForm(string form){
+//    cout << "got form = " << form << endl;
     int y_mod_2;
     switch (form[0]){
         case '+': y_mod_2 = 1; break;
