@@ -33,7 +33,7 @@ int jacobi_symbol(mpz_class a,mpz_class b);
 mpz_class modular_square_root(mpz_class n, mpz_class p);
 zp_int modular_square_root(zp_int n);
 bool is_near_prime(mpz_class p, int smoothness_allowed, mpz_class min_size_allowed);
-
+bool is_near_prime_by_min_max(mpz_class p, mpz_class first_divisor_min, int second_divisor_max);
 mpz_class mersenne_prime(int n);
 
 bool extended_cornacchia(mpz_class p, int D, mpz_class& t,mpz_class& s);

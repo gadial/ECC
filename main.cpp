@@ -39,7 +39,10 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-    try_challange_2();
+    ECPrime curve = find_suitable_curve();
+    cout << "Finished searching for curve" << endl;
+    try_challange_1(curve);
+    try_challange_2(curve);
 //    	Cmd* cmd = new Cmd(argc, argv);
 //	if (cmd->do_tests) {
 //		do_tests();

@@ -255,3 +255,11 @@ bool extended_cornacchia(mpz_class p, int D, mpz_class& t,mpz_class& s){
     }
     return false;
 }
+
+bool is_near_prime_by_min_max(mpz_class p, mpz_class first_divisor_min, int second_divisor_max){
+    for (int i=2; i<second_divisor_max; i++){
+        while (p % i == 0)
+            p /= i;
+    }
+    return ((p > first_divisor_min) && mpz_probab_prime_p(p.get_mpz_t(), MILLER_RABIN_REPEATS));
+}
