@@ -42,6 +42,17 @@ bool curve_order_ok(ECPrime& curve){
     mpz_pow_ui(min.get_mpz_t(),base.get_mpz_t(),160);
     return is_near_prime_by_min_max(curve.getOrder(),min,max);
 }
+void print_factorization(mpz_class n, int max_small_divisors){
+    cout << "[";
+    for (int i=2; i<max_small_divisors; i++){
+        if (n % i == 0){
+            cout << i << ", ";
+            n /= i;
+        }
+    }
+    cout << n;
+    cout << "]" << endl;
+}
 
 ECPrime find_suitable_curve(){
      #define LOWER_LIMIT -400
@@ -60,12 +71,43 @@ ECPrime find_suitable_curve(){
                     continue;
                 }
                 cout << "Curve found for D = " << D <<" and j = " << j << endl;
+                cout << "curve order = ";
+                print_factorization(curve.getOrder(),65536);
+                cout << "b = " << curve.ECC_b << endl;
             }
         }
     }
     return curve; //returns the last correct curve found, but there should be only one anyway
 }
 
+void check_example(){
+    mpz_class p = 2;
+    mpz_pow_ui(p.get_mpz_t(),p.get_mpz_t(),192);
+    mpz_class temp = 2;
+    mpz_pow_ui(temp.get_mpz_t(),temp.get_mpz_t(),64);
+    p = p - temp - 1;
+
+    mpz_class b;
+    mpz_set_str(b.get_mpz_t(),"0x64210519E59C80E70FA7E9AB72243049FEB8DEECC146B9B1",0);
+    string plaintext = "This plaintext is used as a test for map-to-point procedure in Elliptic Curve variation of classical ElGamal encryption scheme.";
+    ECPrime curve(p,-3,b);
+
+    ECC_ElGamal elgamal(&curve);
+    ECC_ElGamal_Plaintext plaintext_point(curve.getPointCompressedForm("-8084666724067490157579045068961816989315825781128389632"));
+    cout << elgamal.remove_padding(plaintext_point) << endl;
+}
+//Prime field: p = 2^192 - 2^64 - 1
+//Curve parameters: a = -3, b = 0x64210519E59C80E70FA7E9AB72243049FEB8DEECC146B9B1
+//Plain text: This plaintext is used as a test for map-to-point procedure in Elliptic Curve variation of classical ElGamal encryption scheme.
+//Mapping plaintext to EC points (in compressed form):
+//
+//[8084666724067490157579045068961816989315825781128389632, 0]
+//[3101451347931975903193332796291847064454129997604400386, 0]
+//[10769152904838233781175680370694071485616057780781476864, 1]
+//[10099076297722492925525980496032433720005489519999459328, 0]
+//[10669897881170539051371972849894328957956942167430685952, 1]
+//[9616191569359092375232655010238404990676480, 1]
+//
 //void try_all_curves_on_cipher(string ECPoint, string d_string, string cipher){
 //    #define LOWER_LIMIT -400
 //    HCP temp;
