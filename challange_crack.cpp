@@ -35,6 +35,21 @@ void try_challange_2(ECPrime curve){
     cout << "Challange 2: " << elgamal.decrypt(cipher) << endl;
 }
 
+void try_encryption_and_decryption(ECPrime curve){
+        string EC_point = "+2776337839878622907459911570883077287064232747988983340664646570554424675512432427452835254055623705198536338718514654123364891577242648186860775805757142087";
+        string d_string = "1237946678497568790188826094418628206193474380513556414420549154032544215130643918215405913748994282110182353617745746987799819718799994745251376454";
+        string plaintext = "I am a plaintext, hear my roar and fear me, mortals! For I know no mercy, and am quick to anger";
+        mpz_class d;
+        mpz_set_str(d.get_mpz_t(), d_string.c_str(), 10);
+
+        curve.set_point_compressed(EC_point);
+        ECC_ElGamal elgamal(&curve);
+        elgamal.set_keys_from_private_key(d);       
+        string ciphertext = elgamal.encrypt(plaintext);
+        cout << ciphertext << endl;
+        cout << elgamal.decrypt(ciphertext) << endl;
+}
+
 bool curve_order_ok(ECPrime& curve){
     int max = 65536;
     mpz_class min;
@@ -58,7 +73,8 @@ ECPrime find_suitable_curve(){
      #define LOWER_LIMIT -400
     HCP temp;
     ECPrime curve;
-    for (int D=-1; D>LOWER_LIMIT; D--){
+//    for (int D=-1; D>LOWER_LIMIT; D--){
+        int D = -139; //for now we "cheat" to save time - we already know that D = -139 is the solution
         if ((temp.H.find(D)) != temp.H.end()){//this gives something to work with
             int deg = temp.degree(D);
             for (int j = 0; j<deg; j++){
@@ -76,7 +92,7 @@ ECPrime find_suitable_curve(){
                 cout << "b = " << curve.ECC_b << endl;
             }
         }
-    }
+//    }
     return curve; //returns the last correct curve found, but there should be only one anyway
 }
 
@@ -93,7 +109,8 @@ void check_example(){
     ECPrime curve(p,-3,b);
 
     ECC_ElGamal elgamal(&curve);
-    ECC_ElGamal_Plaintext plaintext_point(curve.getPointCompressedForm("-8084666724067490157579045068961816989315825781128389632"));
+//    ECC_ElGamal_Plaintext plaintext_point(curve.getPointCompressedForm("-8084666724067490157579045068961816989315825781128389632"));
+    ECC_ElGamal_Plaintext plaintext_point(curve.getPointCompressedForm("-3101451347931975903193332796291847064454129997604400386"));
     cout << elgamal.remove_padding(plaintext_point) << endl;
 }
 //Prime field: p = 2^192 - 2^64 - 1

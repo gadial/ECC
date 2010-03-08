@@ -46,7 +46,12 @@ string ECC_ElGamal::decrypt(string c) {
 }
 
 string ECC_ElGamal::remove_padding(ECC_ElGamal_Plaintext& ep) {
-	return to_string(ep.P.X >> 8);
+	string st = to_string(ep.P.X >> 8);
+	string res = "";
+	for (int i = 0; i < st.size(); ++i) {
+		res += st[st.size() - 1 - i];
+	}
+	return res;
 }
 
 vector<ECC_ElGamal_Plaintext> ECC_ElGamal::split_msg(string msg) {

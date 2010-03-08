@@ -40,18 +40,24 @@ void printJac(const Jacobian& j) {
  */
 int main(int argc, char** argv) {
 //    check_example();
+	/*
     ECPrime curve = find_suitable_curve();
-    try_encryption_and_decryption(curve);
+    cout << "a: " << curve.ECC_a << endl << "b: " << curve.ECC_b << endl;
+    cout << "mod: " << curve.mod << endl;
+    cout << "order: " << curve.getOrder() << endl;
+    cout << "point: " << curve.point << endl;
+    */
+    //try_encryption_and_decryption(curve);
 //    cout << "Finished searching for curve" << endl;
 //    try_challange_1(curve);
 //    try_challange_2(curve);
-//    	Cmd* cmd = new Cmd(argc, argv);
-//	if (cmd->do_tests) {
-//		do_tests();
-//	} else {
-//		cmd->execute();
-//	}
-//	delete cmd;
+   	Cmd* cmd = new Cmd(argc, argv);
+	if (cmd->do_tests) {
+		do_tests();
+	} else {
+		cmd->execute();
+	}
+	delete cmd;
     return 0;
 }
 
