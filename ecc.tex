@@ -85,4 +85,44 @@ both Neal Koblitz and Victor S. Miller \marginpar{Ref...} suggested public key c
 
 Our goal in the project has been to implement an efficient public key cryptosystem based on elliptic curves ``from scratch'', relying only on large-number arithmetic
 libraries. In particular, we have implemented all the elliptic-curve related calculations, and additional related algorithms.
+
+\section{Elliptic Curves}
+\subsection{Definition}
+Most generally, and elliptic curve $E$ over a field $K$ can be described as the subset of $K\times K$ satisfying the equation $$y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$$ 
+for a given $a_1,a_2,a_3,a_4,a_5,a_6\in K$, along with another special point ``at infinity'' $\mathcal{O}$. An additional demand is that the curve be ``smooth'',
+which means that the partial derivatives of the curve has no common zeros. This can be reduced to checking that some invariant value $\Delta$ (the \emph{discriminant} of the curve)
+which is calculated from the coefficients is not zero\marginpar{Add a picture}. Because the nature of the field $K$ is highly relevant to the structure of $E$,
+it is common to write $E/K$ indicating the curve $E$ (usually given by the equation) iis defined over the field $K$.
+
+Depending on the characteristic of $K$, the above equation can be simplified. There are three cases to consider:
+\begin{enumerate}
+  \item When $charK\ne 2,3$ the equation can be simplified to $y^2=x^3+ax+b$ with $a,b\in K$.
+  \item When $charK = 2$ and $a_1 \ne 0$, the equation can be simplified to $y^2+xy=x^3+ax^2+b$ with $a,b\in K$. This curve is said to be \emph{non-supersingular}. If $a_1 = 0$, the equation can be simplified to $y^2+cy=x^3+ax+b$ with $a,b,c\in K$. This curve is said to be \emph{supersingular}.
+  \item When $charK = 3$ and $a_1^2\ne -a_2$, the equation can be simplified to $y^2=x^3+ax^2+b$ with $a,b\in K$. This curve is said to be \emph{non-supersingular}. If $a_1^2=-a_2$, the equation can be simplified to $y^2=x^3+ax+b$ with $a,b\in K$. This curve is said to be \emph{supsersingular}.
+\end{enumerate}
+
+\subsection{Motivating Example: $K=\mathbb{C}$}
+A \emph{lattice} in the complex plane $\mathbb{C}$ is a set of the form $L=\{n\omega_1+m\omega_2|n,m\in\mathbb{Z}\}$ such that $\omega_1,\omega_2\in\mathbb{C}$ are
+not colinear. Lattices can be used to generalize the notion of ``periodic function'' to the complex plane: A meromorphic function $f$ is called \emph{elliptic} with respect to the lattice
+$L$ if $f(z+l)=f(z)$ for all $l\in L$ (equivalently, $f(z+\omega_1)=f(z+\omega_2)=f(z)$). Thus it suffices to know the values of $f$ of the \emph{fundemental parallelogram} $\Pi=\{a\omega_1+b\omega_2|a,b\in[0,1]\}$
+in order to know its values on the complex plane.
+
+In $\mathbb{R}$, the periodic function $\sin(x)$ is ``special'' in the sense that along with its derivative, $\cos(x)$. it can be used to represent all
+the periodic functions (via Fourier series). There is a parallel ``special'' function for elliptic functions, which in some regards is ``even better'' than its real counterpart. 
+Given a lattice $L$, the \emph{Weierstrass $\wp$-function} for this lattice is defined as $$\wp(z)=\frac{1}{z^2}\sum_{0\ne l\in L}\left(\frac{1}{(z-l)^2}-\frac{1}{l^2}\right)$$
+$\wp$ has the property that every elliptic function (in respect to a given lattice $L$) can be written as a \emph{rational} function in $\wp$ and $\wp'$ (as opposed to the
+infinite sum of $\sin$ and $\cos$). Thus $\wp$ is the most significant example of an elliptic function.
+
+Let $E/\mathbb{C}$ be an elliptic curve given by $y^2=x^3+ax+b$. A lattice $L$ can be found such that the corresponding Weierstrass function satisfies the differential equation
+$(\wp')^2=\wp^3+a\wp+b$. This means that the map $z\mapsto (\wp(z),\wp'(z))$ maps $\mathbb{C}$ to points on the elliptic curve. In particular, $\wp$
+has a pole in each lattice point and so $0\mapsto \mathcal{O}$ (this can be made precise by using projective coordinates).. Moreover, it
+can be shown that this map is onto, and that $z_1,z_2$ give the same point on the curve if and only if $z_1-z_2\in L$, and so we have a bijection
+between $E$  and $\mathbb{C}/L$, the latter set can be thought of as a torus (since $\mathbb{C}/L$ is isomorphic to $\Pi$ where parallel edges are ``glued`` together).
+
+
+
+
+\subsection{The Group Action}
+
+
 \end{document}
