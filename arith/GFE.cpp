@@ -241,9 +241,10 @@ GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 	GFE GFE::operator*(const GFE& other) {
 		// TODO: more efficient impl. or use gf2x http://wwwmaths.anu.edu.au/~brent/gf2x.html
 		mpz_class c = 0;
+		mpz_class const_1 = 1;
 		int m = mpz_sizeinbase(mod.get_mpz_t(), 2);
-		mpz_class mask_1 = 1 << (m - 1);
-		mpz_class mask_2 = mask_1;
+		mpz_class mask_1 = const_1 << (m - 1);
+		mpz_class mask_2 = const_1 << (m - 1);
 		mpz_class tmp;
 		//int s = (m % WORD == 0 ? m / WORD : m / WORD + 1);
 		//int k = m - 1 - WORD*(s - 1);

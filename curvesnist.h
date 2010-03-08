@@ -126,7 +126,7 @@ class CurveNISTb163 : public ECBinary {
 public:
 	CurveNISTb163(): ECBinary(B163_POLY, 16,
 			B163_ORDER, 10,
-			B163_ECC_A, 10,
+			B163_ECC_A, 16,
 			B163_ECC_B, 16,
 			B163_POINT_X_POLYBASIS, 16,
 			B163_POINT_Y_POLYBASIS, 16) {

@@ -34,17 +34,30 @@ Coordinate ECBinary::pointMultiplication(Coordinate P, mpz_class k) {
 	// actually same implementation as with prime curves,
 	//  but using LD coordinates
 
+	//cout << "Cord: " << P << endl << "pt: " << k << endl;
 	std::vector<int> naf = getNAF(k);
 	LD Q = LD::infinity();
 	for (int i = naf.size() - 1; i >= 0; --i) {
+		Coordinate QQ = toCoordinate(Q);
+		cout << "2*" << QQ;
 		Q = doubling(Q);
+		QQ = toCoordinate(Q);
+		cout << "=" << QQ << endl;
 		if (naf[i] == 1) {
+			Coordinate QQ = toCoordinate(Q);
+			cout << QQ << " + " << P << " = ";
 			Q = addition(Q, P);
+			QQ = toCoordinate(Q);
+			cout << QQ << endl;
 		} else if (naf[i] == -1) {
+			Coordinate QQ = toCoordinate(Q);
+			cout << QQ << " + " << P << " = ";
 			Q = subtraction(Q, P);
+			QQ = toCoordinate(Q);
+			cout << QQ << endl;
 		}
 	}
-	return Coordinate(Q, mod);
+	return toCoordinate(Q);
 
 }
 
@@ -63,87 +76,60 @@ LD ECBinary::addition(LD P, Coordinate Q) {
 	if (P.isInfinite()) {
 		return LD(Q);
 	}
-	mpz_class x3, y3, z3;
+	//mpz_class x3, y3, z3;
+	GFE PX = GFE(P.X, mod), PY = GFE(P.Y, mod), PZ = GFE(P.Z, mod);
+	GFE QX = GFE(Q.X, mod), QY = GFE(Q.Y, mod);
+	GFE x3, y3, z3;
 	mpz_class const_2 = 2;
 	if (ECC_a == 0 || ECC_a == 1) {
-		mpz_class t1, t2, t3, y3;
-		t1 = P.Z * Q.X;
-		mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
-		mpz_powm(t2.get_mpz_t(), P.Z.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
-		x3 = P.X + t1;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		t1 = P.Z * x3;
-		mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
-		t3 = t2 * Q.Y;
-		mpz_mod(t3.get_mpz_t(), t3.get_mpz_t(), mod.get_mpz_t());
-		y3 = P.Y + t3;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
+		GFE t1, t2, t3, y3;
+
+		t1 = PZ * QX;
+		t2 = PZ * PZ;
+		x3 = PX + t1;
+		t1 = PZ * x3;
+		t3 = t2 * QY;
+		y3 = PY + t3;
 		if (x3 == 0) {
 			return (y3 == 0 ? doubling(LD(Q)) : LD::infinity());
 		}
-		mpz_powm(z3.get_mpz_t(), t1.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		z3 = t1 * t1;
 		t3 = t1 * y3;
-		mpz_mod(t3.get_mpz_t(), t3.get_mpz_t(), mod.get_mpz_t());
 		if (ECC_a == 1) {
 			t1 = t1 + t2;
-			mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
 		}
-		mpz_powm(t2.get_mpz_t(), x3.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		t2 = x3 * x3;
 		x3 = t2 * t1;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		mpz_powm(t2.get_mpz_t(), y3.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		t2 = y3 * y3;
 		x3 = x3 + t2;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
 		x3 = x3 + t3;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		t2 = Q.X * z3;
-		mpz_mod(t2.get_mpz_t(), t2.get_mpz_t(), mod.get_mpz_t());
+		t2 = QX * z3;
 		t2 = t2 + x3;
-		mpz_mod(t2.get_mpz_t(), t2.get_mpz_t(), mod.get_mpz_t());
-		mpz_powm(t1.get_mpz_t(), z3.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		t1 = z3 * z3;
 		t3 = t3 + z3;
-		mpz_mod(t3.get_mpz_t(), t3.get_mpz_t(), mod.get_mpz_t());
 		y3 = t3 * t2;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
-		t2 = Q.X + Q.Y;
-		mpz_mod(t2.get_mpz_t(), t2.get_mpz_t(), mod.get_mpz_t());
+		t2 = QX + QY;
 		t3 = t1 * t2;
-		mpz_mod(t3.get_mpz_t(), t3.get_mpz_t(), mod.get_mpz_t());
 		y3 = y3 + t3;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
 	} else {
-		mpz_class a, b, c, d, e, f, g;
-		a = (Q.Y * P.Z * P.Z) + P.Y;
-		mpz_mod(a.get_mpz_t(), a.get_mpz_t(), mod.get_mpz_t());
-		b = Q.X * P.Z + P.X;
-		mpz_mod(b.get_mpz_t(), b.get_mpz_t(), mod.get_mpz_t());
-		c = P.Z * b;
-		mpz_mod(c.get_mpz_t(), c.get_mpz_t(), mod.get_mpz_t());
-		d = b * b * (c + ECC_a * P.Z * P.Z);
-		mpz_mod(d.get_mpz_t(), d.get_mpz_t(), mod.get_mpz_t());
-		mpz_powm(z3.get_mpz_t(), c.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		GFE a, b, c, d, e, f, g;
+		a = (QY * PZ * PZ) + PY;
+		b = QX * PZ + PX;
+		c = PZ * b;
+		d = b * b * (c + GFE(ECC_a, mod) * PZ * PZ);
+		z3 = c * c;
 		e = a * c;
-		mpz_mod(e.get_mpz_t(), e.get_mpz_t(), mod.get_mpz_t());
 		x3 = a * a + d + e;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		f = x3 + Q.X * z3;
-		mpz_mod(f.get_mpz_t(), f.get_mpz_t(), mod.get_mpz_t());
-		g = (Q.X + Q.Y) * z3 * z3;
-		mpz_mod(g.get_mpz_t(), g.get_mpz_t(), mod.get_mpz_t());
+		f = x3 + QX * z3;
+		g = (QX + QY) * z3 * z3;
 		y3 = (e + z3) * f + g;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
 	}
-	return LD(x3, y3, z3);
+	return LD(x3.get_element(), y3.get_element(), z3.get_element());
 }
 
 LD ECBinary::subtraction(LD P, Coordinate Q) {
-	return addition(P, getNegative(Q));
+	// TODO: really?
+	return addition(P, Q);
 }
 
 /*
@@ -157,52 +143,41 @@ LD ECBinary::doubling(LD P) {
 		return P;
 	}
 
-	mpz_class x3, y3, z3;
+	GFE x3, y3, z3;
+	GFE PX = GFE(P.X, mod), PY = GFE(P.Y, mod), PZ = GFE(P.Z, mod);
 	mpz_class const_2 = 2;
 	if (ECC_a == 0 || ECC_a == 1) {
-		mpz_class t1, t2;
-		mpz_powm(t1.get_mpz_t(), P.Z.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
-		mpz_powm(t2.get_mpz_t(), P.X.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		GFE t1, t2;
+		t1 = PZ * PZ;
+		t2 = PX * PX;
 		z3 = t1 * t2;
-
-		mpz_powm(x3.get_mpz_t(), t2.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
-		mpz_powm(t1.get_mpz_t(), t1.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
-		t2 = t1 * ECC_b;
-		mpz_mod(t2.get_mpz_t(), t2.get_mpz_t(), mod.get_mpz_t());
+		x3 = t2 * t2;
+		t1 = t1 * t1;
+		t2 = t1 * GFE(ECC_b, mod);
 		x3 = x3 + t2;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		mpz_powm(t1.get_mpz_t(), P.Y.get_mpz_t(), const_2.get_mpz_t(),
-				mod.get_mpz_t());
+		t1 = PY * PY;
 		if (ECC_a == 1) {
 			t1 = t1 + z3;
-			mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
 		}
 		t1 = t1 + t2;
-		mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
 		y3 = x3 * t1;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
 		t1 = t2 * z3;
-		mpz_mod(t1.get_mpz_t(), t1.get_mpz_t(), mod.get_mpz_t());
 		y3 = y3 + t1;
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
 	} else {
 		// TODO: intermediate results...
-		z3 = P.X * P.X * P.Z * P.Z;
-		mpz_mod(z3.get_mpz_t(), z3.get_mpz_t(), mod.get_mpz_t());
-		x3 = P.X * P.X * P.X * P.X + ECC_b * P.Z * P.Z * P.Z * P.Z;
-		mpz_mod(x3.get_mpz_t(), x3.get_mpz_t(), mod.get_mpz_t());
-		y3 = ECC_b * P.Z * P.Z * P.Z * P.Z * z3 + x3 * (ECC_a * z3 + P.Y * P.Y
-				+ ECC_b * P.Z * P.Z * P.Z * P.Z);
-		mpz_mod(y3.get_mpz_t(), y3.get_mpz_t(), mod.get_mpz_t());
+		z3 = PX * PX * PZ * PZ;
+		x3 = PX * PX * PX * PX + GFE(ECC_b, mod) * PZ * PZ * PZ * PZ;
+		y3 = GFE(ECC_b, mod) * PZ * PZ * PZ * PZ * z3 + x3 * (GFE(ECC_a, mod) * z3 + PY * PY
+				+ GFE(ECC_b, mod) * PZ * PZ * PZ * PZ);
 	}
-	return LD(x3, y3, z3);
+	return LD(x3.get_element(), y3.get_element(), z3.get_element());
 }
 
 Coordinate ECBinary::toCoordinate(const LD& ld) {
+
+	if (ld.X == 1 && ld.Y == 0 && ld.Z == 0) {
+		return Coordinate::infinity();
+	}
 
 	GFE ldX = GFE(ld.X, mod), ldY = GFE(ld.Y, mod), ldZ = GFE(ld.Z, mod);
 	GFE resY = ldZ * ldZ;

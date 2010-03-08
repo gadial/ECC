@@ -27,7 +27,7 @@ public:
 	Coordinate(mpz_class _x, mpz_class _y):
 		X(_x), Y(_y) {}
 	Coordinate(const Jacobian& jac, const mpz_class mod);
-	Coordinate(const LD& ld, const mpz_class mod);
+	//Coordinate(const LD& ld, const mpz_class mod);
 
         //returns the point at infinity, as is represented by this class in the context of elliptic curves
         static Coordinate infinity(){return Coordinate(0,0);}
@@ -75,6 +75,7 @@ class LD {
 public:
 
 	LD() {}
+	// Deprecated..
 	LD(mpz_class _x, mpz_class _y, mpz_class _z):
 		X(_x), Y(_y), Z(_z) {}
 	LD(const Coordinate& rhs): //TODO: is this really the correct conversion?

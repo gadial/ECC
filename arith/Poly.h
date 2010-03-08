@@ -29,6 +29,12 @@ public:
 		return a;
 	}
 
+	static Poly two() {
+		Poly a(0);
+		a.set_coeff(0, 2);
+		return a;
+	}
+
 	Poly() {};
 	Poly(mpz_class bin);
 	Poly(int d);

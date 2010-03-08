@@ -21,6 +21,7 @@ Coordinate::Coordinate(const Jacobian& jac, const mpz_class mod) {
 	mpz_mod(Y.get_mpz_t(), Y.get_mpz_t(), mod.get_mpz_t());
 }
 
+/*
 Coordinate::Coordinate(const LD& ld, const mpz_class mod) {
 	mpz_class const_2 = 2;
 	//mpz_powm(X.get_mpz_t(), jac.Z.get_mpz_t(), const_2.get_mpz_t(), mod.get_mpz_t());
@@ -33,7 +34,7 @@ Coordinate::Coordinate(const LD& ld, const mpz_class mod) {
 	mpz_mod(X.get_mpz_t(), X.get_mpz_t(), mod.get_mpz_t());
 	mpz_mod(Y.get_mpz_t(), Y.get_mpz_t(), mod.get_mpz_t());
 }
-
+*/
 Coordinate::Coordinate(const char* _x, int basex,
 			const char* _y, int basey) {
 	X.set_str(_x, basex);
