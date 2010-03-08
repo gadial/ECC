@@ -16,6 +16,7 @@ void try_challange_1(ECPrime curve);
 void try_challange_2(ECPrime curve);
 ECPrime find_suitable_curve();
 //void try_all_curves_on_cipher(string ECPoint, string d_string, string cipher);
+void try_encryption_and_decryption(ECPrime curve);
 
 
 void check_example();

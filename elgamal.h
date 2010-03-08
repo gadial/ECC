@@ -64,6 +64,7 @@ public:
     void set_keys(Coordinate _Q, mpz_class _d){Q = _Q; d = _d;}
     void set_public_key(Coordinate _Q) {Q = _Q;}
     void set_private_key(mpz_class _d) {d = _d;}
+    void set_keys_from_private_key(mpz_class _d){d = _d; Q = ell->pointMultiplication(ell->point, d);}
 
     /*
      * Generates a random pk/sk key pair according to Algorithm 1.12 in
