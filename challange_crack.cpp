@@ -89,6 +89,8 @@ ECPrime find_suitable_curve(){
                 cout << "Curve found for D = " << D <<" and j = " << j << endl;
                 cout << "curve order = ";
                 print_factorization(curve.getOrder(),65536);
+                cout << "p = " << curve.mod << endl;
+                cout << "a = " << curve.ECC_a << endl;
                 cout << "b = " << curve.ECC_b << endl;
             }
         }
