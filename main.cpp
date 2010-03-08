@@ -39,8 +39,9 @@ void printJac(const Jacobian& j) {
  *
  */
 int main(int argc, char** argv) {
-    check_example();
-//    ECPrime curve = find_suitable_curve();
+//    check_example();
+    ECPrime curve = find_suitable_curve();
+    try_encryption_and_decryption(curve);
 //    cout << "Finished searching for curve" << endl;
 //    try_challange_1(curve);
 //    try_challange_2(curve);
