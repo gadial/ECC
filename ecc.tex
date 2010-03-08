@@ -1,0 +1,88 @@
+\documentclass[11pt,english]{article}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\usepackage{subfig}	%%for easy placement of multiple pictures inside one figure
+\geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1.3in,rmargin=1.3in}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{color,calc}
+\definecolor{shade}{gray}{0.984}
+\newenvironment{myFramedBox}[1][]%
+        {
+        %\setlength{\fboxsep}{-\fboxrule}
+        % \footnotesize\normalfont\ttfamily\raggedright
+        \setlength{\rightmargin}{\leftmargin}
+        \setlength{\itemsep}{-12pt}
+        \setlength{\parsep}{20pt}
+        \begin{lrbox}{\@tempboxa}%
+        \begin{minipage}{\linewidth-2\fboxsep}
+        }%
+        {
+        \end{minipage}%
+        \end{lrbox}%
+        \fcolorbox{black}{shade}{\usebox{\@tempboxa}}\newline\newline
+        }%
+
+\usepackage{babel}
+\makeatother
+
+\setlength{\textwidth}{6.50in}      % was 6.00
+\setlength{\evensidemargin}{0.05in} % was 0.25
+\setlength{\oddsidemargin}{0.05in}  % was 0.25
+\setlength{\textheight}{8.80in}     % was 8.5 or 9.0
+\setlength{\topmargin}{-0.7in}      % was -0.5
+\setlength{\parskip}{2.0mm}         % was 2
+\setlength{\baselineskip}{1.7\baselineskip}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newenvironment{proof}{{\noindent \em Proof:~}}{\hfill{\hfill$\Box$}}
+
+\newcommand{\complexityclass}[1]{{\bf #1}}
+\newcommand{\NP}{\complexityclass{NP}}
+\newcommand{\RE}{\complexityclass{RE}}
+
+\begin{document}
+
+\def\thepage{}
+
+\title{Elliptic Curve Cryptography\\Final report for a project in computer security}
+
+
+\author{
+   Gadi Aleksandrowicz\thanks{
+      Dept.\ of Computer Science,
+      The Technion---Israel Institute of Technology,
+      Haifa~32000, Israel.
+      E-mail: {\tt gadial@cs.technion.ac.il}
+   } \and
+   Basil Hess
+}
+
+\date{}
+
+\maketitle
+
+\section{Introduction}
+An \emph{Elliptic Curve} can be roughly described as the set of solutions to an equation of the form $y^2=x^3+ax+b$ over some field (e.g. $\mathbb{C}, 
+\mathbb{R},\mathbb{Q}$ or some finite field $\mathbb{F}_{p^n}$). The importence of elliptic curves stems from their rich structure: there is a rather simple
+addition law definable on elliptic curves which makes them into an abelian group. Studying the emerging structure of elliptic curves over various fields has been a
+major theme in the mathematics of the 20th centaury, and elliptic curves were connected to many famous problems and results, most notably the proof of Fermat's
+last theorem\marginpar{Give some reference, to a good survey if possible}.
+
+In the late 70's, \emph{Public-Key Cryptography} systems were first publicly described, changing the face of cryptography. Many of the purposed systems, such
+as the Diffie-Hellman key exchange system and the ElGamal encryption system\marginpar{Reference to both papers}, were based on arithmetic in the group $\mathbb{Z}_p$, but in theory could
+be implemented in other groups as well. Groups based on elliptic curves were a good choice because of their well-developed theory and their high variety. In 1985,
+both Neal Koblitz and Victor S. Miller \marginpar{Ref...} suggested public key cryptosystems based on elliptic curves.
+
+Our goal in the project has been to implement an efficient public key cryptosystem based on elliptic curves ``from scratch'', relying only on large-number arithmetic
+libraries. In particular, we have implemented all the elliptic-curve related calculations, and additional related algorithms.
+\end{document}
