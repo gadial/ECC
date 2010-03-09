@@ -145,4 +145,27 @@ it has exactly one tangent line in each point. Therefore we have that $P+P$ is t
 This completes the description of the group operation. Although it arises from the complex case, this description is valid over any field, and can be taken to be
 the definition of the group action. In is a straightforward technical manner to check that the axioms for group operation are indeed satisfied by this operation.
 
+The geometrical description of the operation is insightful but of little use in algebraic calculations. However, straightforward analytic geometry
+gives simple equations for calculating addition of points. The actual equations depends on the simplified form of the curve; we will focus later on the cases
+where $charK\ne 2,3$ and $charK=2$ as these are the main cases used in practice.
+
+\subsection{Group Structure}
+The structure of the group of an elliptic curve highly depends on the underlying field. For $K=\mathbb{C}$ we have already seen that it has the structure of a torus.
+Over $\mathbb{Q}$, a famous theorem of Mordell shows that the group is finitely generated; since it is also abelian, it is of the form $\mathbb{Z}^r\times Z$
+where $Z$ (the \emph{torsion} subgroup of the curve) is a finite abelian group. The torsion of an elliptic curve is easy to compute and is very well known -
+it is known that there are only 15 possible torsion subgroups, the largest of whom of cardinality 16. The main difficulty is computing the parameter
+$r$ - the \emph{rank} of the curve. Of the the most famous open conjectures in mathematics, the Birch and Swinnerton-Dyer conjecture, deals
+with the connection between the rank of a curve (and various other related parameters) and the behivour of a special function related to the curve (the
+zeta-function of that curve).
+
+Over a finite field $K=\mathbb{F}_q$ ($q$ a power of a prime), the order of the curve is, of course, finite. However, it is not easy to know in general
+what is the exact number of points on the curve.  A reasonable estimate is given by Hasse's theorem, which shows that the order is roughly $q+1$, with
+a square-root bound on the error. More precisely, if $\#E(\mathbb{F}_q)$ is the number of points on the curve $E$ over $\mathbb{F}_q$, then 
+$|\#E(\mathbb{F}_q)-(q+1)|\le 2\sqrt{q}$
+
+Knowing the order of the curve is very important when using curves for cryptographic purposes. There exist algorithms for computing the order, but
+they are quite complicated and not very efficient. Thus, sometimes a different approach is used - first the order is chosen, and then a suitable curve
+for that order is generated. We elaborate in this later.
+
+
 \end{document}
