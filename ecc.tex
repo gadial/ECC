@@ -115,14 +115,34 @@ infinite sum of $\sin$ and $\cos$). Thus $\wp$ is the most significant example o
 
 Let $E/\mathbb{C}$ be an elliptic curve given by $y^2=x^3+ax+b$. A lattice $L$ can be found such that the corresponding Weierstrass function satisfies the differential equation
 $(\wp')^2=\wp^3+a\wp+b$. This means that the map $z\mapsto (\wp(z),\wp'(z))$ maps $\mathbb{C}$ to points on the elliptic curve. In particular, $\wp$
-has a pole in each lattice point and so $0\mapsto \mathcal{O}$ (this can be made precise by using projective coordinates).. Moreover, it
+has a pole in each lattice point and so $0\mapsto \mathcal{O}$ (this can be made precise by using projective coordinates). Moreover, it
 can be shown that this map is onto, and that $z_1,z_2$ give the same point on the curve if and only if $z_1-z_2\in L$, and so we have a bijection
 between $E$  and $\mathbb{C}/L$, the latter set can be thought of as a torus (since $\mathbb{C}/L$ is isomorphic to $\Pi$ where parallel edges are ``glued`` together).
 
+Since $\mathbb{C}/L$ can be equipped with an operation of addition modulu $L$, it forms an abelian group. This group structure can thus be induced on the 
+isomorphic elliptic curve: Given $P_1, P_2$ on the curve that emerge from $z_1,z_2$ (i.e. $P_i=(\wp(z_i),\wp'(z_i))$) we define $P_1+P_2=(\wp(z_1+z_2),\wp'(z_1+z_2))$ 
+(with the addition of $z_1+z_2$ done modulu $L$). This shown that every elliptic curve over $\mathbb{C}$ is an abelian group.
+\subsection{The Group Operation}
+In the previous section we have seen how eliiptic curves over $\mathbb{C}$ can be naturally induced with a group operation. There is no similar theory over
+other fields, but we can still axiomatically define an operation similar to the one arising in the complex case. A detailed analysis of the complex case yields
+the following rough description of the group operation:
 
+First, for the special point $\mathcal{O}$ we have $P+\mathcal{O}=\mathcal{O}+P=P$, so $\mathcal{O}$ is the identity element.
 
+Second, $(x,y)+(x,-y)=\mathcal{O}$ (note that if $(x,y)\in E$ so is $(x,-y)$ since the in equation defining $E$ is of the form $y^2=x^3+ax+b$ and so for
+every $x$ we have two possible values of $y$, given that $x^3+ax+b$ has roots at all). So given a point $P$, its additive inverse $-P$ is simply the same point
+with the sign of the y-coordinate flipped.
 
-\subsection{The Group Action}
+Third, for every three colinear points on the curve $P,Q,R$ we have $P+Q+R=0$, and so $P+Q=-R$. We can picture this in the following manner: Given $P,Q$,
+to compute their sum draw a line passing through them, and find the third point where the line crosses the curve (there is always such one - if it seems the line 
+''misses`` the curve, it actaully intersects it in $\mathcal{O}$; again, using projective coordinates this can be made precise). After such a point was found, we
+take its inverse to be the result of $P+Q$. This might seem like an arbitrary definition, and so it is worthwhile to remember that it is actually a result of the non-arbitrary
+operation induced in $\mathbb{C}$.
 
+We also need to describe what is $P+P$. In this case we cannot pass a single line ''between $P$ and itself``, but we have a similar notion: Since the curve is smooth,
+it has exactly one tangent line in each point. Therefore we have that $P+P$ is the additive inverse of the point of intersection with the curve of the tangent line to the curve at $P$.
+
+This completes the description of the group operation. Although it arises from the complex case, this description is valid over any field, and can be taken to be
+the definition of the group action. In is a straightforward technical manner to check that the axioms for group operation are indeed satisfied by this operation.
 
 \end{document}
