@@ -188,6 +188,10 @@ GFE::GFE(mpz_class _element, const mpz_class& _mod) {
 	mod = _mod;
 }
 
+/*
+ * Calculates the square root of 'x' mod 'mod'
+ * mod is a trinomial! mod=x^d+x^k+1
+ */
 GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 		GFE x(0b10, mod);
 		GFE sqx_k = x;

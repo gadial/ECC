@@ -111,6 +111,13 @@ public:
 		// TODO: implement...
 	}
 
+	/*
+	 * Gets a point, given the x coordinate for the following equation:
+	 *  y^2 + xy = x^3 + ax^2 + b
+	 * Solves the quadratic equation f(y) = y^2 + xy - (x^3 + ax^2 + b) = 0
+	 */
+	Coordinate getPoint_interface(mpz_class x, bool negative_value = false);
+
 private:
 
 	/*

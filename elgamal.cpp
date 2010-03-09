@@ -98,7 +98,7 @@ Coordinate ECC_ElGamal::get_point_with_padding(mpz_class str, int padding_length
 		mpz_class pad = rand.rand(255);
 		str_copy <<= 8;
 		str_copy |= pad;
-		c = ell->getPoint(str_copy, false);
+		c = ell->getPoint_interface(str_copy, false);
 	} while(c.isInfinite());
 	//cout << "Str: " << to_string(str_copy) << endl;
 	return c;

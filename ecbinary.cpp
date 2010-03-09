@@ -270,3 +270,12 @@ inline GFE ECBinary::phi_2_x(GFE x, GFE y) {
 	GFE c3 = GFE(40773375, x.mod);
 	return co3*x*x - co2*x*(y*y - c1*y + c2) + c1*y*y + c3*y;
 }
+
+Coordinate ECBinary::getPoint_interface(mpz_class x, bool negative_value) {
+	GFE gfex = GFE(x, mod);
+	GFE gfea = GFE(ECC_a, mod);
+	GFE gfeb = GFE(ECC_b, mod);
+	GFE right_side = gfex*gfex*gfex + gfea*gfex*gfex + gfeb;
+	GFE y = GFE::solve_quad_eq(gfex, right_side);
+	return Coordinate(x, y.element);
+}

@@ -112,7 +112,7 @@ public:
 	 * Given x, returns the point corresponding to (x,y) (or (x,-y) if asked)
 	 * If there is no corresponding point, returns the infinity
 	 */
-	Coordinate getPoint(mpz_class x, bool negative_value = false);
+	virtual Coordinate getPoint_interface(mpz_class x, bool negative_value = false) = 0;
 
 	/*
 	 * Gets the point from compressed format
