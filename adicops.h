@@ -21,6 +21,8 @@ public:
 	Adicops(Poly mod);
 	static void do_s();
 	static void do_ntl();
+	static void crack_challenge1();
+	static void crack_challenge2();
 
 	Poly get_mod();
 	/**
@@ -50,9 +52,12 @@ public:
 	ZZ get_points_AGM_bivariate_v2(mpz_class _c, int d);
 	mpz_class get_points_AGM_univariate(mpz_class _c, mpz_class _mod, int d);
 
+	void set_sqrtx(GFE _sqrtx) { sqrtx = _sqrtx;}
+
 private:
 	Poly get_teichmuller_modulus(Poly in, int prec);
 	Poly mod;
+	GFE sqrtx;
 };
 
 

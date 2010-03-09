@@ -18,19 +18,74 @@ Adicops::Adicops(Poly _mod) {
 
 void Adicops::do_s() {
 
-	int deg = 7;
+	int deg = 161;
 	mpz_class c1 = 1;
 	mpz_class orer = (c1 << deg);
 	mpz_class tmp;
 	tmp.set_str("3", 16);
 	tmp |= orer;
 	Adicops a(tmp);
+	a.set_sqrtx(GFE::get_sqrtx(161, 18, tmp));
 	//GFE::init(tmp);
 	vector<int> pos(3), val(3);
 	pos[0] = 0; pos[1] = 6; pos[2] = 7;
 	val[0] = 1; val[1] = 1; val[2] = 1;
-	ModPoly::set_mod(deg, pos, val);
-	cout << a.get_points_AGM_bivariate_v2(0b10001, deg) << " points!" << endl;
+	//ModPoly::set_mod(deg, pos, val);
+	cout << a.get_points_AGM_bivariate(0b10001, deg) << " points!" << endl;
+}
+
+void Adicops::crack_challenge1() {
+	int deg = 283;
+	string b_str = "7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd";
+	mpz_class b_gmp;
+	b_gmp.set_str(b_str, 16);
+	mpz_class c1 = 1;
+	mpz_class modul = (c1 << deg);
+	modul |= (c1 << 12);
+	modul |= (c1 << 7);
+	modul |= (c1 << 5);
+	modul |= c1;
+
+	string n_points = "15541351137805832567355695254588151253139258334559117232872014252832652797156767348716";
+	mpz_class np; np.set_str(n_points, 10);
+	cout << "point_base: " << (int)mpz_sizeinbase(np.get_mpz_t(), 2) << endl;
+	cout << "mod_base: " << (int)mpz_sizeinbase(modul.get_mpz_t(), 2) << endl;
+	return;
+
+	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
+	mpz_class sqx;
+	sqx.set_str("20820820820820820820820820820820820830c30c30c30c30c30c30c30c30c30c30808", 16);
+	GFE g = GFE(sqx, modul);
+	GFE sq = g * g;
+	g.print();
+	sq.print();
+	Adicops a(modul);
+	a.set_sqrtx(g);
+	cout << a.get_points_AGM_bivariate(b_gmp, 283) << " points!" << endl;
+}
+
+void Adicops::crack_challenge2() {
+	int deg = 283;
+	string b_str = "43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c";
+	mpz_class b_gmp;
+	b_gmp.set_str(b_str, 16);
+	mpz_class c1 = 1;
+	mpz_class modul = (c1 << deg);
+	modul |= (c1 << 12);
+	modul |= (c1 << 7);
+	modul |= (c1 << 5);
+	modul |= c1;
+
+	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
+	mpz_class sqx;
+	sqx.set_str("20820820820820820820820820820820820830c30c30c30c30c30c30c30c30c30c30808", 16);
+	GFE g = GFE(sqx, modul);
+	GFE sq = g * g;
+	g.print();
+	sq.print();
+	Adicops a(modul);
+	a.set_sqrtx(g);
+	cout << a.get_points_AGM_bivariate(b_gmp, 283) << " points!" << endl;
 }
 
 void Adicops::do_ntl() {
@@ -314,7 +369,8 @@ Poly Adicops::get_sqrt(Poly a, int prec) {
 	// binary inverse sqrt...
 	GFE z = GFE(a.to_gfe_el(), mod.to_gfe_el());
 	// TODO: ...
-	GFE sqrtx = GFE::get_sqrtx(7, 1, mod.to_gfe_el());
+	//GFE sqrtx = GFE::get_sqrtx(7, 1, mod.to_gfe_el());
+	//cout << "sqrt: "; sqrtx.print();
 	z = z.get_sqrt(sqrtx);
 	z = !z;
 
