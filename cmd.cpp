@@ -87,7 +87,7 @@ void Cmd::execute() {
 		return;
 	}
 
-	Ellipticcurve* ell;
+	Ellipticcurve* ell = 0;
 
 	// either pk, sk, or keypair-generation should be defined
 	if (pk) {
@@ -157,14 +157,19 @@ void Cmd::encrypt_message(string file_name) {
 	while (is.good()) {
 		is.read(str, mpl);
 		streamsize bytes_read = is.gcount();
-		ECC_ElGamal_Ciphertext cipher;
+		string to_enc = string(str).substr(0, bytes_read);
+		//ECC_ElGamal_Ciphertext cipher = elg->encrypt_element(to_enc);
+		//os << cipher.to_string(elg->ell) << endl;
+		os << elg->encrypt(to_enc) << endl;
+		/*
 		if (bytes_read < mpl) {
-			cipher = elg->encrypt_element(string(str).substr(0, bytes_read));
-			os << cipher.to_string() << endl;
+			cipher = elg->encrypt_element();
+			os << cipher.to_string(elg->ell) << endl;
 		} else {
 			cipher = elg->encrypt_element(string(str));
-			os << cipher.to_string() << endl;
+			os << cipher.to_string(elg->ell) << endl;
 		}
+		*/
 	}
 	is.close();
 	os.flush();
@@ -230,7 +235,7 @@ void Cmd::gen_random_keypair() {
 	write_elliptic_curve(of_public);
 
 	Coordinate pk = elg->get_public_key();
-	of_public << pk.toCompressedForm() << endl;
+	of_public << elg->ell->toCompressedForm(pk) << endl;
 	of_public.flush();
 	of_public.close();
 
@@ -275,7 +280,7 @@ void Cmd::use_elliptic_curve(ifstream& in) {
 	mpz_class order;
 	order.set_str(line, 10);
 
-	Ellipticcurve* ec;
+	Ellipticcurve* ec = 0;
 	if (type == "prime") {
 		ec = new ECPrime(modulus, a, b);
 	} else if (type == "binary") {
@@ -301,7 +306,7 @@ void Cmd::write_elliptic_curve(ofstream& out) {
 	out << ec->mod << endl;
 	out << ec->ECC_a << endl;
 	out << ec->ECC_b << endl;
-	out << ec->point.toCompressedForm() << endl;
+	out << ec->toCompressedForm(ec->point) << endl;
 	out << ec->getOrder() << endl;
 }
 

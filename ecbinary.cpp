@@ -279,3 +279,21 @@ Coordinate ECBinary::getPoint_interface(mpz_class x, bool negative_value) {
 	GFE y = GFE::solve_quad_eq(gfex, right_side);
 	return Coordinate(x, y.element);
 }
+
+Coordinate ECBinary::getPointCompressedForm(string form) {
+	int y_mod_2;
+	switch (form[0]) {
+	case '+':
+		y_mod_2 = 1;
+		break;
+	case '-':
+		y_mod_2 = 0;
+		break;
+	default:
+		throw "form is not legal";
+	}
+	form.erase(0, 1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
+	mpz_class x;
+	mpz_set_str(x.get_mpz_t(), form.c_str(), 10);
+
+}

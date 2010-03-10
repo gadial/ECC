@@ -157,6 +157,17 @@ ZpCoordinate ECPrime::getPointFromCompressedForm(string form){
     return result;
 }
 
+string ECPrime::toCompressedForm(Coordinate c) {
+    string result;
+    mpz_class temp = c.Y % 2;
+    switch (temp.get_ui()){
+        case 0: result += '-'; break;
+        case 1: result += '+'; break;
+    }
+    result += c.X.get_str(10);
+    return result;
+}
+
 ZpCoordinate ECPrime::doubling(ZpCoordinate P) {
 //    cout << "(doubling) P.p = " << P.p << endl;
 //    cout << "(doubling) jac(P).p = " << ZpJacobian(P).Z.get_p() << endl;

@@ -70,6 +70,8 @@ public:
 	Coordinate getPoint_interface(mpz_class x, bool negative_value = false){return getPoint(x, negative_value);}
 	Coordinate getPointCompressedForm(string from) {return getPointFromCompressedForm(from); }
         
+	string toCompressedForm(Coordinate c);
+
         ZpCoordinate get_random_point();
         bool check_order(mpz_class order_candidate);
 private:

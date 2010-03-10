@@ -105,9 +105,7 @@ public:
 	 * Accesseors
 	 * ----------
 	 *
-	 * /
-
-	 /**
+	 *
 	 *
 	 * Given x, returns the point corresponding to (x,y) (or (x,-y) if asked)
 	 * If there is no corresponding point, returns the infinity
@@ -119,6 +117,15 @@ public:
 	 * see IEEE P1363 / D8 E.2.3.1
 	 */
 	virtual Coordinate getPointCompressedForm(string from) = 0;
+
+	/*
+	 * Outputs the point in compressed form
+	 * According to IEEE P1363 / D8, E.2.3.1
+	 *
+	 * Implemented here, because it depends on the curve type
+	 */
+	virtual string toCompressedForm(Coordinate c) = 0;
+
 protected:
 
 	/*
