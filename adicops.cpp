@@ -18,14 +18,14 @@ Adicops::Adicops(Poly _mod) {
 
 void Adicops::do_s() {
 
-	int deg = 161;
+	int deg = 7;
 	mpz_class c1 = 1;
 	mpz_class orer = (c1 << deg);
 	mpz_class tmp;
 	tmp.set_str("3", 16);
 	tmp |= orer;
 	Adicops a(tmp);
-	a.set_sqrtx(GFE::get_sqrtx(161, 18, tmp));
+	a.set_sqrtx(GFE::get_sqrtx(7, 1, tmp));
 	//GFE::init(tmp);
 	vector<int> pos(3), val(3);
 	pos[0] = 0; pos[1] = 6; pos[2] = 7;
@@ -50,7 +50,7 @@ void Adicops::crack_challenge1() {
 	mpz_class np; np.set_str(n_points, 10);
 	cout << "point_base: " << (int)mpz_sizeinbase(np.get_mpz_t(), 2) << endl;
 	cout << "mod_base: " << (int)mpz_sizeinbase(modul.get_mpz_t(), 2) << endl;
-	return;
+	//return;
 
 	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
 	mpz_class sqx;
@@ -496,8 +496,8 @@ mpz_class Adicops::get_points_AGM_bivariate(mpz_class _c, int d) {
 		assert(testsqrt(b, ab, mod, i));
 		//Poly re = b * b;
 		//re = poly_remainder(re, mod, i);
-		cout << "N=" << i << " a: "; a.print();
-		cout << "N=" << i << " b: "; b.print();
+		//cout << "N=" << i << " a: "; a.print();
+		//cout << "N=" << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}
@@ -517,8 +517,8 @@ mpz_class Adicops::get_points_AGM_bivariate(mpz_class _c, int d) {
 		Poly re = b * b;
 		re = poly_remainder(re, N);
 		assert(testsqrt(b, ab, mod, N));
-		cout << "N=" << i << " a: "; a.print();
-		cout << "N=" << i << " b: "; b.print();
+		//cout << "N=" << i << " a: "; a.print();
+		//cout << "N=" << i << " b: "; b.print();
 		//cout << i << " ab: "; ab.print();
 		//cout << i << " re: "; re.print();
 	}

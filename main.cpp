@@ -12,6 +12,7 @@
 #include "primes.h"
 #include "tests/curvesnisttest.h"
 #include "tests/padictest.h"
+#include "tests/bincurvetest.h"
 #include "tests.h"
 #include "adicops.h"
 #include "elgamal.h"
@@ -40,7 +41,8 @@ void printJac(const Jacobian& j) {
  */
 int main(int argc, char** argv) {
 	//Adicops::do_s();
-	//Adicops::crack_challenge2();
+	//Adicops::crack_challenge1();
+
 
    	Cmd* cmd = new Cmd(argc, argv);
 	if (cmd->do_tests) {
@@ -49,6 +51,7 @@ int main(int argc, char** argv) {
 		cmd->execute();
 	}
 	delete cmd;
+
     return 0;
 }
 
@@ -60,6 +63,7 @@ int do_tests(){
   CPPUNIT_TEST_SUITE_REGISTRATION(PolynomialTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(ZpIntTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(Padictest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(BinCurveTest);
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();

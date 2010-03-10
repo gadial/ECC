@@ -118,6 +118,8 @@ public:
 
 	string toCompressedForm(Coordinate c);
 
+	void check_coordinate(Coordinate c);
+
 private:
 
 	/*

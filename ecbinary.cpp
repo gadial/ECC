@@ -271,30 +271,54 @@ inline GFE ECBinary::phi_2_x(GFE x, GFE y) {
 	return co3*x*x - co2*x*(y*y - c1*y + c2) + c1*y*y + c3*y;
 }
 
-Coordinate ECBinary::getPoint_interface(mpz_class x, bool negative_value) {
+Coordinate ECBinary::getPoint_interface(mpz_class xmpz, bool negative_value) {
+	GFE y_tilde = (negative_value ? GFE(0, mod) : GFE(1, mod));
+	GFE x(xmpz, mod);
+    GFE alpha = x*x*x + GFE(ECC_a, mod)*x*x + GFE(ECC_b, mod);
+    GFE beta = alpha * !(x*x);
+    GFE z = GFE::solve_quad_eq(beta);
+    GFE z_tilde = GFE(z.element.get_ui() % 2, mod);
+    GFE res = (z + z_tilde + y_tilde) * x;
+    return Coordinate(xmpz, res.element);
+    /*
 	GFE gfex = GFE(x, mod);
 	GFE gfea = GFE(ECC_a, mod);
 	GFE gfeb = GFE(ECC_b, mod);
 	GFE right_side = gfex*gfex*gfex + gfea*gfex*gfex + gfeb;
 	GFE y = GFE::solve_quad_eq(gfex, right_side);
 	return Coordinate(x, y.element);
+	*/
 }
 
 Coordinate ECBinary::getPointCompressedForm(string form) {
-    GFE y_mod_2;
+    bool negval;
     switch (form[0]){
-        case '+': y_mod_2 = GFE(1, mod); break;
-        case '-': y_mod_2 = GFE(0, mod); break;
+        case '+': negval = false; break;
+        case '-': negval = true; break;
         default: throw "form is not legal";
     }
     form.erase(0,1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
-    mpz_class x;
-    mpz_set_str(x.get_mpz_t(), form.c_str(), 10);
+    mpz_class mx;
+    mpz_set_str(mx.get_mpz_t(), form.c_str(), 10);
+    GFE x = GFE(mx, mod);
+    return getPoint_interface(mx, negval);
+    /*
+    GFE alpha = x*x*x + GFE(ECC_a, mod)*x*x + GFE(ECC_b, mod);
+    GFE beta = alpha * !(x*x);
+    GFE z = GFE::solve_quad_eq(beta);
+    GFE z_tilde = GFE(z.element.get_ui() % 2, mod);
+    GFE res = (z + z_tilde + y_tilde) * x;
+    return Coordinate(mx, res.element);
+    */
+
+    /*
     Coordinate result = getPoint_interface(x);
+    return result;
     GFE z = GFE(result.Y, mod);
     GFE z_tilde = GFE(z.element % 2, mod);
     GFE y = (z + z_tilde + y_mod_2) * GFE(x, mod);
     return Coordinate(result.X, y.element);
+    */
 }
 string ECBinary::toCompressedForm(Coordinate c) {
     string result;
@@ -306,4 +330,15 @@ string ECBinary::toCompressedForm(Coordinate c) {
     }
     result += c.X.get_str(10);
     return result;
+}
+
+void ECBinary::check_coordinate(Coordinate c) {
+	GFE a = GFE(ECC_a, mod);
+	GFE b = GFE(ECC_b, mod);
+	GFE x = GFE(c.X, mod);
+	GFE y = GFE(c.Y, mod);
+	GFE left = y*y + x*y;
+	GFE right = x*x*x + a*x*x + b;
+	cout << "l: " << left.element << endl;
+	cout << "r: " << right.element << endl;
 }
