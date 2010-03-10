@@ -114,6 +114,10 @@ public:
 		return get_element() == other.element;
 	}
 
+	bool operator!=(const GFE& other) {
+		return get_element() != other.element;
+	}
+
 	/*
 	 * Returns the inverse Inverse
 	 * Uses the Extended Euxlidean Algorithm over finite fields

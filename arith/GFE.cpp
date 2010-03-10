@@ -344,11 +344,13 @@ GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 				H = H*H + c;
 			}
 
+			/*
 			if ((H * H + H).element != c.element) {
 				std::cout << "l: " << (H * H + H).element << std::endl;
 				std::cout << "r: " << c.element << std::endl;
 				//std::cout << H.element << std::endl;
 			}
+			*/
 
 			return H;
 		} else {

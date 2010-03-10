@@ -354,6 +354,7 @@ Coordinate ECBinary::getPoint_interface(mpz_class xmpz, bool negative_value) {
     GFE alpha = x*x*x + GFE(ECC_a, mod)*x*x + GFE(ECC_b, mod);
     GFE beta = alpha * !(x*x);
     GFE z = GFE::solve_quad_eq(beta);
+    if (!(z*z + z == beta)) return Coordinate::infinity();
     GFE z_tilde = GFE(z.element.get_ui() % 2, mod);
     GFE res = (z + z_tilde + y_tilde) * x;
     return Coordinate(xmpz, res.element);
