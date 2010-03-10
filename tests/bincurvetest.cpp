@@ -6,25 +6,27 @@
  */
 
 #include "bincurvetest.h"
-#include "../curvesnist.h"
 
 void BinCurveTest::setUp() {
-
+	ecb = new CurveNISTb163();
 }
 
 void BinCurveTest::tearDown() {
-
+	delete ecb;
 }
 
 void BinCurveTest::compressed_format_check() {
-	ECBinary* ecb = new CurveNISTb163();
-
-	cout << ecb->point << endl;
+	// Compressing and uncompressing a point...
+	//cout << ecb->point << endl;
 	string comp = ecb->toCompressedForm(ecb->point);
-	cout << comp << endl;
+	//cout << comp << endl;
 	Coordinate co = ecb->getPointCompressedForm(comp);
-	cout << co << endl;
+	//cout << co << endl;
 	//ecb->check_coordinate(co);
+	CPPUNIT_ASSERT(ecb->point == co);
+}
 
-	delete ecb;
+void BinCurveTest::check_order() {
+	Coordinate m = ecb->pointMultiplication(ecb->point, ecb->getOrder());
+	CPPUNIT_ASSERT(m.isInfinite());
 }

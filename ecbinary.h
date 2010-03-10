@@ -122,6 +122,8 @@ public:
 
 private:
 
+	Coordinate getNegative(Coordinate P);
+
 	/*
 	 * modular equation phi_2
 	 */
