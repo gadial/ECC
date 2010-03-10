@@ -116,7 +116,7 @@ public:
 	 */
 	Coordinate getPoint_interface(mpz_class x, bool negative_value = false);
 
-	string toCompressedForm(Coordinate c) {}
+	string toCompressedForm(Coordinate c);
 
 private:
 

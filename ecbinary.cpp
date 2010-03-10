@@ -281,19 +281,29 @@ Coordinate ECBinary::getPoint_interface(mpz_class x, bool negative_value) {
 }
 
 Coordinate ECBinary::getPointCompressedForm(string form) {
-	int y_mod_2;
-	switch (form[0]) {
-	case '+':
-		y_mod_2 = 1;
-		break;
-	case '-':
-		y_mod_2 = 0;
-		break;
-	default:
-		throw "form is not legal";
-	}
-	form.erase(0, 1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
-	mpz_class x;
-	mpz_set_str(x.get_mpz_t(), form.c_str(), 10);
-
+    GFE y_mod_2;
+    switch (form[0]){
+        case '+': y_mod_2 = GFE(1, mod); break;
+        case '-': y_mod_2 = GFE(0, mod); break;
+        default: throw "form is not legal";
+    }
+    form.erase(0,1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
+    mpz_class x;
+    mpz_set_str(x.get_mpz_t(), form.c_str(), 10);
+    Coordinate result = getPoint_interface(x);
+    GFE z = GFE(result.Y, mod);
+    GFE z_tilde = GFE(z.element % 2, mod);
+    GFE y = (z + z_tilde + y_mod_2) * GFE(x, mod);
+    return Coordinate(result.X, y.element);
+}
+string ECBinary::toCompressedForm(Coordinate c) {
+    string result;
+    GFE e = GFE(c.Y, mod) * !GFE(c.X, mod);
+    mpz_class temp = e.element % 2;
+    switch (temp.get_ui()){
+        case 0: result += '-'; break;
+        case 1: result += '+'; break;
+    }
+    result += c.X.get_str(10);
+    return result;
 }
