@@ -191,6 +191,7 @@ In this case let $E$ be a curve defined by $y^2=x^3+ax+b$. Given two points on t
 \section{Random Elliptic Curve Generation}
 \subsection{Introduction}
 \subsection{The Prime Field Case}
+\subsubsection{Complex Multiplication}
 For $K=\mathbb{F}_p$, $p$ a given large prime, there is a polynomial time algorithm of Schoof for computing the number of points on a given curve.
 However, it is quite slow in practice (the basic running time is $O(\log ^8p)$, although improvements were made) and quite complicated to implement.
 Therefore we have used a different approach - first we decide on the desired order of the curve and the value of $p$, and afterwards we generate a
@@ -223,6 +224,76 @@ once. This proved to be an efficient and reliable solution.
 Two questions remain: First, how to solve the equation $a^2+b^2|D|=4p$; and second, how to find a curve $E$ possing complex multiplication for
 a given $D$?
 
+\subsubsection{Cornacchia's Algorithm}
+The first problem touches upon a well-known problem in mathematics - when is there a solution to the equation $x^2+ny^2=p$ with $p$ prime and
+$n$ a natural number, and how can such a solution be found? The origins of the question can be traced to Fermat who gave the complete classification of
+$p$ having solution for $n=1,2,3$. The proof of Fermat's results was first given by Euler, and it is connected strongly to the quadratic reciprocity theorem.
+The general theory classifying $p$ for an arbitrary $n$ is quite deep and heavily relies on class field theory. However, there is a simple algorithm which
+is essenitally based on the Euclidean algorithm which always yields a solution if one exists.
+
+The algorithm, due to Cornacchia, first determines whether $-n$ is a quadratic residue modulo $p$ and aborts if it is not (if $x^2+ny^2=p$ then $x^2=-ny^2$ modulo $p$,
+i.e. $-n=\left(\frac{x}{y}\right)^2$ modulo $p$). Next, a square root $x_0$ is found (i.e. $x_0^2=-d$ modulo $p$) - this requires an algorithm for square-root
+extension modulo $p$ but in most cases it is quite easy and there is a standard probabilistic algorithm due to Shanks which deals with the only difficult case.
+The next step is simply applying the Euclidean algorithm to the pair $(p,x_0)$ until a $b$ is obtained such that $b<\sqrt{p}$, and then the solution to the original equation
+is $(x,y)=\left(b,\sqrt{\frac{p-b^2}{n}}\right)$ (if the square root does not exist, it is guaranteed there is no solution to the original equation).
+
+We are dealing with a slightly different equation as on the right-hand side we have $4p$ instead of $p$. However, this requires only a slight change in
+the algorithm - if we start the Eulidean algorithm with $(2p,x_0)$ and terminate it as soon as a value lower than $2\sqrt{p}$ is found, it is still guaranteed
+to work unless no solution exists.
+
+\subsubsection{The Hilbert Class Polynomials}
+We turn now to the question of finding an elliptic curve possessing complex multiplication over $\mathbb{Q}$ for a given discriminant $D$. Given a
+curve $E$ defined by the equation $y^2=x^3+ax+b$ its \emph{$j$-invariant} is defined as follows: $j_0=1728\frac{4a^3}{4a^3+27b^2}$ (the
+constant 1728 is traditionally used for normalization purposes which we won't describe here). Over $\mathbb{Q}$ the j-invariant is unique for each
+isomorphism class of curves; however, over $\mathbb{F}_p$, it is not. It is easy to see that for a curve given by $y^2=x^3+ax+b$ and any $c\in\mathbb{F}^*_p$,
+the curve defined by $y^2=x^3+ac^2x+bc^3$ has the same j-invariant, but if $c$ is non-square, the new curve (termed \emph{the twist} of the original curve)
+is not isomorphic to the original (if $c$ is a square, we have a new curve that is isomorphic to the original). This is not a real problem, though: recall that we have said that there are two possible candidates for the order of
+the generated curve; one of the candidates is the real order of the curve, and the other one is the order of its twist.
+
+Given a $j_0\in\mathbb{F}_p$ value, it is not difficult to construct an elliptic curve over $\mathbb{F}_p$ with $j_0$ as the j-invariant;
+indeed, define $k=\frac{j_0}{1728-j_0}$, and define $E$ by the equation $y^2=x^3+3kx+2k$. Now, by direct computation of the j-invariant we see that:
+$$1728\frac{4a^3}{4a^3+27b^2}=1728\frac{2^2\cdot 3^3k^3}{2^2\cdot 3^3k^3+3^3\cdot 2^2k^2}=\frac{1728}{1+k^{-1}}=
+\frac{1728}{\frac{j_0+1728-j_0}{j_0}}=j_0$$
+As required.
+
+Based on the theory of complex multiplication (which is not possible to describe here in detail), a polynomial with integer coefficients, called the \emph{Hilbert Class Polynomial}
+can be found for every value of discriminant $D$, such that if $j_0$ is a root of the polynomial (over $\mathbb{Q}$), the corresponding elliptic curve
+possesses complex multiplication for $D$. As we are only interested in the j-invariant modulo $p$, it suffices to find a root to the Hilber class polynomial
+over $\mathbb{F}_p$ - a relatively simple and discrete process which does not involve issues of precision.
+
+The Hilbert class polynomials are usually computed by generating their roots in $\mathbb{C}$ and multiplying accordingly. This is a costly process which
+does involve precision issues. Therefore, an alternative approach is simply to rely on a large known list of the Hilbert class polynomials for small values of $D$. This
+works very well in practice and does not compromise the safety of the curve (which relies on the size of $p$ and its order).
+
+\subsubsection{Summary - Overview of The Full Method}
+We now describe the exact algorithm used for generation of curves over $\mathbb{F}_p$ with a known order. There are two possible approaches, depending on one's goals.
+One can start with a known $p$ and search for a suitable curve amond the known values of $D$, or one can choose $D$ upfront and choose random values of $p$. Therefore we have
+two ``initialization'' algorithms:
+
+Version 1: Known $p$.
+\begin{enumerate}
+ \item Choose some value of $D$.
+ \item Apply Cornacchia's algorithm in order to find t,s such that $t^2+|D|s^2=4p$.
+ \item Check that among the two order candidates, $u_1=p+1+t,u_2=p+1-t$ there is at least one with admissible factorization. Otherwise, go back to step 1.
+\end{enumerate}
+
+Version 2: Known $D$.
+\begin{enumerate}
+ \item Randomally choose integers $s,t$. of the appropriate magnitude.
+ \item Check that $p=\frac{t^2+|D|s^2}{4}$ is a prime integer (using the Miller-Rabin primality test, for example).
+ \item Check that among the two order candidates, $u_1=p+1+t,u_2=p+1-t$ there is at least one with admissible factorization. Otherwise, go back to step 1.
+\end{enumerate}
+
+The rest of the algorithm is the same no matter which initialization method was chosen:
+
+\begin{enumerate}
+ \item Calculate (or find from a given list) the Hilbert class polynomial $H_D$ corresponding to $D$.
+ \item Find a root $j_0$ of $H_D$ in the field $\mathbb{F}_p$.
+ \item Set $k=\frac{j_0}{1728-j_0}$ modulo $p$.
+ \item Set the resulting curve to be the one defined by $a=3kc^2,b=2kc^3$ for a random $c\in\mathbb{F}_p$
+ \item Check which of the two possible candidates is the order of the curve. If it has an admissible factorization, return the curve; otherwise,
+	  return the twist of the curve (i.e. pick randomally a non-square $e\in\mathbb{F}_p$ and return the curve $y^2=x^3+ae^2+be^3$.
+\end{enumerate}
 
 
 
