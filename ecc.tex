@@ -165,7 +165,68 @@ $|\#E(\mathbb{F}_q)-(q+1)|\le 2\sqrt{q}$
 
 Knowing the order of the curve is very important when using curves for cryptographic purposes. There exist algorithms for computing the order, but
 they are quite complicated and not very efficient. Thus, sometimes a different approach is used - first the order is chosen, and then a suitable curve
-for that order is generated. We elaborate in this later.
+for that order is generated. We elaborate on this later.
+\section{Elliptic Curve Arithmetic}
+\subsection{Projective Coordinates}
+As we shall see, the usual usage of elliptic curve in cryptosystems is in computing $P+P+\dots+P$ for a given point $P$. 
+The formulas for adding points on the curve includes a division operation, which in most implementations is very costly. Therefore, it is reasonable to
+transform the coordinate system into one in which no division is needed for the addition operation itself, only for transforming back to the standard
+coordinate system once the calculation is complete. Such a coordinate system is the \emph{projective} coordinate system.
+
+Theoretically it is possible to imagine the projective coordinate system as one in which every two-dimensional point is represented by a ray in the three
+dimensional space. Formally we consider the set $K^3\\\{(0,0,0)\}$ with an equivalence relation charctarisied by two positive integers $c,d$ and
+defined by $(X_1,Y_1,Z_1)\sim (X_2,Y_2,Z_2)$ if $X_1=\lambda^cX_2,Y_1=\lambda^dY_2,Z_1=\lambda Z_2$ for some $\lambda\in K^*$ (for $c=d=1$
+indeed we have that each equivalance class is a line in $K^3$).
+
+The two-dimensional point $(X,Y)$ can be identified with the projective point represented by $(X,Y,1)$, and so in general a projective point represented by
+$(X,Y,Z)$ with $Z\ne 0$ corresponds to a standard point $(\frac{X}{Z^a},\frac{Y}{Z^b})$. However, projective points represented by $(X,Y,0)$
+have no standard two-dimensional equivalent, and so are considered ''points in infinity``. Indeed, this is a way to formally represent $\mathcal{O}$.
+
+\subsection{Addition Formulas - The Prime Field Case}
+We consider now the case $K=\mathbb{F}_p$ for $p>3$ prime (however, for any $K$ such that $char K\ne 2,3$ our description is essentially the same).
+In this case let $E$ be a curve defined by $y^2=x^3+ax+b$. Given two points on the curve $P=(x_1,y_1),Q=(x_2,y_2)$ we first consider the case $x_1\ne x_2$
+(and so $P\ne\pm Q$). The line passing both in $P$ and $Q$ has slope $\frac{y_2-y_1}{x_2-x_1}$ and so its equation is $y=y_1+\left(\frac{y_2-y_1}{x_2-x_1}\right)(x-x_1)$.
+
+\section{Cryptosystem}
+\section{Random Elliptic Curve Generation}
+\subsection{Introduction}
+\subsection{The Prime Field Case}
+For $K=\mathbb{F}_p$, $p$ a given large prime, there is a polynomial time algorithm of Schoof for computing the number of points on a given curve.
+However, it is quite slow in practice (the basic running time is $O(\log ^8p)$, although improvements were made) and quite complicated to implement.
+Therefore we have used a different approach - first we decide on the desired order of the curve and the value of $p$, and afterwards we generate a
+curve over $\mathbb{F}_p$ with that order. The method we use is reffered to as the \emph{Complex Multiplication} method. The theory of complex
+multiplication is quite deep; we present here a brief overview of the facts related to the method.
+
+Given an elliptic curve $E$ over some field $K$, we consider the set of \emph{endomorphisms} of $E$ (an homomorphism from $E$ to itself). There are
+alwys ''trivial`` endomorphisms $\varphi_m$ defined by $\varphi_m(P)=m\cdot P=P+P+\dots+P$, and it's easy to see that endomorphisms form a ring
+with induced addition (i.e. $(\varphi+\psi)(P)=\varphi(P)+\psi(P)$) and composition serving as multiplication, and that the ''trivial'' endomprhisms form a subring
+isomorphic to $\mathbb{Z}$. If the curve possess more endomprhisms, it is said to have possess complex multiplication. The name stems from
+the fact that in this case the ring of endomorphisms is isomorphic to $\mathbb{Z}\tau+\mathbb{Z}$ with $\tau = (D+\sqrt{D})/2$ for some $D<0$
+such that $D\equiv 0,1 (\mathrm{mod }4)$, i.e. the ring of endomorphisms is contained in a quadratic imaginary field. The value $D$ is called the \emph{discriminant} of the
+endomprhisms ring, and the isomorphic ring is denoted by $\mathcal{O}_D$.
+
+The usefulness of complex multiplication for our goals comes from the following fact: if $E$ is an elliptic curve possessing complex multiplication over $\mathbb{Q}$
+with discriminant $D$, we can effectively calculate the order of $E$ over almost any field $\mathbb{F}_p$, problems arising only in cases where $p$ divides $D$ or
+when the equation of $E$ does not define a proper ellitpic curve over $\mathbb{F}_p$ (because the curve is not smooth). These cases are rare and
+pose no real problem.
+
+Recall that the order of any curve over $\mathbb{F}_p$ is $p+1+a_p$, with $|a_p|\le2\sqrt{p}$, so the challange lies in computing $a_p$. If $D$ is
+a quadratic residue over $p$, we have $a_p=\pi+\overline{\pi}$, with $\pi$ being an element of $\mathcal{O}_D$ such that $\pi\overline{\pi}=p$.
+$\pi$ can be denoted $\frac{a+b\sqrt{D}}{2}$ , and so $\overline{\pi}=\frac{a-b\sqrt{D}}{2}$ (recall that $D<0$ so $\sqrt{D}$ is imaginary),
+and so $p=\pi\overline{\pi}=\frac{a^2+|D|b^2}{4}$, or $4p=a^2+|D|b^2$, and  $a_p=\pi+\overline{\pi}=\frac{a+b\sqrt{D}+(a-b\sqrt{D}}{2}=a$.
+
+Hence, if $D$ and $p$ are already known, to compute the order of the curve one needs only to solve the equation $a^2+|D|b^2=4p$. However, this equation
+has two solutions (for $a$) which differ by sign, and so we get two different candidates for the order of the curve. A prectical solution to this problem, which
+we have implemented, is to take a random point $P$ on the curve and raise it to the power of each of the candidates, expecting to get $\mathcal{O}$ only
+once. This proved to be an efficient and reliable solution.
+
+Two questions remain: First, how to solve the equation $a^2+b^2|D|=4p$; and second, how to find a curve $E$ possing complex multiplication for
+a given $D$?
+
+
+
+
+\subsection{The Binary Field Case}
 
 
 \end{document}
