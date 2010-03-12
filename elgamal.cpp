@@ -114,3 +114,8 @@ string ECC_ElGamal::to_string(mpz_class mpz) {
 	}
 	return res;
 }
+
+bool ECC_ElGamal::validate_curve() {
+	Coordinate m = ell->pointMultiplication(ell->point, ell->getOrder());
+	return m.isInfinite();
+}

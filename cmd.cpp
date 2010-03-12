@@ -21,6 +21,8 @@ Cmd::Cmd(int argc, char** argv) {
 	dec = false;// string dec_path;
 	ec_rand = false;
 	ec_prime = false;
+	use_ec = false;
+	use_predefined_curve = false;
 	//string ec_name;
 
 
@@ -32,13 +34,13 @@ Cmd::Cmd(int argc, char** argv) {
 		string str = string(argv[i]);
 		if (str == "-enc") {
 			if (argc <= ++i) {
-				cout << "Specify file to encrypt after -e !" << endl;
+				cout << "Specify file to encrypt after -enc !" << endl;
 				return;
 			}
 			enc = true; enc_path = argv[i];
 		} else if (str == "-dec") {
 			if (argc <= ++i) {
-				cout << "Specify file to decrypt after -d !" << endl;
+				cout << "Specify file to decrypt after -dec !" << endl;
 				return;
 			}
 			dec = true; dec_path = argv[i];
@@ -73,9 +75,28 @@ Cmd::Cmd(int argc, char** argv) {
 				return;
 			}
 			ec_name = argv[i];
+			use_predefined_curve = true;
 		} else if (str == "-t") {
 			do_tests = true;
 			return;
+		} else if (str == "-validate") {
+			if (argc <= ++i) {
+				cout
+						<< "Specify an EC declaration after -validate"
+						<< endl;
+				return;
+			}
+			validate = true;
+			validation_path = argv[i];
+		} else if (str == "-use_ec") {
+			if (argc <= ++i) {
+				cout
+						<< "Specify an EC declaration after -validate"
+						<< endl;
+				return;
+			}
+			use_ec = true;
+			use_ec_path = argv[i];
 		}
 	}
 }
@@ -98,7 +119,7 @@ void Cmd::execute() {
 		// now the curve should be defined...
 		if (ec_rand) {
 			// TODO: implement
-		} else {
+		} else if (use_predefined_curve) {
 			if (ec_name == "p192") {
 				ell = new CurveNISTp192();
 			} else if (ec_name == "p224") {
@@ -115,11 +136,27 @@ void Cmd::execute() {
 				cout << "Unknown Curve (" << ec_name << ")!" << endl;
 				return;
 			}
+		} else if (use_ec) {
+			ifstream is;
+			is.open(use_ec_path.c_str());
+			ell = use_elliptic_curve(is);
+			is.close();
 		}
 		elg = new ECC_ElGamal(ell);
 		//ell = Ellipticcurve()
 		gen_random_keypair();
 
+	} else if (validate) {
+		ifstream is;
+		is.open(validation_path.c_str());
+		ell = use_elliptic_curve(is);
+		is.close();
+		elg = new ECC_ElGamal(ell);
+		if (elg->validate_curve()) {
+			cout << "Validation succeeded!" << endl;
+		} else {
+			cout << "Validation failed!" << endl;
+		}
 	} else {
 		cout << "Either define sk, pk or key-generation" << endl;
 	}
@@ -136,7 +173,8 @@ void Cmd::print_usage() {
 	cout << "Usage:" << endl;
 	cout << "ECC {-pk </path/to/pk> -enc </path/to/plaintext> |" << endl <<
 			"     -sk </path/to/sk> -dec </path/to/ciphertext> |" << endl <<
-			"     -gen_key {-ec_rand | -ec_name 'name'} [-enc ... | -dec ...]}" << endl << endl;
+			"     -gen_key {-ec_rand | -ec_name 'name' | -use_ec </path/to/ec>}" << endl <<
+			"     -validate </path/to/ec>" << endl;
 	cout << "Predefined Curves (NIST): [p192|p224|p256|p384|p521|b163]" << endl;
 }
 
@@ -196,7 +234,8 @@ void Cmd::decrypt_message(string file_name) {
 void Cmd::use_public_key(string file_name) {
 	ifstream is;
 	is.open(file_name.c_str());
-	use_elliptic_curve(is);
+	Ellipticcurve* e = use_elliptic_curve(is);
+	elg = new ECC_ElGamal(e);
 	string line;
 	getline(is, line);
 	elg->set_public_key(elg->ell->getPointCompressedForm(line));
@@ -206,7 +245,8 @@ void Cmd::use_public_key(string file_name) {
 void Cmd::use_private_key(string file_name) {
 	ifstream is;
 	is.open(file_name.c_str());
-	use_elliptic_curve(is);
+	Ellipticcurve* e = use_elliptic_curve(is);
+	elg = new ECC_ElGamal(e);
 	string line;
 	getline(is, line);
 	mpz_class sk;
@@ -249,7 +289,7 @@ void Cmd::gen_random_keypair() {
 	of_private.close();
 }
 
-void Cmd::use_elliptic_curve(ifstream& in) {
+Ellipticcurve* Cmd::use_elliptic_curve(ifstream& in) {
 	string line;
 	// first line: prime/binary
 	getline(in, line);
@@ -291,7 +331,8 @@ void Cmd::use_elliptic_curve(ifstream& in) {
 	ec->setOrder(order);
 	ec->set_point_compressed(compr_point);
 
-	elg = new ECC_ElGamal(ec);
+	return ec;
+	//elg = new ECC_ElGamal(ec);
 }
 
 void Cmd::write_elliptic_curve(ofstream& out) {

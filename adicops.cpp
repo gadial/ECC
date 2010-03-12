@@ -33,6 +33,7 @@ void Adicops::do_s() {
 	ZZ_p::init(to_ZZ(8));
 	ModPoly s(1, ZZ_pX::zero()); s.set_mod(deg, pos, val);
 	//ModPoly::set_mod(deg, pos, val);
+	cout << a.get_points_AGM_bivariate_v2(0x45, deg, s) << " points!" << endl;
 	cout << a.get_points_AGM_bivariate_v2(0b10001, deg, s) << " points!" << endl;
 }
 
@@ -609,6 +610,12 @@ ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d, ModPoly s) {
 		ModPoly apb = a + b;
 		apb /= 2;
 		ModPoly sqrtab = get_sqrt(ab, i);
+		/*
+		cout << "ab: " << ab.poly << endl;
+		cout << "ss: " << sqrtab.poly << endl;
+		cout << "sq: " << (sqrtab*sqrtab).poly << endl;
+		*/
+		assert((sqrtab*sqrtab).poly == ab.poly);
 		a.kill();
 		b.kill();
 
@@ -642,6 +649,14 @@ ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d, ModPoly s) {
 		ModPoly ab = olda * oldb;
 		b.kill();
 		b = get_sqrt(ab, N);
+		b.set_precision(N);
+		ab.set_precision(N);
+		/*
+		cout << "ab: " << ab.poly << endl;
+		cout << "ss: " << b.poly << endl;
+		cout << "sq: " << (b*b).poly << endl;
+		*/
+		assert((b*b).poly == ab.poly);
 		olda.kill();
 		oldb.kill();
 		ab.kill();
@@ -653,21 +668,26 @@ ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d, ModPoly s) {
 	//a %= (N - 1);
 
 	a0.set_precision(N - 1);
-	ModPoly invA = get_inverse(a, N - 1);
+	a.set_precision(N - 1);
+	ModPoly invA = get_inverse(a, N	- 1);
 	ModPoly t = a0 * invA;
+	t.set_precision(N - 1);
 
 	//cout << "a0: " << a0.poly << endl;
 	//cout << "a: " << a.poly << endl;
 	//cout << "t: " << t.poly << endl;
 
+	cout << "t:" << t.poly << endl;
 	ZZ mt = t.poly.rep[0].LoopHole();
 	//mpz_class mt = t.to_gfe_el();
-	if ((mt * mt) > (1 << (d + 2))) {
-		mt = mt - (1 << (N - 1));
+
+	cout << "pos1: " << (to_ZZ(1) << d) + to_ZZ(1) - mt << endl;
+	cout << "pos2: " << (to_ZZ(1) << d) + to_ZZ(1) - (mt - (to_ZZ(1) << (N - 1))) << endl;
+
+	if ((mt * mt) > (to_ZZ(1) << (d + 2))) {
+		mt = mt - (to_ZZ(1) << (N - 1));
 	}
-
-
-	return (to_ZZ(1) << d) + 1 - mt;
+	return (to_ZZ(1) << d) + to_ZZ(1) - mt;
 }
 
 bool Adicops::testsqrt(Poly sqrt, Poly in, Poly mod, int prec) {

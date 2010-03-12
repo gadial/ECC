@@ -129,6 +129,8 @@ public:
     int get_max_point_length();
     Ellipticcurve* ell;
 
+    bool validate_curve();
+
 private:
     Coordinate Q;
     mpz_class d;
