@@ -7,8 +7,8 @@
 
 #include "adicops.h"
 #include <iostream>
+//#define NDEBUG
 #include <cassert>
-#define NDEBUG
 
 //#include <NTL/GF2X.h>
 
@@ -28,13 +28,45 @@ void Adicops::do_s() {
 	a.set_sqrtx(GFE::get_sqrtx(7, 1, tmp));
 	//GFE::init(tmp);
 	vector<int> pos(3), val(3);
-	pos[0] = 0; pos[1] = 6; pos[2] = 7;
+	pos[0] = 0; pos[1] = 1; pos[2] = 7;
 	val[0] = 1; val[1] = 1; val[2] = 1;
+	ZZ_p::init(to_ZZ(8));
+	ModPoly s(1, ZZ_pX::zero()); s.set_mod(deg, pos, val);
 	//ModPoly::set_mod(deg, pos, val);
-	cout << a.get_points_AGM_bivariate(0b10001, deg) << " points!" << endl;
+	cout << a.get_points_AGM_bivariate_v2(0b10001, deg, s) << " points!" << endl;
 }
 
 void Adicops::crack_challenge1() {
+	int deg = 283;
+	string b_str = "43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c";
+	mpz_class b_gmp;
+	b_gmp.set_str(b_str, 16);
+	mpz_class c1 = 1;
+	mpz_class modul = (c1 << deg);
+	modul |= (c1 << 12);
+	modul |= (c1 << 7);
+	modul |= (c1 << 5);
+	modul |= c1;
+
+	vector<int> pos(5), val(5);
+	pos[0] = 0; pos[1] = 5; pos[2] = 7; pos[3] = 12; pos[4] = 283;
+	val[0] = 1; val[1] = 1; val[2] = 1; val[3] = 1; pos[4] = 1;
+	ZZ_p::init(to_ZZ(8));
+	ModPoly s(1, ZZ_pX::zero()); s.set_mod(deg, pos, val);
+
+	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
+	mpz_class sqx;
+	sqx.set_str("20820820820820820820820820820820820830c30c30c30c30c30c30c30c30c30c30808", 16);
+	GFE g = GFE(sqx, modul);
+	GFE sq = g * g;
+	//g.print();
+	//sq.print();
+	Adicops a(modul);
+	a.set_sqrtx(g);
+	cout << a.get_points_AGM_bivariate_v2(b_gmp, 283, s) << " points!" << endl;
+}
+
+void Adicops::crack_challenge2() {
 	int deg = 283;
 	string b_str = "7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd";
 	mpz_class b_gmp;
@@ -48,44 +80,26 @@ void Adicops::crack_challenge1() {
 
 	string n_points = "15541351137805832567355695254588151253139258334559117232872014252832652797156767348716";
 	mpz_class np; np.set_str(n_points, 10);
-	cout << "point_base: " << (int)mpz_sizeinbase(np.get_mpz_t(), 2) << endl;
-	cout << "mod_base: " << (int)mpz_sizeinbase(modul.get_mpz_t(), 2) << endl;
+	//cout << "point_base: " << (int)mpz_sizeinbase(np.get_mpz_t(), 2) << endl;
+	//cout << "mod_base: " << (int)mpz_sizeinbase(modul.get_mpz_t(), 2) << endl;
 	//return;
 
-	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
-	mpz_class sqx;
-	sqx.set_str("20820820820820820820820820820820820830c30c30c30c30c30c30c30c30c30c30808", 16);
-	GFE g = GFE(sqx, modul);
-	GFE sq = g * g;
-	g.print();
-	sq.print();
-	Adicops a(modul);
-	a.set_sqrtx(g);
-	cout << a.get_points_AGM_bivariate(b_gmp, 283) << " points!" << endl;
-}
-
-void Adicops::crack_challenge2() {
-	int deg = 283;
-	string b_str = "43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c";
-	mpz_class b_gmp;
-	b_gmp.set_str(b_str, 16);
-	mpz_class c1 = 1;
-	mpz_class modul = (c1 << deg);
-	modul |= (c1 << 12);
-	modul |= (c1 << 7);
-	modul |= (c1 << 5);
-	modul |= c1;
+	vector<int> pos(5), val(5);
+	pos[0] = 0; pos[1] = 5; pos[2] = 7; pos[3] = 12; pos[4] = 283;
+	val[0] = 1; val[1] = 1; val[2] = 1; val[3] = 1; pos[4] = 1;
+	ZZ_p::init(to_ZZ(8));
+	ModPoly s(1, ZZ_pX::zero()); s.set_mod(deg, pos, val);
 
 	// Precomputed sqrt(x) mod x^283+x^12+x^7+x^5+1
 	mpz_class sqx;
 	sqx.set_str("20820820820820820820820820820820820830c30c30c30c30c30c30c30c30c30c30808", 16);
 	GFE g = GFE(sqx, modul);
 	GFE sq = g * g;
-	g.print();
-	sq.print();
+	//g.print();
+	//sq.print();
 	Adicops a(modul);
 	a.set_sqrtx(g);
-	cout << a.get_points_AGM_bivariate(b_gmp, 283) << " points!" << endl;
+	cout << a.get_points_AGM_bivariate_v2(b_gmp, 283, s) << " points!" << endl;
 }
 
 void Adicops::do_ntl() {
@@ -308,19 +322,21 @@ Poly Adicops::get_inverse(Poly a, int prec) {
 
 ModPoly Adicops::get_inverse(ModPoly a, int prec) {
 	if (prec == 1) {
-		ModPoly::set_precision(prec);
+		//ModPoly::set_precision(prec);
 		GFE gfe = GFE(a.to_gfe_el(), mod.to_gfe_el());
 		GFE invGfe = !gfe;
-		ModPoly res = ModPoly(invGfe.get_element());
+		ModPoly res = ModPoly(invGfe.get_element(), a.mod);
 		return res;
 	} else {
 		ModPoly z = get_inverse(a,
 				(prec % 2 == 0 ? prec / 2 : prec / 2 + 1));
-		ModPoly::set_precision(prec);
-		ModPoly one = ModPoly::one();
-		cout << z.poly << endl;
+		//ModPoly::set_precision(prec);
+		a.set_precision(prec);
+		z.set_precision(prec);
+		ModPoly one = ModPoly::one(a.mod);
+		//cout << a.mod << endl;
 		z = z + z * (one - (a * z));
-		cout << z.poly << endl;
+		//cout << z.poly << endl;
 		return z;
 	}
 }
@@ -351,13 +367,16 @@ ModPoly Adicops::get_invsqrt(ModPoly a, ModPoly approx, int prec) {
 		int newN = ((prec + 1) % 2 == 0 ? (prec + 1) / 2 : (prec + 1) / 2 + 1);
 		ModPoly z = get_invsqrt(a, approx, newN);
 
-		ModPoly::set_precision(prec + 1);
-		ModPoly one = ModPoly::one();
+		a.set_precision(prec + 1);
+		z.set_precision(prec + 1);
+		ModPoly one = ModPoly::one(a.mod);
 		ModPoly amazsq = one - (a * z * z);
 		//amazsq = poly_remainder(amazsq, prec + 1);
 		amazsq = z * amazsq;
 		amazsq /= 2;
-		ModPoly::set_precision(prec);
+
+		z.set_precision(prec);
+		amazsq.set_precision(prec);
 		z = z + amazsq;
 		//z = poly_remainder(z, prec);
 		return z;
@@ -404,14 +423,16 @@ ModPoly Adicops::get_sqrt(ModPoly a, int prec) {
 	// binary inverse sqrt...
 	GFE z = GFE(a.to_gfe_el(), mod.to_gfe_el());
 	// TODO: ...
-	GFE sqrtx = GFE::get_sqrtx(7, 1, mod.to_gfe_el());
+	//GFE sqrtx = GFE::get_sqrtx(7, 1, mod.to_gfe_el());
 	z = z.get_sqrt(sqrtx);
+	if (z.isZero()) z.print();
 	z = !z;
 
 	// Computing b=(1/a + z^2) / 4
 	ModPoly inva = get_inverse(a, prec);
-	ModPoly polyz = ModPoly(z.get_element());
-	ModPoly::set_precision(prec);
+	ModPoly polyz = ModPoly(z.get_element(), a.mod);
+	inva.set_precision(prec);
+	polyz.set_precision(prec);
 	ModPoly b = inva - (polyz * polyz);
 	//b = poly_remainder(b, prec);
 	b /= 4;
@@ -420,7 +441,7 @@ ModPoly Adicops::get_sqrt(ModPoly a, int prec) {
 	GFE bgfe = GFE(b.to_gfe_el(), mod.to_gfe_el());
 	GFE bigdelta = GFE::solve_quad_eq(z, bgfe);
 
-	ModPoly polybigdelta = ModPoly(bigdelta.get_element());
+	ModPoly polybigdelta = ModPoly(bigdelta.get_element(), a.mod);
 	polybigdelta *= 2;
 
 	// approx root to prec 2 is z+2*Delta
@@ -562,17 +583,19 @@ mpz_class Adicops::get_points_AGM_bivariate(mpz_class _c, int d) {
 	//mod.print();
 }
 
-ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d) {
+ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d, ModPoly s) {
 	int N = (d % 2 == 0 ? d / 2 + 3 : d / 2 + 4);
-	ModPoly a = ModPoly::one();
+	ModPoly a = ModPoly::one(s.mod);
 
-	ModPoly c = ModPoly(_c);
+	ModPoly c = ModPoly(_c, s.mod);
 	//cout << "modulus: " << ZZ_pE::modulus() << endl;
 	//Poly mod = Poly(_mod);
 
-	ModPoly::set_precision(4);
+	a.set_precision(4);
+	c.set_precision(4);
 	c *= 8;
 	ModPoly b = a + c;
+	//cout << a.poly << b.poly << endl;
 
 	//c = poly_remainder(b, 4);
 
@@ -580,84 +603,71 @@ ZZ Adicops::get_points_AGM_bivariate_v2(mpz_class _c, int d) {
 	//cout << "4 b: "; b.print();
 
 	for (int i = 5; i <= N; ++i) {
-		ModPoly olda = a;
-		ModPoly oldb = b;
-		ModPoly::set_precision(i + 1);
-		a = a + b;
-		ModPoly::set_precision(i);
-		cout << "a: " << a.poly << endl << "b: " << b.poly << endl;
-		a /= 2;
-		cout << "a: " << a.poly << endl << "b: " << b.poly << endl;
-		ModPoly ab = olda * oldb;
-		//ab = poly_remainder(ab, i);
-		b = get_sqrt(ab, i);
-		//ab.print();
-		//assert(testsqrt(b, ab, mod, i));
-		//Poly re = b * b;
-		//re = poly_remainder(re, mod, i);
-		cout << "N=" << i << " a: " << a.poly << endl;
-		//a.print();
-		cout << "N=" << i << " b: " << b.poly << endl;
-		//b.print();
-		//cout << i << " ab: "; ab.print();
-		//cout << i << " re: "; re.print();
+		a.set_precision(i);
+		b.set_precision(i);
+		ModPoly ab = a * b;
+		ModPoly apb = a + b;
+		apb /= 2;
+		ModPoly sqrtab = get_sqrt(ab, i);
+		a.kill();
+		b.kill();
+
+		a = apb;
+		b = sqrtab;
+		ab.kill();
+		apb.kill();
+		sqrtab.kill();
+		//cout << "N=" << i << " a: " << a.poly << endl;
 	}
 
 	cout << "---" << endl;
 	ModPoly a0 = a;
 
 	for (int i = 0; i <= d - 1; ++i) {
+		a.set_precision(N + 1);
+		b.set_precision(N + 1);
 		ModPoly olda = a;
 		ModPoly oldb = b;
-		ModPoly::set_precision(N + 1);
-		a = olda + oldb;
-		a /= 2;
-		ModPoly::set_precision(N);
-		//a %= (1 << )
+		//ModPoly::set_precision(N + 1);
+		ModPoly apb = olda + oldb;
+		apb /= 2;
+		a.kill();
+
+		a = apb;
+
+		a.set_precision(N + 1);
+		b.set_precision(N + 1);
+		olda.set_precision(N + 1);
+		oldb.set_precision(N + 1);
 		ModPoly ab = olda * oldb;
-		//ab = poly_remainder(ab, N);
+		b.kill();
 		b = get_sqrt(ab, N);
-		ModPoly re = b * b;
-		//re = poly_remainder(re, N);
-		//assert(testsqrt(b, ab, mod, N));
-		cout << "N=" << i << " a: " << a.poly << endl;
-		//a.print();
-		cout << "N=" << i << " b: " << b.poly << endl;
-		//b.print();
-		//cout << i << " ab: "; ab.print();
-		//cout << i << " re: "; re.print();
+		olda.kill();
+		oldb.kill();
+		ab.kill();
+		//cout << "N=" << i << " a: " << a.poly << endl;
+		//cout << "N=" << i << " b: " << b.poly << endl;
 	}
 
 	//a0 %= (N - 1);
 	//a %= (N - 1);
 
-	ModPoly::set_precision(N - 1);
-	//Poly t = poly_division(a0, a, N - 1);
-	ModPoly t = a0 / a;
-	//Poly rem = poly_remainder(a0, a, N - 2);
+	a0.set_precision(N - 1);
+	ModPoly invA = get_inverse(a, N - 1);
+	ModPoly t = a0 * invA;
 
-	cout << "a0: " << a0.poly << endl;
-	//a0.print();
-	cout << "a: " << a.poly << endl;
-	//a.print();
+	//cout << "a0: " << a0.poly << endl;
+	//cout << "a: " << a.poly << endl;
+	//cout << "t: " << t.poly << endl;
 
-	cout << "t: " << t.poly << endl;
-	//t.print();
-	//cout << "rem: "; rem.print();
-
-	//Poly inva = get_inverse(a, mod, N - 1);
-	//Poly t = a0 * inva;
-	//t = poly_remainder(t, mod, N - 1);
-	//Poly t = poly_division(a0, a, N - 2);
-
-	//mpz_class c1 = 1;
-	ZZ mt = t.poly.rep[0].cardinality();
+	ZZ mt = t.poly.rep[0].LoopHole();
 	//mpz_class mt = t.to_gfe_el();
 	if ((mt * mt) > (1 << (d + 2))) {
 		mt = mt - (1 << (N - 1));
 	}
 
-	return (1 << d) + 1 - mt;
+
+	return (to_ZZ(1) << d) + 1 - mt;
 }
 
 bool Adicops::testsqrt(Poly sqrt, Poly in, Poly mod, int prec) {

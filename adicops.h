@@ -49,7 +49,7 @@ public:
 
 
 	mpz_class get_points_AGM_bivariate(mpz_class _c, int d);
-	ZZ get_points_AGM_bivariate_v2(mpz_class _c, int d);
+	ZZ get_points_AGM_bivariate_v2(mpz_class _c, int d, ModPoly s);
 	mpz_class get_points_AGM_univariate(mpz_class _c, mpz_class _mod, int d);
 
 	void set_sqrtx(GFE _sqrtx) { sqrtx = _sqrtx;}
