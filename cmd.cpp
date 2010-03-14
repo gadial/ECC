@@ -132,6 +132,12 @@ void Cmd::execute() {
 				ell = new CurveNISTp521();
 			} else if (ec_name == "b163") {
 				ell = new CurveNISTb163();
+			} else if (ec_name == "b283") {
+				ell = new CurveNISTb283();
+			} else if (ec_name == "b409") {
+				ell = new CurveNISTb409();
+			} else if (ec_name == "b571") {
+				ell = new CurveNISTb571();
 			} else {
 				cout << "Unknown Curve (" << ec_name << ")!" << endl;
 				return;
@@ -175,7 +181,7 @@ void Cmd::print_usage() {
 			"     -sk </path/to/sk> -dec </path/to/ciphertext> |" << endl <<
 			"     -gen_key {-ec_rand | -ec_name 'name' | -use_ec </path/to/ec>}" << endl <<
 			"     -validate </path/to/ec>" << endl;
-	cout << "Predefined Curves (NIST): [p192|p224|p256|p384|p521|b163]" << endl;
+	cout << "Predefined Curves (NIST): [p192|p224|p256|p384|p521|b163|b283|b409|b571]" << endl;
 }
 
 void Cmd::encrypt_message(string file_name) {
