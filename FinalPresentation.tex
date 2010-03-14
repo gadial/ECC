@@ -107,8 +107,8 @@ method is not applicable.
  \item Our main goal was to build an elliptic-curve cryptosystem from first principals.
  \item The only library used was an infinite integer precision library (GMP).
  \item The field arithmetic, elliptic curve operations and cryptosystem were all implemented by us.
- \item Greater control, flexability and understanding at a cost to efficiency.
- \item Optimizations can still be done by ``outsorcing`` parts of the code, after profiling.
+ \item Greater control, flexibility and understanding at a cost to efficiency.
+ \item Optimizations can still be done by ``outsourcing`` parts of the code, after profiling.
  \item Another goal was experimenting with cutting-edge methods for generation of cryptographically secure elliptic curves.
  \item Again, everything was implemented ''from scratch`` (e.g. algorithms for modular polynomial root-finding, 2-adic field implementation and more).
 \end{itemize}
@@ -154,20 +154,20 @@ method is not applicable.
   \item Generation of secure curves is a completely different problem for each of the cases.
   \item We have chosen to implement \emph{both} types of curves:
   \begin{itemize}
-   \item Allows a comparision of the two methods.
+   \item Allows a comparison of the two methods.
    \item Enables us to explore the two theoretically interesting paths.
   \end{itemize}   
 \end{itemize}
 \lyxframeend{}
 
-\lyxframe{Genration of secure curves}
+\lyxframe{Generation of secure curves}
 \begin{itemize}
   \item The primary concern with a given elliptic curve concerns its order.
   \item It should be large enough, with few or none small factors, and satisfy some other properties to avoid specific attacks.
   \item Hence it is critical to be able to find the curve's order.
   \item In the binary field case this was done using the AGM method.
   \item In the prime field case a different approach was used: generate curves in a way such that the order is known in advance (the Complex multiplication method).
-  \item There is also a general-purpose counting algorithm (Schoof's algorithm) but it is far more costly and complicated then our methods (although polynomial).
+  \item There is also a general-purpose counting algorithm (Schoof's algorithm) but it is far more costly and complicated than our methods (although polynomial).
 \end{itemize}
 
 \lyxframeend{}
@@ -243,7 +243,7 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \item Current programming libraries don't implement 2-adic arithmetic.
 \item Our 2-adic implementation includes: addition/subtraction, multiplication, modular reduction, division, square root, inverse polynomial.
 \item Polynomial multiplication is the major bottleneck. It can be highly optimized using FFT.
-\item Comparison between AGM with ``naive'' multiplication and optimized variant from \emph{NTL} shows enormeous performance improvements:
+\item Comparison between AGM with ``naive'' multiplication and optimized variant from \emph{NTL} shows enormous performance improvements:
 \begin{itemize}
 \item AGM on a 283 bit EC. Naive version: 30 minutes. Optimized version: 1.5 seconds.
 \end{itemize}
@@ -285,11 +285,11 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \begin{itemize}
 \item Use a ``early abort'' strategy to quickly skip insecure curves.
 \end{itemize}
-\item Even faster libraries for polyomial multiplication exist today
+\item Even faster libraries for polynomial multiplication exist today
 \begin{itemize}
  \item Use ``FLINT'' instead of NTL.
 \end{itemize}
-\item Other point counting methods exist, with lower asymptoic complexity.
+\item Other point counting methods exist, with lower asymptotic complexity.
 \begin{itemize}
  \item AGM has $O(n^{3+\epsilon})$ complexity.
  \item Newer method has $O(n^{2+\epsilon})$ complexity.
@@ -314,7 +314,8 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \begin{thebibliography}{1}
 \bibitem{HMV}D. Hankerson, A. Menezes, S. Vanstone. Guide to Elliptic
 Curve Cryptography. Springer, 2004.
-\bibitem{HMV}H. Baier, J. Buchmann. Generation Methods of Elliptic Curves. 2002.	\beamertemplatearticlebibitems
+\bibitem{HMV}H. Baier, J. Buchmann. Generation Methods of Elliptic Curves. 2002.
+\bibitem{HMV}H. Cohen et al. Handbook of Elliptic and Hyperelliptic Curve Cryptography. Chapman and Hall/CRC. 2006.\beamertemplatearticlebibitems
 
 \end{thebibliography}
 
