@@ -102,6 +102,27 @@ method is not applicable.
 
 \lyxframeend{}
 
+\lyxframe{ECC ElGamal Results}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.33]{dia2.png}
+\caption{3.3KB file, top: prime curves, bottom: binary curves}
+\label{agm1}
+\end{figure}
+\lyxframeend{}
+
+\lyxframe{ECC ElGamal Evaluation}
+\begin{itemize}
+ \item Timings are not very competitive, there is much potential for optimizations.
+ \item Binary version uses binary field arithmetic, built from scratch.
+ \begin{itemize}
+  \item Using specialized libraries would improve the performance.
+  \item Optimizations for reduction trinomials could be added.
+ \end{itemize}
+
+\end{itemize}
+
+\lyxframeend{}
 
 \lyxframe{Point Counting with AGM (1)}
 \begin{itemize}
