@@ -89,7 +89,7 @@ $y^{2}=x^{3}+ax+b$ over some field $\mathbb{F}$.
 \end{figure}
 \lyxframeend{}
 
-\lyxframe{Enter Elliptic Curves}
+\lyxframe{Usage in Cryptography}
 \begin{itemize}
 \item Elliptic Curves provide a wide variety of groups, similar to $\mathbb{Z}_{n}^{*}$
 but more complex.
@@ -99,7 +99,29 @@ method is not applicable.
 \item This results in much smaller key sizes (100-200 bits).
 \item The problem: More costly to generate, more costly to operate.
 \end{itemize}
+\lyxframeend{}
 
+\section{The Implementation}
+\lyxframe{Our Goals}
+\begin{itemize}
+ \item Our main goal was to build an elliptic-curve cryptosystem from first principals.
+ \item The only library used was an infinite integer precision library (GMP).
+ \item The field arithmetic, elliptic curve operations and cryptosystem were all implemented by us.
+ \item Greater control, flexability and understanding at a cost to efficiency.
+ \item Optimizations can still be done by ``outsorcing`` parts of the code, after profiling.
+ \item Another goal was experimenting with cutting-edge methods for generation of cryptographically secure elliptic curves.
+ \item Again, everything was implemented ''from scratch`` (e.g. algorithms for modular polynomial root-finding, 2-adic field implementation and more).
+\end{itemize}
+\lyxframeend{}
+
+\lyxframe{Representation of elliptic curve points}
+\begin{itemize}
+  \item Given an x-coordinate, there are only two possible corresponding y-coordinates.
+  \item Hence coordinates are generally represented in the compressed form $\pm X$ with $X$ being the value of the x-coordinate and the sign
+	specifying which of the two y-coordinates to choose.
+  \item When performing calculations with points, it is more convenient to use Jacobian projective representation: $(X,Y,Z)$ corresponds to the point $(X/Z^2,Y/Z^3)$.
+  \item This eliminates the need to perform the costly division operation during calculations (only in the final conversion).
+\end{itemize}
 \lyxframeend{}
 
 \lyxframe{Encoding Text to an Elliptic Curve}
@@ -124,6 +146,23 @@ method is not applicable.
 \end{itemize}
 \lyxframeend{}
 
+\lyxframe{Binary field vs. prime field}
+\begin{itemize}
+  \item As mentioned, elliptic curves can be defined over any field.
+  \item In practice, the fields used for cryptography are mainly $\mathbb{F}_{2^n}$ (a \emph{binary} field) and $\mathbb{F}_p$ (a \emph{prime} field).
+  \item Both fields have different arithmetic and generation methods (e.g. for $\mathbb{F}_p$ we need a primality-testing algorithm).
+  \item Generation of secure curves is a completely different problem for each of the cases.
+  \item We have chosen to implement \emph{both} types of curves:
+  \begin{itemize}
+   \item Allows a comparision of the two methods.
+   \item Enables us to explore the two theoretically interesting paths.
+  \end{itemize}   
+\end{itemize}
+\lyxframeend{}
+
+\lyxframe{Genration of secure curves}
+\lyxframeend{}
+
 \lyxframe{ECC ElGamal Results}
 \begin{figure}[h]
 \centering
@@ -136,10 +175,10 @@ method is not applicable.
 \lyxframe{ECC ElGamal Evaluation}
 \begin{itemize}
  \item Timings are not very competitive, there is much potential for optimizations.
- \item Binary version uses binary field arithmetic, built from scratch.
+ \item Both versions (binary and prime field) use field arithmetic, built from scratch.
  \begin{itemize}
   \item Using specialized libraries would improve the performance.
-  \item Optimizations for reduction trinomials could be added.
+  \item Optimizations for reduction trinomials could be added in the binary case.
  \end{itemize}
 
 \end{itemize}
