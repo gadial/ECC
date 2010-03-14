@@ -43,7 +43,7 @@
 \title{Elliptic Curve Cryptography}
 
 
-\author{G. Aleksandrowicz\inst{1} \and B. Hess\inst{2}}
+\author{G. Aleksandrowicz\inst{1} \and B. Hess\inst{2}\\Supervisor: Barukh Ziv}
 
 
 \institute{\inst{1}Department of Computer Science, Technion \and \inst{2} Department of Computer Science, ETH Zurich}
@@ -161,28 +161,29 @@ method is not applicable.
 \lyxframeend{}
 
 \lyxframe{Genration of secure curves}
-\lyxframeend{}
-
-\lyxframe{ECC ElGamal Results}
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.33]{dia2.png}
-\caption{3.3KB file, top: prime curves, bottom: binary curves}
-\label{agm1}
-\end{figure}
-\lyxframeend{}
-
-\lyxframe{ECC ElGamal Evaluation}
 \begin{itemize}
- \item Timings are not very competitive, there is much potential for optimizations.
- \item Both versions (binary and prime field) use field arithmetic, built from scratch.
- \begin{itemize}
-  \item Using specialized libraries would improve the performance.
-  \item Optimizations for reduction trinomials could be added in the binary case.
- \end{itemize}
-
+  \item The primary concern with a given elliptic curve concerns its order.
+  \item It should be large enough, with few or none small factors, and satisfy some other properties to avoid specific attacks.
+  \item Hence it is critical to be able to find the curve's order.
+  \item In the binary field case this was done using the AGM method.
+  \item In the prime field case a different approach was used: generate curves in a way such that the order is known in advance (the Complex multiplication method).
+  \item There is also a general-purpose counting algorithm (Schoof's algorithm) but it is far more costly and complicated then our methods (although polynomial).
 \end{itemize}
 
+\lyxframeend{}
+
+\lyxframe{The Complex Multiplication method}
+\begin{itemize}
+ \item Basic idea: given a prime $p$ and a negative integer $D$, it is possible to generate a curve from a root of a special polynomial (\emph{Hilbert class polynomial}) $H_D(x)$ over $\mathbb{F}_p$
+ \item The resulting curve will have order $p+1-t$ or $p+1+t$ such that $t$ satisfies the equation $4p=t^2+|D|s^2$.
+ \item The underlying theory is quite complex...
+ \item In practice the main challenges are:
+ \begin{itemize}
+  \item Computing $H_D$ (difficult, requires high numerical precision; we can do with a list of pre-computed polynomials).
+  \item Finding $p$ such that $4p=t^2+|D|s^2$ for random $t,s$ or find such $t,s$ with $p,D$ given (Cornacchia's algorithm).
+  \item Computing a root of $H_D(x)$ modulo $p$ (requires algorithms for modular polynomial root-finding).
+ \end{itemize}
+\end{itemize}
 \lyxframeend{}
 
 \lyxframe{Point Counting with AGM (1)}
@@ -213,6 +214,30 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \end{itemize}
 \lyxframeend{}
 
+\section{Results}
+
+\lyxframe{ECC ElGamal Results}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.33]{dia2.png}
+\caption{3.3KB file, top: prime curves, bottom: binary curves}
+\label{agm1}
+\end{figure}
+\lyxframeend{}
+
+\lyxframe{ECC ElGamal Evaluation}
+\begin{itemize}
+ \item Timings are not very competitive, there is much potential for optimizations.
+ \item Both versions (binary and prime field) use field arithmetic, built from scratch.
+ \begin{itemize}
+  \item Using specialized libraries would improve the performance.
+  \item Optimizations for reduction trinomials could be added in the binary case.
+ \end{itemize}
+
+\end{itemize}
+
+\lyxframeend{}
+
 \lyxframe{AGM implementation}
 \begin{itemize}
 \item Current programming libraries don't implement 2-adic arithmetic.
@@ -232,6 +257,26 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \caption{AGM times with variable EC sizes, 1.8GHz Core Duo}
 \label{agm1}
 \end{figure}
+\lyxframeend{}
+
+\lyxframe{Challenge}
+\begin{itemize}
+  \item We were given messages encrypted using a prime field for a given $p$ (the 13-th Mersenna prime)
+  \item Some information on the curves used was given (Generated using the CM method, with $D>-400$ and good security parameters)
+  \item A complete search yielded exactly one suitable curve (i.e. satisfying the security constraints for $p$).
+  \item This made full use of the ability to calculate the group order using the CM method and finding the decomposition $4p=t^2+|D|s^2$.
+  \item Inside the decrypted messages was yet another encryption, this time over a binary field.
+  \item Our implementation decrypted the inner message as well.
+\end{itemize}
+
+\lyxframeend{}
+
+\section{Further Work}
+\lyxframe{CM method - Further work}
+  \begin{itemize}
+    \item Validating the correct of the two possible orders was done in a brute-force (but efficient) way - this can be improved.
+    \item We can investigate ways to efficiently generate the Hilbert class polynomials.
+  \end{itemize}
 \lyxframeend{}
 
 \lyxframe{AGM - Further Work}
