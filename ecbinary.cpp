@@ -13,15 +13,47 @@ ECBinary::ECBinary() {
 }
 
 Coordinate ECBinary::addition(Coordinate P, Coordinate Q) {
-	return toCoordinate(addition(LD(P), Q));
+	if (P.isInfinite()) return P;
+	if (Q.isInfinite()) return Q;
+
+	GFE x0(P.X, mod);
+	GFE y0(P.Y, mod);
+	GFE x1(Q.X, mod);
+	GFE y1(Q.Y, mod);
+	GFE a(ECC_a, mod);
+	GFE b(ECC_b, mod);
+	GFE x2;
+	GFE lambda;
+
+	if (!(x0 == x1)) {
+		lambda = (y0 + y1) * !(x0 + x1);
+		x2 = a + lambda*lambda + lambda + x0 + x1;
+	} else {
+		if (!(y0 == y1)) return Coordinate::infinity();
+		if (x1.isZero()) return Coordinate::infinity();
+
+		lambda = x1 + y1*(!x1);
+		x2 = a + lambda*lambda + lambda;
+	}
+	GFE y2 = (x1 + x2)*lambda + x2 + y1;
+	return Coordinate(x2.element, y2.element);
+
+	//return toCoordinate(addition(LD(P), Q));
 }
 
 Coordinate ECBinary::subtraction(Coordinate P, Coordinate Q) {
-	return toCoordinate(subtraction(LD(P), Q));
+	return addition(P, getNegative(Q));
+	//return toCoordinate(subtraction(LD(P), Q));
+}
+
+Coordinate ECBinary::getNegative(Coordinate P) {
+	GFE my = GFE(P.X, mod) + GFE(P.Y, mod);
+	return Coordinate(P.X, my.element);
 }
 
 Coordinate ECBinary::doubling(Coordinate P) {
-	return toCoordinate(doubling(LD(P)));
+	return addition(P, P);
+	//return toCoordinate(doubling(LD(P)));
 }
 
 Coordinate ECBinary::repeatedDoubling(Coordinate P, int m) {
@@ -30,6 +62,50 @@ Coordinate ECBinary::repeatedDoubling(Coordinate P, int m) {
 
 Coordinate ECBinary::pointMultiplication(Coordinate P, mpz_class k) {
 
+	if (k == 0) return Coordinate::infinity();
+
+	Coordinate Q = (k < 0 ? getNegative(P) : P);
+	mpz_class n = (k < 0 ? mod - k : k);
+	mpz_class h = 3 * n;
+
+	int l = mpz_sizeinbase(h.get_mpz_t(), 2) - 1;
+	mpz_class c1 = 1;
+	mpz_class mask = c1 << (l - 1);
+	Coordinate S = Q;
+	for (int i = l - 1; i >= 1; --i) {
+		S = doubling(S);
+		if ((h & mask) != 0 && (n & mask) == 0) S = addition(S, Q);
+		if ((h & mask) == 0 && (n & mask) != 0) S = subtraction(S, Q);
+		mask >>= 1;
+	}
+	return S;
+	/*
+	std::vector<int> naf = getNAF(k);
+	Coordinate Q = Coordinate::infinity();
+	for (int i = naf.size() - 1; i >= 0; --i) {
+		//Coordinate QQ = toCoordinate(Q);
+		cout << "2*" << Q;
+		Q = doubling(Q);
+		//QQ = toCoordinate(Q);
+		cout << "=" << Q << endl;
+		if (naf[i] == 1) {
+			//Coordinate QQ = toCoordinate(Q);
+			cout << Q << " + " << P << " = ";
+			Q = addition(Q, P);
+			//QQ = toCoordinate(Q);
+			cout << Q << endl;
+		} else if (naf[i] == -1) {
+			//Coordinate QQ = toCoordinate(Q);
+			cout << Q << " + " << P << " = ";
+			Q = subtraction(Q, P);
+			//QQ = toCoordinate(Q);
+			cout << Q << endl;
+		}
+	}
+	return Q;
+	*/
+
+	/*
 	// implementation according to p.99
 	// actually same implementation as with prime curves,
 	//  but using LD coordinates
@@ -58,6 +134,7 @@ Coordinate ECBinary::pointMultiplication(Coordinate P, mpz_class k) {
 		}
 	}
 	return toCoordinate(Q);
+	*/
 
 }
 
@@ -269,4 +346,77 @@ inline GFE ECBinary::phi_2_x(GFE x, GFE y) {
 	GFE c2 = GFE(162000, x.mod);
 	GFE c3 = GFE(40773375, x.mod);
 	return co3*x*x - co2*x*(y*y - c1*y + c2) + c1*y*y + c3*y;
+}
+
+Coordinate ECBinary::getPoint_interface(mpz_class xmpz, bool negative_value) {
+	GFE y_tilde = (negative_value ? GFE(0, mod) : GFE(1, mod));
+	GFE x(xmpz, mod);
+    GFE alpha = x*x*x + GFE(ECC_a, mod)*x*x + GFE(ECC_b, mod);
+    GFE beta = alpha * !(x*x);
+    GFE z = GFE::solve_quad_eq(beta);
+    if (!(z*z + z == beta)) return Coordinate::infinity();
+    GFE z_tilde = GFE(z.element.get_ui() % 2, mod);
+    GFE res = (z + z_tilde + y_tilde) * x;
+    return Coordinate(xmpz, res.element);
+    /*
+	GFE gfex = GFE(x, mod);
+	GFE gfea = GFE(ECC_a, mod);
+	GFE gfeb = GFE(ECC_b, mod);
+	GFE right_side = gfex*gfex*gfex + gfea*gfex*gfex + gfeb;
+	GFE y = GFE::solve_quad_eq(gfex, right_side);
+	return Coordinate(x, y.element);
+	*/
+}
+
+Coordinate ECBinary::getPointCompressedForm(string form) {
+    bool negval;
+    switch (form[0]){
+        case '+': negval = false; break;
+        case '-': negval = true; break;
+        default: throw "form is not legal";
+    }
+    form.erase(0,1); //removing the "+" or "-" in the beginning and remaining with the x-coordinate
+    mpz_class mx;
+    mpz_set_str(mx.get_mpz_t(), form.c_str(), 10);
+    GFE x = GFE(mx, mod);
+    return getPoint_interface(mx, negval);
+    /*
+    GFE alpha = x*x*x + GFE(ECC_a, mod)*x*x + GFE(ECC_b, mod);
+    GFE beta = alpha * !(x*x);
+    GFE z = GFE::solve_quad_eq(beta);
+    GFE z_tilde = GFE(z.element.get_ui() % 2, mod);
+    GFE res = (z + z_tilde + y_tilde) * x;
+    return Coordinate(mx, res.element);
+    */
+
+    /*
+    Coordinate result = getPoint_interface(x);
+    return result;
+    GFE z = GFE(result.Y, mod);
+    GFE z_tilde = GFE(z.element % 2, mod);
+    GFE y = (z + z_tilde + y_mod_2) * GFE(x, mod);
+    return Coordinate(result.X, y.element);
+    */
+}
+string ECBinary::toCompressedForm(Coordinate c) {
+    string result;
+    GFE e = GFE(c.Y, mod) * !GFE(c.X, mod);
+    mpz_class temp = e.element % 2;
+    switch (temp.get_ui()){
+        case 0: result += '-'; break;
+        case 1: result += '+'; break;
+    }
+    result += c.X.get_str(10);
+    return result;
+}
+
+void ECBinary::check_coordinate(Coordinate c) {
+	GFE a = GFE(ECC_a, mod);
+	GFE b = GFE(ECC_b, mod);
+	GFE x = GFE(c.X, mod);
+	GFE y = GFE(c.Y, mod);
+	GFE left = y*y + x*y;
+	GFE right = x*x*x + a*x*x + b;
+	cout << "l: " << left.element << endl;
+	cout << "r: " << right.element << endl;
 }

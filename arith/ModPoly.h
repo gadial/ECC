@@ -9,7 +9,7 @@
 #define MODPOLY_H_
 
 #include <NTL/ZZ_pXFactoring.h>
-#include <NTL/ZZ_pEX.h>
+//#include <NTL/ZZ_pEX.h>
 #include <vector>
 #include <gmpxx.h>
 
@@ -22,7 +22,7 @@ public:
 	/*
 	 * Set precision to 2^N
 	 */
-	static void set_precision(int N);
+	void set_precision(int N);
 
 	/*
 	 * set the modulus for the polynomial
@@ -30,35 +30,31 @@ public:
 	 * pos: setting coefficients c_pos
 	 * val: setting c_pos to val
 	 */
-	static void set_mod(int deg, vector<int> pos, vector<int> val);
+	void set_mod(int deg, vector<int> pos, vector<int> val);
 
 	/*
 	 * returns the polynomial 0
 	 */
-	static ModPoly zero() {
-		return ModPoly(ZZ_pEX::zero());
+	static ModPoly zero(ZZ_pX _mod) {
+		return ModPoly(ZZ_pX::zero(), _mod);
 	}
 
 	/*
 	 * returns the polynomial 1
 	 */
-	static ModPoly one() {
-		return constP(1);
+	static ModPoly one(ZZ_pX _mod) {
+		mpz_class c1 = 1;
+		return ModPoly(c1, _mod);
 	}
 
 	/*
 	 * returns the constant polynomial i
 	 */
-	static ModPoly constP(int i) {
-		ZZ_pEX p;
-		p.rep.SetLength(1);
-		p.rep[0] = i;
-		return ModPoly(p);
-	}
+	//static ModPoly constP(int i);
 
-	ModPoly(int deg);
-	ModPoly(mpz_class bin);
-	ModPoly(ZZ_pEX _p): poly(_p) {}
+	ModPoly(int deg, ZZ_pX _mod);
+	ModPoly(mpz_class bin, ZZ_pX _mod);
+	ModPoly(ZZ_pX _p, ZZ_pX _mod): poly(_p), mod(_mod) {}
 
 	void set_coeff(int i, ZZ_p val);
 
@@ -88,7 +84,13 @@ public:
 
 	virtual ~ModPoly();
 
-	ZZ_pEX poly;
+	ZZ_pX poly;
+	ZZ_pX mod;
+
+	void kill() {
+		poly.kill();
+		mod.kill();
+	}
 };
 
 #endif /* MODPOLY_H_ */

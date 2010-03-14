@@ -107,11 +107,22 @@ public:
 
 	mpz_class satohfgh_point_counting();
 
-	Coordinate getPointCompressedForm(string from) {
-		// TODO: implement...
-	}
+	Coordinate getPointCompressedForm(string from);
+
+	/*
+	 * Gets a point, given the x coordinate for the following equation:
+	 *  y^2 + xy = x^3 + ax^2 + b
+	 * Solves the quadratic equation f(y) = y^2 + xy - (x^3 + ax^2 + b) = 0
+	 */
+	Coordinate getPoint_interface(mpz_class x, bool negative_value = false);
+
+	string toCompressedForm(Coordinate c);
+
+	void check_coordinate(Coordinate c);
 
 private:
+
+	Coordinate getNegative(Coordinate P);
 
 	/*
 	 * modular equation phi_2

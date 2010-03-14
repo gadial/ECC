@@ -79,7 +79,7 @@ private:
 	 *
 	 * initializes elg
 	 */
-	void use_elliptic_curve(ifstream& in);
+	Ellipticcurve* use_elliptic_curve(ifstream& in);
 
 	/*
 	 * writes the definition of the elliptic curve to the out-stream
@@ -99,6 +99,11 @@ private:
 	bool ec_prime;
 	string ec_name;
 	bool print_usg;
+	bool validate;
+	string validation_path;
+	bool use_predefined_curve;
+	bool use_ec;
+	string use_ec_path;
 };
 
 #endif /* CMD_H_ */

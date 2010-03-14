@@ -56,6 +56,7 @@ Coordinate Ellipticcurve::getNegative(const Coordinate& P) {
 	return Coordinate(P.X, mod - P.Y);
 }
 
+/*
 Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
 {
     //we solve the equation y^2 = x^3+ax+b
@@ -67,6 +68,7 @@ Coordinate Ellipticcurve::getPoint(mpz_class x, bool negative_value)
         return Coordinate(x,mod-y);
     return Coordinate(x,y);
 }
+*/
 
 int Ellipticcurve::get_bits() {
 	return mpz_sizeinbase(mod.get_mpz_t(), 2);

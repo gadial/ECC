@@ -81,8 +81,8 @@ public:
         bool isInfinite() const {
         	return X == 0 && Y == 0;
         }
-        mpz_class p;
 	zp_int X, Y;
+	mpz_class p;
 };
 
 ostream& operator<<(ostream& out, const ZpCoordinate& rhs);
@@ -104,8 +104,8 @@ public:
 //    	return X == 1 && Y == 1 && Z == 0;
         return Z == 0; //it's possible to get X,Y != 1
     }
-        mpz_class p;
 	zp_int X, Y, Z;
+    mpz_class p;
 };
 
 ostream& operator<<(ostream& out, const ZpJacobian& rhs);

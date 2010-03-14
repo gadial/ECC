@@ -67,8 +67,11 @@ public:
 	Coordinate doubling(Coordinate P){return doubling(ZpCoordinate(P,mod));}
 	Coordinate repeatedDoubling(Coordinate P, int m){return repeatedDoubling(ZpCoordinate(P,mod),m);}
 	Coordinate pointMultiplication(Coordinate P, mpz_class k){return pointMultiplication(ZpCoordinate(P,mod),k);}
+	Coordinate getPoint_interface(mpz_class x, bool negative_value = false){return getPoint(x, negative_value);}
 	Coordinate getPointCompressedForm(string from) {return getPointFromCompressedForm(from); }
         
+	string toCompressedForm(Coordinate c);
+
         ZpCoordinate get_random_point();
         bool check_order(mpz_class order_candidate);
 private:

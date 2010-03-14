@@ -26,33 +26,26 @@ static vector<string> StringSplit(string str, string delim) {
 
 class ECC_ElGamal_Ciphertext{
 public:
-	static ECC_ElGamal_Ciphertext from_string(string str, Ellipticcurve* el) {
-		ECC_ElGamal_Ciphertext res;
-		//cout << str << endl;
-		vector<string> v = StringSplit(str, ",");
-		res.C1 = el->getPointCompressedForm(v[0]);
-		res.C2 = el->getPointCompressedForm(v[1]);
-		return res;
-	}
 
     Coordinate C1, C2;
 
-    string to_string() {
-    	string res;
-    	res.append(C1.toCompressedForm());
-    	res.append(",");
-    	res.append(C2.toCompressedForm());
-    	//res.append();
-    	return res;
+	ECC_ElGamal_Ciphertext(Coordinate _C1, Coordinate _C2): C1(_C1), C2(_C2){}
+
+	static ECC_ElGamal_Ciphertext from_string(string str, Ellipticcurve* el) {
+		vector<string> v = StringSplit(str, ",");
+		return ECC_ElGamal_Ciphertext(el->getPointCompressedForm(v[0]),
+				el->getPointCompressedForm(v[1]));
+	}
+
+    string to_string(Ellipticcurve* el) {
+    	return el->toCompressedForm(C1) + "," + el->toCompressedForm(C2);
     }
 };
 
 class ECC_ElGamal_Plaintext {
 public:
-	ECC_ElGamal_Plaintext() {}
-	ECC_ElGamal_Plaintext(Coordinate _P) : P(_P) {}
-
 	Coordinate P;
+	ECC_ElGamal_Plaintext(Coordinate _P) : P(_P) {}
 };
 
 class ECC_ElGamal{
@@ -72,8 +65,7 @@ public:
      */
     void generate_random_keypair();
     ECC_ElGamal_Ciphertext encrypt_element(ECC_ElGamal_Plaintext m);
-    ECC_ElGamal_Ciphertext encrypt_element(string m);
-
+    //ECC_ElGamal_Ciphertext encrypt_element(string m);
     ECC_ElGamal_Plaintext decrypt_element (ECC_ElGamal_Ciphertext ciphertext);
 
     /*
@@ -95,8 +87,10 @@ public:
      *     str_1   p      str_2   p
      * [|---------|-|],[---------|-|],...
      *
-     */
+     *
+     *
     vector<ECC_ElGamal_Plaintext> split_msg(string msg);
+    */
 
     /*
      * Converts a string of length 'max_point_length'-1 to an gmp integer
@@ -134,6 +128,8 @@ public:
 
     int get_max_point_length();
     Ellipticcurve* ell;
+
+    bool validate_curve();
 
 private:
     Coordinate Q;

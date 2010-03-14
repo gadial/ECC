@@ -114,6 +114,10 @@ public:
 		return get_element() == other.element;
 	}
 
+	bool operator!=(const GFE& other) {
+		return get_element() != other.element;
+	}
+
 	/*
 	 * Returns the inverse Inverse
 	 * Uses the Extended Euxlidean Algorithm over finite fields
@@ -155,6 +159,14 @@ public:
 	mpz_class mod;
 	mpz_class get_element();
 	mpz_class element;
+
+	bool isZero() {
+		return (element == 0);
+	}
+
+	bool isOne() {
+		return (element == 1);
+	}
 };
 
 #endif /* GFE_H_ */

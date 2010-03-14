@@ -6,6 +6,7 @@
  */
 
 #include "GFE.h"
+#include "../primes.h"
 
 #ifdef USE_NTL
 
@@ -188,6 +189,10 @@ GFE::GFE(mpz_class _element, const mpz_class& _mod) {
 	mod = _mod;
 }
 
+/*
+ * Calculates the square root of 'x' mod 'mod'
+ * mod is a trinomial! mod=x^d+x^k+1
+ */
 GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 		GFE x(0b10, mod);
 		GFE sqx_k = x;
@@ -329,7 +334,44 @@ GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 	 * Solves T^2 + T = c, to T
 	 */
 	GFE GFE::solve_quad_eq(GFE c) {
+		int field_deg = c.mod_deg();
+		if (field_deg % 2 == 1) {
+			// degree even...
+			// Compute half-trace of c
+			GFE H(c.element, c.mod);
+			for (int i = 1; i <= (field_deg - 1) / 2; ++i) {
+				H = H*H;
+				H = H*H + c;
+			}
 
+			/*
+			if ((H * H + H).element != c.element) {
+				std::cout << "l: " << (H * H + H).element << std::endl;
+				std::cout << "r: " << c.element << std::endl;
+				//std::cout << H.element << std::endl;
+			}
+			*/
+
+			return H;
+		} else {
+			// degree odd...
+			mpz_class c1 = 1;
+			mpz_class max = c1 << (field_deg - 1);
+			RandomNumberGenerator rand;
+			while(true) {
+				GFE rho(rand.rand(max), c.mod);
+				GFE z(0, c.mod);
+				GFE w(rho.element, c.mod);
+				for (int i = 1; i <= field_deg - 1; ++i) {
+					z = z*z + w*w*c;
+					w = w*w + rho;
+				}
+				if (!w.isZero()) {
+					return z;
+				}
+			}
+		}
+		/*
 		// TODO: only for odd degree polynomials yet.
 		int d = c.el_deg();
 		GFE csq = c * c;
@@ -343,7 +385,12 @@ GFE GFE::get_sqrtx(int d, int k, mpz_class mod) {
 			csq = csq * csq;
 			res = res + csq;
 		}
+		//if ((res*res + res).element != c.element) {
+			std::cout << "l: " << (res*res + res).element << std::endl;
+			std::cout << "r: " << c.element << std::endl;
+		//}
 		return res;
+		*/
 	}
 
 	void GFE::print() {
