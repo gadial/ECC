@@ -60,11 +60,49 @@
 
 \makebeamertitle
 
-\lyxframeend{}\lyxframe{Outline}
+\lyxframeend{}
+
+\lyxframe{Outline}
 
 \tableofcontents{}
 
 \lyxframeend{}
+
+\section{Elliptic Curves}
+\lyxframe{Definition}
+\begin{itemize}
+\item An Elliptic Curve is the set of solutions of an equation of the form
+$y^{2}=x^{3}+ax+b$ over some field $\mathbb{F}$.
+\item Usually denoted $E_{\mathbb{F}}$.
+\item There is a small condition on $a,b$ ($4a^{3}+27b^{2}\ne0$)
+\item If $\mbox{char}\mathbb{F}=2,3$ the equation is a little more complex...
+\item We also consider a solution {}``at infinity'', $O$.
+\end{itemize}
+\lyxframeend{}
+
+\lyxframe{The Group Operation - Illustration}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{ecaddition.png}
+\caption{Addition of two points $P+Q$ in an EC}
+\label{tradebefore}
+\end{figure}
+\lyxframeend{}
+
+\lyxframe{Enter Elliptic Curves}
+\begin{itemize}
+\item Elliptic Curves provide a wide variety of groups, similar to $\mathbb{Z}_{n}^{*}$
+but more complex.
+\item Diffie-Hellman and El-Gamal can be reproduced in this setting.
+\item The discrete logarithm problem is much harder - i.e. the index calculus
+method is not applicable.
+\item This results in much smaller key sizes (100-200 bits).
+\item The problem: More costly to generate, more costly to operate.
+\end{itemize}
+
+\lyxframeend{}
+
+
 \lyxframe{Point Counting with AGM (1)}
 \begin{itemize}
 \item The \emph{Arithmetic-Geometric Mean} is defined as the sequence:\end{itemize}
