@@ -102,6 +102,28 @@ method is not applicable.
 
 \lyxframeend{}
 
+\lyxframe{Encoding Text to an Elliptic Curve}
+\begin{itemize}
+ \item Our implementation encodes ASCII text to points on the EC.
+ \begin{itemize}
+  \item This is no restriction. Arbitrary files can be encoded to ASCII (e.g. with base64)
+ \end{itemize}
+ \item The encoding works the following way ($k$ is the maximum point size in bytes):
+ \begin{itemize}
+  \item $k-1$ characters are appended bytewise to the x-coordinate.
+  \item 1 random byte is appended $\rightarrow$ padding.
+  \item The corresponding y-coordinate is computed.
+  \item If no y-coordinate exists, another random padding is selected.
+ \end{itemize}
+ \item Half of the x-coordinates correspond to a valid point.
+ \item Padding serves two purposes:
+ \begin{itemize}
+  \item Finding a valid point
+  \item Introducing non-determinism.
+ \end{itemize}
+\end{itemize}
+\lyxframeend{}
+
 \lyxframe{ECC ElGamal Results}
 \begin{figure}[h]
 \centering
