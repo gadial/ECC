@@ -5,6 +5,7 @@
 \geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1.3in,rmargin=1.3in}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{hyperref}
 \makeatletter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
@@ -192,6 +193,37 @@ We consider now the case $K=\mathbb{F}_p$ for $p>3$ prime (however, for any $K$ 
 In this case let $E$ be a curve defined by $y^2=x^3+ax+b$. Given two points on the curve $P=(x_1,y_1),Q=(x_2,y_2)$ we first consider the case $x_1\ne x_2$
 (and so $P\ne\pm Q$). The line passing both in $P$ and $Q$ has slope $\frac{y_2-y_1}{x_2-x_1}$ and so its equation is $y=y_1+\left(\frac{y_2-y_1}{x_2-x_1}\right)(x-x_1)$.
 
+\subsection{Addition Formulas - The Binary Field Case}
+In the binary case $K=\mathbb{F}_2$, the curve $E$ is defined by $y^2+xy=x^3+ax^2+b$. First note that the negative of a point $S=(x,y)$ is defined as $-S=(x,x+y)$, and it can be checked that the point $-P$ indeed also lies on $E$.
+For the two points $P=(x_1,y_1),Q=(x_2,y_2)$ (denote $P+Q=(x_3,y_3)$), the easiest cases are when $P=\infty$ or $Q=\infty$. By the group law, it holds that $P+\infty=P$ and $\infty+Q=Q$ in those case. In the case of $P=-Q$, the result is $P+Q=\infty$.
+
+The remaining two cases are $P=Q$ and $P\ne Q$.
+
+In the case $P=Q$, we need to double the coordinate, where $\lambda=x_1+\frac{y1}{x1}$ is the slope of the tangent, analogue to the prime case. As resulting x-coordinate one gets $x_3=a+\lambda^2+\lambda$.
+
+In the case $P\ne Q$, the slope of the connecting line is $\frac{y_1+y_2}{x_1+x_2}$ (note that addition and subtraction is the same in binary field arithmetic). It holds that $x_3=a+\lambda^2+\lambda+x_2+x_1$ (in the case $P=Q$, $x_2+x_1=x_1+x_1=0$).
+
+Finally in both cases the y-coordinate is computed as $y_3=(x_2+x_3)\lambda+x_3+y_2$. The overall algorithm derived from the formula requires 3 multipications (one is squaring), one multiplicative field inversion, and 9 or 6 additions. While the additions are very cheap operations, computing the inverse could be avoided by using projective coordinates as described before.
+
+\subsection{Point Multiplication}
+Scalar point multiplication is a frequently used operation in the cryptosystem we implemented and it is therefore of a big importance to implement this efficiently. We want to compute $kP=Q$ for a scalar $k$ and a point $P$. Using only addition, one could compute this as $\underbrace{P+...+P}_{k}$, with a complexity of $O(k)$. A better way is to use the additive equivalent of the \emph{square-and-multiply} algorithm. There, $k$ is processed bitwise. At each iteration, the result is doubled, and if the bit equals one, $P$ is added. Let $[k_{\log{k}},...,k_1]$ be the bit-representation of $k$, with $k_1$ as the least significant bit:
+
+\begin{enumerate}
+ \item $Q=\infty$
+ \item for $i=1..\log{k}$:
+ \item $Q=Q+Q$
+ \item if $k_i=1$: $Q=Q+P$
+\end{enumerate}
+
+The complexity of this algorithm is $O(\log{k})$. There are some optimizations to this algorithm, most notably the replacement of the binary representation of $k$ with its \emph{non-adjacent form} which results in a shorter representation. 
+
+\subsection{Binary Field Arithmetic}
+
+\paragraph{Addition}
+\paragraph{Multiplication}
+\paragraph{Inverse}
+\paragraph{Quadratic Formulas}
+
 \section{Cryptosystem}
 To form a cryptosystem, generally a set of three algorithms is required:
 \begin{enumerate}
@@ -270,6 +302,7 @@ We are given the ciphertext-pair $(C_1,C_2)$, and the private key $d$. The goal 
 \begin{enumerate}
 \item $C_2-dC_1=M+kQ-\underbrace{dkP}_{=k(dP)=kQ}=M$
 \end{enumerate}
+Note that for decryption, the curve order $n$ isn't actually needed. 
 
 We now quickly want to investigate the number of elliptic curve operations each of the procedures require. The analysis is illustrated in Table \ref{elgoperations}
 
