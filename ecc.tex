@@ -218,11 +218,42 @@ Scalar point multiplication is a frequently used operation in the cryptosystem w
 The complexity of this algorithm is $O(\log{k})$. There are some optimizations to this algorithm, most notably the replacement of the binary representation of $k$ with its \emph{non-adjacent form} which results in a shorter representation. 
 
 \subsection{Binary Field Arithmetic}
+The arithmetic in a prime field $\mathbb{F}_p$ is basically well-now; addition, and multiplication correspond to integer arithmetic modulo $p$. Finding the inverse can be done using the extended euclidean algorithm. Those operations are provided in the big integer library GMP we used. As an additional algorithm we had to implement the modular square root.
 
-\paragraph{Addition}
+In the binary extension field $\mathbb{F}_{2^d}\cong \mathbb{F}_2(\theta)/m(\theta)$, the arithmetic is slightly different and we implemented it from scratch. One could alternativly use a library like \emph{NTL}.
+
+Elements of the binary field are actually polynomials of degree $d$ with binary coefficients. And all operations in the polynomial basis are done modulo the reduction polynomial $m(\theta)$. For example the polynomial $\theta^4+\theta+1$ can be displayed as the bit-string $10011$. There is also the normal basis field representation which we will not treat because the more inefficient behavior of its arithmetic.
+
+\paragraph{Addition/Subtraction}
+Addition is the simplest operation and is computed as bitwise XOR: for $a,b\in \mathbb{F}_{2^d}$, $a+b=a\oplus b$.
 \paragraph{Multiplication}
+Multiplication of two elements $a$ and $b$ has alway to be done modulo $m$. Lopez and Dahab \cite{715867} present some efficient algorithms for this case. We implemented one which reminds of the square-and-multiply algorithm and could be called shift-and-add algorithm ($a$ is represented as $a_l,...,a_1$ and $b$ as $b_l,...,b_1$, let the result be $c$):
+\begin{enumerate}
+ \item $c=0$
+ \item for $i=l,...,1$:
+ \item shift $c$ one to the left ($c=c<<1$)
+ \item if $a_i=1$: $c=c+b$;
+ \item if the degree of $c$ exceeds $d$: $c=c+m$
+\end{enumerate}
+We note that in each iteration, $c$'s degree could be at most one degree to high, it can therefore be reduced by $m$ by just adding $m$ to $c$.
+
 \paragraph{Inverse}
-\paragraph{Quadratic Formulas}
+As we know the extended euclidean algorithm can be used to compute the multiplicative inverse in a finite field. This is also the case with binary fields. Suppose we want to compute the inverse of $a$ modulo the reduction polynomial $m$. We have $aa^{-1}\equiv_m 1$, reforming this we get $aa^{-1}-1=mx$ for arbitrary $x$. This can be reformed to $aa^{-1}-mx=1$, which is is exactly the setup for the euclidean algorithm, since $gcd(a,-m)=1$, and the algorithm can run on the inputs $a$ and $-m$ and deliveres as one output $a^{-1}$.
+
+\paragraph{Quadratic Equations}
+A frequent task is the computation of a y-coordinate for a given x-coordinate. Reviewing the equation $y^2+xy=x^3+ax^2+b$, the problem is reduced to a quadratic equation $y^2+a'y-b'=0$, which has either two or no solution. The solutions of this equation equation is equivalent to the solution of $y^2+y=c'$ with $c'=\frac{b'}{a'^2}$.
+
+The procedure how to solve this equations is described in IEEE P1363/D13, and works as follows:
+\begin{enumerate}
+ \item Choose a random $\rho\in\mathbb{F}_{2^d}$
+ \item $z=0,w=\rho$
+ \item Repeat the following two steps $d-1$ times:
+ \item $z=z^2+w^2c'$
+ \item $w=w^2+\rho$
+ \item if $w=0$: start over at point 1. Else output $z$.
+\end{enumerate}
+
+This algorithm only works with odd degrees, which is sufficient for out purposes since it is a security requirement for binary field cryptography to choose $d$ as a prime.
 
 \section{Cryptosystem}
 To form a cryptosystem, generally a set of three algorithms is required:
