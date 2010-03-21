@@ -595,8 +595,210 @@ Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic c
 
 \section{Implementation}
 \section{Results}
-\section{Usage}
-\section{Conclustion}
+
+\section{User Guide}
+This section is intended to provide information to the interested user who wants to experiment with our application.
+With the command line interface, our program provides a convinient way to use elliptic curve cryptography in practice. The functionalities, and how they are used is presented, along with some practical examples.
+
+\subsection{Getting the Source}
+The program source itself can be downloaded over one of the two identical repositories: \url{http://github.com/gadial/ECC} and \url{http://github.com/bhess/ECC}. One can also use git to download the source:
+\begin{verbatim}
+ #> git clone git://github.com/gadial/ECC.git
+\end{verbatim}
+Once the repository is cloned, the source can be actualized with
+\begin{verbatim}
+ #> git pull
+\end{verbatim}
+\emph{git} itself is available under \url{http://git-scm.com}.
+
+\subsection{Compiling the Source}
+The source repository provides a makefile, so that the source is compiled by running
+\begin{verbatim}
+ #ECC> make
+\end{verbatim}
+in the root folder.
+
+\subsubsection{Dependencies}
+In order to successfully compile the source, some shared libraries should be installed. We recommend to install current versions of the following libraries (in braces are tested versions):
+
+\begin{itemize}
+ \item CppUnit (version 1.12.0) \url{http://cppunit.sourceforge.net}
+ \item GMP - GNU Multi-Precision Library (version 4.3.1) \url{http://gmplib.org}
+ \item NTL (version 5.5.2) \url{http://www.shoup.net/ntl}
+\end{itemize}
+
+The program is tested under 32 bit Linux, as compiler g++ version 4.4.1 was used.
+
+\subsection{Command Line Interface}
+Over a simple command line interface, the following three concepual functions of the cryptosystem can be used:
+\begin{itemize}
+ \item Key-pair generation.
+ \item Encryption
+ \item Decryption
+\end{itemize}
+
+When the executable is run without switch, the usage parameters are displayed:
+
+\begin{verbatim}
+ #ECC> ./ECC
+Usage:
+ECC {-pk </path/to/pk> -enc </path/to/plaintext> |
+     -sk </path/to/sk> -dec </path/to/ciphertext> |
+     -gen_key {-ec_name 'name' | -use_ec </path/to/ec>}
+     -validate </path/to/ec>
+Predefined Curves (NIST): [p192|p224|p256|p384|p521|b163|b283|b409|b571]
+\end{verbatim}
+
+
+\subsubsection{Key-pair Generation}
+By using the switch \emph{-gen\_key} we indicate that a public-key/private-key should be generated. For this purpose the elliptic curve has to be known. The 9 curves recommended by NIST are built-in and can be specified with the switch \emph{-ec\_name}. In the NIST curve names, 'p' indicates a prime curve and 'b' a binary curve; the number afterwards indicate their bit-size. If we want to generate a key-pair with the curve \emph{p192}, we run:
+
+\begin{verbatim}
+ #ECC> ./ECC -gen_key -ec_name p192
+\end{verbatim}
+
+Then two textfiles, containing the curve information and the keys are generated (the file-names contain a timestamp when the curve key has been generated):
+
+\begin{verbatim}
+ #ECC> cat public_key_201003220104.txt
+prime
+6277101735386680763835789423207666416083908700390324961279
+-3
+2455155546008943817740293915197451784769108058161191238065
++602046282375688656758213480587526111916698976636884684818
+6277101735386680763835789423176059013767194773182842284081
+-4202774374097843812550356794057673546542297328739257456130
+\end{verbatim}
+
+\begin{verbatim}
+ #ECC> cat private_key_201003220104.txt
+prime
+6277101735386680763835789423207666416083908700390324961279
+-3
+2455155546008943817740293915197451784769108058161191238065
++602046282375688656758213480587526111916698976636884684818
+6277101735386680763835789423176059013767194773182842284081
+3693200230270282832430567472370334031293814885720270459444
+\end{verbatim}
+
+The second possibility is to use a curve-definition from a file. In the next example, we take the above generated public-key file as definition of a curve.
+
+\begin{verbatim}
+ #ECC> ./ECC -gen_key -use_ec public_key_201003220104.txt
+\end{verbatim}
+
+And the following files are created:
+
+\begin{verbatim}
+ #ECC> cat public_key_201003220109.txt
+prime
+6277101735386680763835789423207666416083908700390324961279
+-3
+2455155546008943817740293915197451784769108058161191238065
++602046282375688656758213480587526111916698976636884684818
+6277101735386680763835789423176059013767194773182842284081
++6073060550633047313222863878319194062684276429882449125142
+\end{verbatim}
+\begin{verbatim}
+ #ECC> cat private_key_201003220109.txt
+prime
+6277101735386680763835789423207666416083908700390324961279
+-3
+2455155546008943817740293915197451784769108058161191238065
++602046282375688656758213480587526111916698976636884684818
+6277101735386680763835789423176059013767194773182842284081
+4495925941769958181740011055363126307352799406048087058490
+\end{verbatim}
+
+A function to generate a random curve directly over the command line is currently not available. For random curve generation, the program API has to be used directly.
+
+\subsubsection{Encryption}
+For encrypting textfiles, one needs to provide a public-key file which also contains the elliptic curve definition. Suppose we want to encrypt the file \emph{faust.txt}:
+
+\begin{verbatim}
+ #ECC> cat faust.txt
+Habe nun ach! Philosophie, Juristerei und Medizin, und leider auch Theologie!
+durchaus studiert mit heissem Bemuehn. Da steh ich nun, ich armer Tor! und bin so
+klug als wie zuvor; heisse Magister, heisse Doktor gar, und ziehe schon an der zehen
+Jahr herauf, herab und quer und krumm meine Schueler an der Nase herum - und sehe,
+dass wir nichts wissen koennen! Das will mir schier das Herz verbrennen!
+\end{verbatim}
+
+We use the first public-key generated in the last section with the NIST curve p192 for encryption, and the command is:
+
+\begin{verbatim}
+ #ECC> ./ECC -pk public_key_201003220104.txt -enc faust.txt
+\end{verbatim}
+
+The name of the file containing the ciphertext is the plaintext-name with extension \emph{.enc}. The ciphertext point-pairs are written in compressed form and are separated line by line (in the following some contents were truncated for layout reasons):
+
+\begin{verbatim}
+ #ECC> cat faust.txt.enc
+-2941418657115936641805...,+1926840320549465382934...
++1538291260063052821414...,+4260644256050139287355...
+-2348564039062829639347...,+2883638826011508920689...
++4677737476484516605321...,+3559085594982234746243...
++7134535296842259156817...,-3305284033086540132053...
+-3357881763927395711480...,-5323445310157508381249...
++5981876371431035768184...,-5576058672905230562784...
+...
+...
+\end{verbatim}
+
+\subsubsection{Decryption}
+Analogue to encryption, we provide the private key containing the curve definition to the command line interface to decrypt a ciphertext. To decrypt the example from before, run the following:
+
+\begin{verbatim}
+ #ECC> ./ECC -sk private_key_201003220104.txt -dec faust.txt.enc
+\end{verbatim}
+
+The decrypted file has the file-extension \emph{.dec}, and indeed, the decryption was successful:
+
+\begin{verbatim}
+ #ECC> cat faust.txt.enc.dec
+Habe nun ach! Philosophie, Juristerei und Medizin, und leider auch Theologie!
+durchaus studiert mit heissem Bemuehn. Da steh ich nun, ich armer Tor! und bin so
+klug als wie zuvor; heisse Magister, heisse Doktor gar, und ziehe schon an der zehen
+Jahr herauf, herab und quer und krumm meine Schueler an der Nase herum - und sehe,
+dass wir nichts wissen koennen! Das will mir schier das Herz verbrennen!
+\end{verbatim}
+
+\subsubsection{Elliptic Curve Validation}
+For elliptic curves defined in a text-file, the switch -validate provides a quick and handy function to validate that the provided parameters are correct. Beside curve definition files consisting of 6 lines, also private and public keys can be provided, where the last line defining the key is simply ignored.
+
+Suppose we wanto to validate the elliptic curve defined in the following public-key file:
+
+\begin{verbatim}
+ #ECC> cat ./challenge/private_key_binary1.txt
+binary
+15541351137805832567355695254588151253139254712417116170014499277911234281641667989665
+1
+8255380585809383688639434939783260988279527409588319652248090673203645932948626009724
++10744526979748405769424843092044115614633826679604470999470890953483892379364112110203
+15541351137805832567355695254588151253139256032115589896844343002557484362928298853438
+26334010226743190633240527195230292831833139108096019898661304553382794977231705
+\end{verbatim}
+
+To validate we run:
+
+\begin{verbatim}
+ #ECC> ./ECC -validate ./challenge/private_key_binary1.txt
+Validation succeeded!
+\end{verbatim}
+
+More specifically, the test reads in the EC parameters, uncompresses the point on the curve and multiplies the point with the curve order. If the result is the point at infinity, the validation succeeds and otherwise it failes.
+
+\subsubsection{Testcases}
+The implementation has a big number some built-in testcases that test different aspects of the implementation, like finite field arithmetic or several algorithms. With the switch -t the testcases are launched:
+\begin{verbatim}
+ #ECC> ./ECC -t
+ .....................................................
+
+ OK (53)
+\end{verbatim}
+This is mainly for debugging purposes and shows that ``everything should be right'', especially after changes in the code are made.
+
+\section{Conclusion}
 
 \bibliographystyle{plain}
 \bibliography{eccbib}
