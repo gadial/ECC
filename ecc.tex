@@ -64,7 +64,12 @@
       Haifa~32000, Israel.
       E-mail: {\tt gadial@cs.technion.ac.il}
    } \and
-   Basil Hess
+   Basil Hess\thanks{
+      Dept.\ of Computer Science,
+      ETH Zurich,
+      8092 Zurich, Switzerland.
+      E-mail: {\tt bhess@ethz.ch}. Work done while visiting Technion.
+   }
 }
 
 \date{}
@@ -190,6 +195,59 @@ In this case let $E$ be a curve defined by $y^2=x^3+ax+b$. Given two points on t
 \section{Cryptosystem}
 \section{Random Elliptic Curve Generation}
 \subsection{Introduction}
+The usage of predefined elliptic curves has its advantages and disadvantages. On one side there exist a set of curves recommended by NIST, which are publicly avalilable in \emph{FIPS 186-3}.
+Contained in the document are both curves over prime and binary fields with bit-sizes from about 160 bits to about 500 bits. Those curves meet some security requirements and are especially suited for efficient implementations.
+When it comes to elliptic curve cryptography it is probably the straightforward way to use the NIST-recommended curves, since they are well-known, testbenches are available and the additional task to generate a curve is obsolete.
+
+On the other side, there are not many reasons why not to use a new random curve for each key-agreement, given that the curves meet the same security properties than predefined curves.
+The main advantage is obvious: when the curve is not known in advance, no precomputation can be done on it that might compromise its security. As an illustrative result, \cite{fixed} claimes the security when using a random curve is the same as using a fixed curve with an 11 bit longer key.
+The critical factor however is efficiency. Generating a random curve needs costly operations, and the process should not take much longer than about one second on modern hardware to be feasible in practice.
+
+\subsubsection{Basic Approaches}
+In the prime case, a curve is given by the equation
+\begin{displaymath}
+ y^2=x^3+a_px+b_p
+\end{displaymath}
+and in the binary case by
+\begin{displaymath}
+ y^2+x=x^3+a_bx^2+b_b.
+\end{displaymath}
+The task is in both cases to select the parameters $a$ and $b$ randomally, while the field modulus, or the reduction polynomial respectly are given. In practice, the parameter $a$ could also be fixed in advance without much loss of generality, for instance to $a_p=-3$ and $a_b=0$ in order to enable using efficient EC arithmetic.
+
+Just selecting random coefficients would be easy and efficient, but the major concern is that also the curve order has to be known in order to use a cryptosystem. There are two conceptually different approaches how to deal with the order while generating the curve, the \emph{random approach} and the \emph{complex multiplication approach}
+
+\paragraph{Random Approach}
+The random approach consists of the following steps:
+\begin{enumerate}
+ \item Select the curve coefficients at random.
+ \item Compute the curve order, using a \emph{point counting} algorithm.
+ \item If the curve doesn't meet the security requirements, start again with step 1.
+\end{enumerate}
+
+
+Using the point counting would significantly influence the efficiency of the random approach. Instead, one can use an \emph{early-abort strategy} as described in \cite{satohfgh} that detects insecure curves quickly whitout the need to know their exact order. We will not further investigate this strategy but the results show that the point counting algorithm is clearly the dominating part of the random approach. We therefore only implement the point counting algorithm when we evaluate the random approach.
+
+\paragraph{Complex Multiplication Approach}
+The complex multiplication approach solves the curve generation from the other side: the conceptual idea is instead of computing the order for a purely random curve to define an order in advance and generate a matching curve to it.
+The advantage of this method is that no point-counting algorithm has to run which generally results in a better performance than in the random approach. The disadvantage is however that the curve is not entirely random.
+
+The tradeoff in selecting one of the two methods lies in efficiency versus randomness. If the latter is not of a big concern, one could use complex multiplication, while the random approach becomes more interesting the more efficient point-counting algorithms are.
+
+\subsubsection{Seurity Requirements}
+They are two main security requirements for elliptic curves as described in \cite{buchmann}, they have to be checked by the random generation methods. The first one ensures that the order is large enough (at least about 160 bits), to avoid the usage of generic discrete logarithm algorithms:
+\begin{itemize}
+ \item $|E|=k\cdot r$, $r\geq 160$, $k\leq 4$
+\end{itemize}
+There are more specific attacks where the elliptic curve dircrete logarithm is converted in the ordinarc DL problem over $\mathbb{Z}_p$. We don't go into details here, but the resulting requirement for a prime curve (over $\mathbb{F}_p$) is:
+\begin{itemize}
+ \item $p^s\not\equiv 1$ mod $r$, for $s\in\{1,..,20\}$, and $p\neq r$
+\end{itemize}
+and the corresponding requirement for binary curves over $\mathbb{F}_{2^n}$ is:
+\begin{itemize}
+ \item $2^{ns}\not\equiv 1$ mod $r$, for $s\in\{1,..,20\}$, and $n$ prime
+\end{itemize}
+
+
 \subsection{The Prime Field Case}
 \subsubsection{Complex Multiplication}
 For $K=\mathbb{F}_p$, $p$ a given large prime, there is a polynomial time algorithm of Schoof for computing the number of points on a given curve.
@@ -298,6 +356,73 @@ The rest of the algorithm is the same no matter which initialization method was 
 
 
 \subsection{The Binary Field Case}
+The complex multiplication method for generating a random curve can also be applied for the binary field case $K=\mathbb{F}_{2^n}$, where $n$ is prime.
+In contrast to the prime field case, more efficient point counting algorithms for elliptic curves over fields of small characteristic exist.
+Besides Schoof's algorithm, which is also applicable in the binary case, the more efficient variants are so-called \emph{p-adic} algorithms that require a special kind of arithmetic.
+The most noticable among them are the \emph{Satoh-FGH} algorithm \cite{satohfgh}, the Elliptic Curve \emph{AGM} algorithm \cite{717152}\cite{handbook}, and the \emph{SST} algorithm \cite{Satoh200389}.
+The first two have an asymptotic complexity of $O(n^{3+\epsilon})$ and SST has a complexity of $O(n^{2.5+\epsilon})$, where the $\epsilon$ depends on the implementation of basic big integer arithmetic.
 
+Despite the theoretic advantage of SST, AGM has found to be the best choice so far for practical implementations, which is the reason why we selected it for this project.
 
+Arithmetic Geometric Mean (AGM) is a mixture of the arithmetic mean (the average of two numbers) and the geometric mean (the square root of the product of two numbers). If we define two natural numbers $a$ and $b$, we define the following sequence.
+\begin{displaymath}
+ a_0:=a,b_0:=b,a_{n+1}=\frac{1}{2}(a_n+b_n),b_{n+1}=\sqrt{a_nb_n}
+\end{displaymath}
+Gauss and Legendre originally discovered that the two sequences converge after a few iterations, so the AGM is defined as their limes:
+\begin{displaymath}
+ AGM(a,b):=\lim_{n\rightarrow \infty} a_n=\lim_{n\rightarrow \infty} b_n
+\end{displaymath}
+A traditional extension of AGM was found by Brent and Salamin, and can be used to compute the digits of $\pi$. The iteration is in this case defined as $AGM(1,\frac{1}{\sqrt{2}})$. When $s_n=s_{n-1}-2^n(a_n^2+b_n^2)$, $p_n=\frac{2a_n^2}{s_n}$ converges to $\pi$.
+
+Applied to elliptic curves, AGM can be used to compute the \emph{trace} of an elliptic curve, from which the order can easily be derived. In this section we don't give a full algebraic explanation of how AGM is used to recover the trace of the curve, and we refer to \cite{handbook} which provides an in-depth derivation. We rather concentrate on implementation related aspects, one is the use of \emph{2-adic} polynomials for the initialization of AGM.
+
+\subsubsection{2-adic Arithmetic}
+For practical purposes we present 2-adic arithmetic based on binary field arithmetic. There we have a binary extension field $\mathbb{F}_{2^d}\cong \mathbb{F}_2(\theta)/m(\theta)$, where the elements are polynomials up to degree $d$ with binary coefficients. The field operation is modulus an irreducible polynomial $m(\theta)$. 2-adic integers can be imagined like the binary representation of natural numbers, and can be represented by a unique fraction of two natural numbers. The approximations of those fractions form a ring structure. Formally, $\mathbb{Z}_{2^d}$ is the valuation ring of an unramified extension of $\mathbb{Q}_2$. Those elements are approximated up to a \emph{precision} $N$, and are taken modulus a polynomial $M(T)$: $\mathbb{Z}_{2^d}\cong \mathbb{Z}_2(T)/M(T)$.
+
+The elements of $\mathbb{Z}_{2^d}/2^N\mathbb{Z}_{2^d}$ are polynomials of degree $d$, with coefficients modulus $2^N$. To come back to the connection with binary field, elements in $\mathbb{F}_{2^d}$ can be \emph{lifted} to $\mathbb{Z}_{2^d}$. The lift is not unique, the coefficients must be congruent modulus $2$. For example, for $c=1+\theta^4\in \mathbb{F}_{2}(\theta)$ both $c_1'=1+T^4\in\mathbb{Z}_{2}(T)$ and $c_2'=1+2T^2+3T^4\in\mathbb{Z}_{2}(T)$ are valid lifts to precision at least $2$.
+
+For the arithmetic over 2-adic polynomials (approximated to precision $N$), no programming libraries exist that provides the operations out of the box. The following operations are required for AGM:
+
+\paragraph{Addition}
+The coefficients of the polynomials are added and taken modulus $2^N$. No modular reduction is required here as the resulting polynomial doesn't exceed the maximum degree $d$.
+\paragraph{Multiplication}
+Requires a polynomial multiplication, followed by a reduction modulus $M(T)$. The coefficients are always taken modulus $2^N$.
+\paragraph{Modular Reduction}
+All operations that result in a polynomial of a higher degree than $d$ require a modular reduction.
+\paragraph{Inverse}
+The inverse of an element $a$ is computed as the root of the polynomial $f(X)=1-aX$. For this purpose a \emph{Newton iteration} is run $N$ times, so that the result has precision $N$. The initial approximation to precision $1$ is actually the inverse over binary fields, which is well known. The inverse is used for instance of polynomial division.
+\paragraph{Square root}
+For computing the square root, the inverse of the inverse square is taken. The inverse square root is computed as the root of the polynomial $f(X)=1-aX^2$ is computed using a Newton iteration. As initial approximation of precision $1$, the square binary field square root must be implemented.
+
+From those operations, we have have found multiplication and reduction to be the major bottleneck in the implementation. Polynomial multiplication can be highly optimized for example by using Fast Fourier Transformation (FFT). This is the point where our approach ``building everything from scratch'' has certain limitations since highly optimized libraries exist especially for this purpose. We therefore also used polynomial multiplicaion from the \emph{NTL} library besides our own implementation.
+
+\subsubsection{Elliptic Curve AGM}
+The AGM iteration consists of two parts. The first is computing starting values $a_0$ and $b_0$ to full working precision $N=\lceil\frac{d}{2}\rceil+3$. The second part consists of $d$ AGM iterations in precision $N$.
+
+The input elliptic curve has the form $y^2+x=x^3+b$. The output of the algorithm is the trace $t$, from which the order can be reconstructed as $2^d+1-t$. The order of the \emph{twisted} curve given by $y^2+x=x^3+x^2+b$ is $2^d+1+t$.
+
+Summarized, the steps in the algorithm involve (see also \cite{handbook}):
+\begin{enumerate}
+ \item Lift $c$ to an arbitrary $c'$ of precision $4$.
+ \item Initialize $a=1$ and $b=1+8c'$
+ \item for $i=5..N$: $(a,b)=(\frac{a+b}{2},\sqrt{ab})$ (computation to precision $i$)
+ \item set $a_0=a$
+ \item for $i=1..d$: $(a_i,b_i)=(\frac{a_{i-1}+b_{i-1}}{2},\sqrt{a_{i-1}b_{i-1}})$ (computation to precision $N$)
+ \item set $t=\frac{a_0}{a_d}$ (to precision $N-1$)
+ \item if $t^2>2^{d+2}$: $t=t-2^{N-1}$
+ \item return the trace: $t$.
+\end{enumerate}
+
+As an example we take $d=7$ and the binary reduction polynomial $1+\theta+\theta^7$ and a coefficient $b=1+\theta^2+\theta^6$. As intermediate results of the algorithm we get 
+\begin{displaymath}a_0=29+12T+16T^2+20T^3+24T^4+8T^5+28T^6\end{displaymath}
+\begin{displaymath}a_0=9+60T+16T^2+4T^3+56T^4+40T^5+44T^6\end{displaymath}.
+Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic curve order is therefore $2^7+1-(-11)=140$ points. The result can be verified by multiplying an arbitrary point times 140, and the result should be infinity ($0$).
+
+\section{Implementation}
+\section{Results}
+\section{Usage}
+\section{Conclustion}
+
+\bibliographystyle{plain}
+\bibliography{eccbib}
 \end{document}
