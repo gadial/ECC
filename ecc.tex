@@ -321,6 +321,7 @@ Symmetric key size & $\mathbb{Z}_{n}^{*}$ public key size & Elliptic Curve publi
 As an example, today usual security from a RSA key size of 2048 bit can already be reached with a 224 bit elliptic curve key.
 
 \subsection{Elliptic Curve ElGamal}
+\label{Elliptic Curve ElGamal}
 The cryptosystem consists on a key generation based on the elliptic curve analogue of Diffie-Hellman, and a encryption and decryption algorithm based on the elliptic curve analogue of ElGamal.
 
 \paragraph{Public Parameters} The parameters known to the public in advance are:
@@ -378,6 +379,7 @@ Decryption & 1 & 1
 We observe that decryption needs one multiplication compared to two in decryption. The results of our implementation show that the time needed for encryption is almost twice of decryption, where it can be concluded that multiplication is the dominating operation compared to addition.
 
 \subsection{Message Encoding}
+\label{Message Encoding}
 The only remaining question is how text messages could be encoded, or hashed onto points in the elliptic curve. For practical purposes, we restricted our implementation to ASCII text, where each caracter is represented as one byte code. This doesn't mean a loss of generality since arbitrary files can be encoded as ASCII text (for example by using \emph{base64}, which is also used for e-mail attachments).
 
 Since the size of the bit represntation of elliptic curve points is restricted by the curve's bit-size, messages have to be split in blocks. For example points on a 163 bit curve have space for at most $\lfloor\frac{163}{8}\rfloor=20$ characters.
@@ -673,9 +675,21 @@ is a valid point in compressed format for the 163 bit binary NIST curve.
 The algorithms we implemented for compression and decompression are defined in \cite{point-compress}, section E.2.3.1 (compression) and in \cite{point-decompress}, section A.12.8/9 (decompression).
 
 \subsection{Cryptosystem implementation}
-The ElGamal cryptosystem is implemented in the class defined in \emph{elgamal.h}, and consists of the following functionality:
+The elliptic curve ElGamal cryptosystem is implemented in the class defined in \emph{elgamal.h}. To the cryptosystem, an ``Ellipticcurve'' object must be passed which is used for the elliptic curve operations. ECC ElGamal consists of the following functionality:
+
+\begin{itemize}
+ \item Plaintext encryption
+ \item Ciphertext decryption
+ \item Random key-pair generation
+\end{itemize}
+
+For the corresponding algorithms, see section \ref{Elliptic Curve ElGamal}. In addition to this, routines for encoding strings to a point on an elliptic curve (including random padding) and for decoding string from points are implemented (for details, see section \ref{Message Encoding}). Furthermore, a curve validation function is implemented, which multiplies the curve-point with the curve-order. In a correctly defined curve, the result should be the point at infinity.
 
 \subsection{Command-line interface}
+The command-line interface, used for interpreting user's parameters is implemented in \emph{cmd.h}. It parses the switches provided over the command-line, and launches actions like key-pair generation, encryption or decryption accordingly. A guide how to use the interface is given in chapter \ref{User Guide}.
+
+\subsection{Metrics}
+The implementation in C++ consists of approximately 7500 lines of code. The code is distributed in 29 files, containing 34 classes. In total, 53 testcases are written (using CppUnit) and can be executed at any time.
 
 \section{Results}
 In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurementes were done on an Intel Core Duo processor with 1.8 GHz.
@@ -817,6 +831,7 @@ The decrypted second message is:
 The class number is a well-known invariant in Algebraic Number Theory and can be computed using standard algebra libraries. Using the sage library, it was found that the first solution is true while the other is false (the class number in the second case is 511). Hence, the second message was forged.
 
 \section{User Guide}
+\label{User Guide}
 This section is intended to provide information to the interested user who wants to experiment with our application.
 With the command line interface, our program provides a convinient way to use elliptic curve cryptography in practice. The functionalities, and how they are used is presented, along with some practical examples.
 
