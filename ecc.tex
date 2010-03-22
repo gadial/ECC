@@ -76,9 +76,9 @@
 
 \section{Introduction}
 An \emph{Elliptic Curve} can be roughly described as the set of solutions of an equation of the form $y^2=x^3+ax+b$ over some field (e.g. $\mathbb{C}, 
-\mathbb{R},\mathbb{Q}$ or some finite field $\mathbb{F}_{p^n}$). The importence of elliptic curves stems from their rich structure: there is a rather simple
+\mathbb{R},\mathbb{Q}$ or some finite field $\mathbb{F}_{p^n}$). The importance of elliptic curves stems from their rich structure: there is a rather simple
 addition law definable on elliptic curves which makes them into an abelian group. Studying the emerging structure of elliptic curves over various fields has been a
-major theme in the mathematics of the 20th centaury, and elliptic curves were connected to many famous problems and results, most notably the proof of Fermat's
+major theme in the mathematics of the 20th century, and elliptic curves were connected to many famous problems and results, most notably the proof of Fermat's
 last theorem. See~\cite{Ko84} for an introduction to the subject via the solution of a specific problem (the congruent number problem). A more detailed and through
 treatment is presented in~\cite{Sil86} which has become the standard text on the subject.
 
@@ -108,13 +108,13 @@ Depending on the characteristic of $K$, the above equation can be simplified. Th
 \begin{enumerate}
   \item When $charK\ne 2,3$ the equation can be simplified to $y^2=x^3+ax+b$ with $a,b\in K$.
   \item When $charK = 2$ and $a_1 \ne 0$, the equation can be simplified to $y^2+xy=x^3+ax^2+b$ with $a,b\in K$. This curve is said to be \emph{non-supersingular}. If $a_1 = 0$, the equation can be simplified to $y^2+cy=x^3+ax+b$ with $a,b,c\in K$. This curve is said to be \emph{supersingular}.
-  \item When $charK = 3$ and $a_1^2\ne -a_2$, the equation can be simplified to $y^2=x^3+ax^2+b$ with $a,b\in K$. This curve is said to be \emph{non-supersingular}. If $a_1^2=-a_2$, the equation can be simplified to $y^2=x^3+ax+b$ with $a,b\in K$. This curve is said to be \emph{supsersingular}.
+  \item When $charK = 3$ and $a_1^2\ne -a_2$, the equation can be simplified to $y^2=x^3+ax^2+b$ with $a,b\in K$. This curve is said to be \emph{non-supersingular}. If $a_1^2=-a_2$, the equation can be simplified to $y^2=x^3+ax+b$ with $a,b\in K$. This curve is said to be \emph{supersingular}.
 \end{enumerate}
 
 \subsection{Motivating Example: $K=\mathbb{C}$}
 A \emph{lattice} in the complex plane $\mathbb{C}$ is a set of the form $L=\{n\omega_1+m\omega_2|n,m\in\mathbb{Z}\}$ such that $\omega_1,\omega_2\in\mathbb{C}$ are
 not colinear. Lattices can be used to generalize the notion of ``periodic function'' to the complex plane: A meromorphic function $f$ is called \emph{elliptic} with respect to the lattice
-$L$ if $f(z+l)=f(z)$ for all $l\in L$ (equivalently, $f(z+\omega_1)=f(z+\omega_2)=f(z)$). Thus it suffices to know the values of $f$ of the \emph{fundemental parallelogram} $\Pi=\{a\omega_1+b\omega_2|a,b\in[0,1]\}$
+$L$ if $f(z+l)=f(z)$ for all $l\in L$ (equivalently, $f(z+\omega_1)=f(z+\omega_2)=f(z)$). Thus it suffices to know the values of $f$ of the \emph{fundamental parallelogram} $\Pi=\{a\omega_1+b\omega_2|a,b\in[0,1]\}$
 in order to know its values on the complex plane.
 
 In $\mathbb{R}$, the periodic function $\sin(x)$ is ``special'' in the sense that along with its derivative, $\cos(x)$. it can be used to represent all
@@ -150,7 +150,7 @@ with the sign of the y-coordinate flipped.
 
 Third, for every three colinear points on the curve $P,Q,R$ we have $P+Q+R=0$, and so $P+Q=-R$. We can picture this in the following manner: Given $P,Q$,
 to compute their sum draw a line passing through them, and find the third point where the line crosses the curve (there is always such one - if it seems the line 
-''misses`` the curve, it actaully intersects it in $\mathcal{O}$; again, using projective coordinates this can be made precise). After such a point was found, we
+''misses`` the curve, it actually intersects it in $\mathcal{O}$; again, using projective coordinates this can be made precise). After such a point was found, we
 take its inverse to be the result of $P+Q$. This might seem like an arbitrary definition, and so it is worthwhile to remember that it is actually a result of the non-arbitrary
 operation induced in $\mathbb{C}$.
 
@@ -170,7 +170,7 @@ Over $\mathbb{Q}$, a famous theorem of Mordell shows that the group is finitely 
 where $Z$ (the \emph{torsion} subgroup of the curve) is a finite abelian group. The torsion of an elliptic curve is easy to compute and is very well known -
 it is known that there are only 15 possible torsion subgroups, the largest of whom of cardinality 16. The main difficulty is computing the parameter
 $r$ - the \emph{rank} of the curve. Of the the most famous open conjectures in mathematics, the Birch and Swinnerton-Dyer conjecture, deals
-with the connection between the rank of a curve (and various other related parameters) and the behivour of a special function related to the curve (the
+with the connection between the rank of a curve (and various other related parameters) and the behavior of a special function related to the curve (the
 zeta-function of that curve).
 
 Over a finite field $K=\mathbb{F}_q$ ($q$ a power of a prime), the order of the curve is, of course, finite. However, it is not easy to know in general
@@ -189,9 +189,9 @@ transform the coordinate system into one in which no division is needed for the 
 coordinate system once the calculation is complete. Such a coordinate system is the \emph{projective} coordinate system.
 
 Theoretically it is possible to imagine the projective coordinate system as one in which every two-dimensional point is represented by a ray in the three
-dimensional space. Formally we consider the set $K^3\\\{(0,0,0)\}$ with an equivalence relation charctarisied by two positive integers $c,d$ and
+dimensional space. Formally we consider the set $K^3\\\{(0,0,0)\}$ with an equivalence relation characterized by two positive integers $c,d$ and
 defined by $(X_1,Y_1,Z_1)\sim (X_2,Y_2,Z_2)$ if $X_1=\lambda^cX_2,Y_1=\lambda^dY_2,Z_1=\lambda Z_2$ for some $\lambda\in K^*$ (for $c=d=1$
-indeed we have that each equivalance class is a line in $K^3$).
+indeed we have that each equivalence class is a line in $K^3$).
 
 The two-dimensional point $(X,Y)$ can be identified with the projective point represented by $(X,Y,1)$, and so in general a projective point represented by
 $(X,Y,Z)$ with $Z\ne 0$ corresponds to a standard point $(\frac{X}{Z^a},\frac{Y}{Z^b})$. However, projective points represented by $(X,Y,0)$
@@ -228,10 +228,10 @@ In the case $P=Q$, we need to double the coordinate, where $\lambda=x_1+\frac{y1
 
 In the case $P\ne Q$, the slope of the connecting line is $\frac{y_1+y_2}{x_1+x_2}$ (note that addition and subtraction is the same in binary field arithmetic). It holds that $x_3=a+\lambda^2+\lambda+x_2+x_1$ (in the case $P=Q$, $x_2+x_1=x_1+x_1=0$).
 
-Finally in both cases the y-coordinate is computed as $y_3=(x_2+x_3)\lambda+x_3+y_2$. The overall algorithm derived from the formula requires 3 multipications (one is squaring), one multiplicative field inversion, and 9 or 6 additions. While the additions are very cheap operations, computing the inverse could be avoided by using projective coordinates as described before.
+Finally in both cases the y-coordinate is computed as $y_3=(x_2+x_3)\lambda+x_3+y_2$. The overall algorithm derived from the formula requires 3 multiplications (one is squaring), one multiplicative field inversion, and 9 or 6 additions. While the additions are very cheap operations, computing the inverse could be avoided by using projective coordinates as described before.
 
 \subsection{Point Multiplication}
-Scalar point multiplication is a frequently used operation in the cryptosystem we implemented and it is therefore of a big importance to implement this efficiently. We want to compute $kP=Q$ for a scalar $k$ and a point $P$. Using only addition, one could compute this as $\underbrace{P+...+P}_{k}$, with a complexity of $O(k)$. A better way is to use the additive equivalent of the \emph{square-and-multiply} algorithm. There, $k$ is processed bitwise. At each iteration, the result is doubled, and if the bit equals one, $P$ is added. Let $[k_{\log{k}},...,k_1]$ be the bit-representation of $k$, with $k_1$ as the least significant bit:
+Scalar point multiplication is a frequently used operation in the cryptosystem we implemented and it is therefore of a big importance to implement this efficiently. We want to compute $kP=Q$ for a scalar $k$ and a point $P$. Using only addition, one could compute this as $\underbrace{P+...+P}_{k}$, with a complexity of $O(k)$. A better way is to use the additive equivalent of the \emph{square-and-multiply} algorithm. There, $k$ is processed bit-wise. At each iteration, the result is doubled, and if the bit equals one, $P$ is added. Let $[k_{\log{k}},...,k_1]$ be the bit-representation of $k$, with $k_1$ as the least significant bit:
 
 \begin{enumerate}
  \item $Q=\infty$
@@ -245,14 +245,14 @@ The complexity of this algorithm is $O(\log{k})$. There are some optimizations t
 \subsection{Binary Field Arithmetic}
 The arithmetic in a prime field $\mathbb{F}_p$ is basically well-now; addition, and multiplication correspond to integer arithmetic modulo $p$. Finding the inverse can be done using the extended euclidean algorithm. Those operations are provided in the big integer library GMP we used. As an additional algorithm we had to implement the modular square root.
 
-In the binary extension field $\mathbb{F}_{2^d}\cong \mathbb{F}_2(\theta)/m(\theta)$, the arithmetic is slightly different and we implemented it from scratch. One could alternativly use a library like \emph{NTL}.
+In the binary extension field $\mathbb{F}_{2^d}\cong \mathbb{F}_2(\theta)/m(\theta)$, the arithmetic is slightly different and we implemented it from scratch. One could alternatively use a library like \emph{NTL}.
 
 Elements of the binary field are actually polynomials of degree $d$ with binary coefficients. And all operations in the polynomial basis are done modulo the reduction polynomial $m(\theta)$. For example the polynomial $\theta^4+\theta+1$ can be displayed as the bit-string $10011$. There is also the normal basis field representation which we will not treat because the more inefficient behavior of its arithmetic.
 
 \paragraph{Addition/Subtraction}
-Addition is the simplest operation and is computed as bitwise XOR: for $a,b\in \mathbb{F}_{2^d}$, $a+b=a\oplus b$.
+Addition is the simplest operation and is computed as bit-wise XOR: for $a,b\in \mathbb{F}_{2^d}$, $a+b=a\oplus b$.
 \paragraph{Multiplication}
-Multiplication of two elements $a$ and $b$ has alway to be done modulo $m$. Lopez and Dahab \cite{715867} present some efficient algorithms for this case. We implemented one which reminds of the square-and-multiply algorithm and could be called shift-and-add algorithm ($a$ is represented as $a_l,...,a_1$ and $b$ as $b_l,...,b_1$, let the result be $c$):
+Multiplication of two elements $a$ and $b$ has always to be done modulo $m$. Lopez and Dahab \cite{715867} present some efficient algorithms for this case. We implemented one which reminds of the square-and-multiply algorithm and could be called shift-and-add algorithm ($a$ is represented as $a_l,...,a_1$ and $b$ as $b_l,...,b_1$, let the result be $c$):
 \begin{enumerate}
  \item $c=0$
  \item for $i=l,...,1$:
@@ -263,7 +263,7 @@ Multiplication of two elements $a$ and $b$ has alway to be done modulo $m$. Lope
 We note that in each iteration, $c$'s degree could be at most one degree to high, it can therefore be reduced by $m$ by just adding $m$ to $c$.
 
 \paragraph{Inverse}
-As we know the extended euclidean algorithm can be used to compute the multiplicative inverse in a finite field. This is also the case with binary fields. Suppose we want to compute the inverse of $a$ modulo the reduction polynomial $m$. We have $aa^{-1}\equiv_m 1$, reforming this we get $aa^{-1}-1=mx$ for arbitrary $x$. This can be reformed to $aa^{-1}-mx=1$, which is is exactly the setup for the euclidean algorithm, since $gcd(a,-m)=1$, and the algorithm can run on the inputs $a$ and $-m$ and deliveres as one output $a^{-1}$.
+As we know the extended euclidean algorithm can be used to compute the multiplicative inverse in a finite field. This is also the case with binary fields. Suppose we want to compute the inverse of $a$ modulo the reduction polynomial $m$. We have $aa^{-1}\equiv_m 1$, reforming this we get $aa^{-1}-1=mx$ for arbitrary $x$. This can be reformed to $aa^{-1}-mx=1$, which is is exactly the setup for the euclidean algorithm, since $gcd(a,-m)=1$, and the algorithm can run on the inputs $a$ and $-m$ and delivers as one output $a^{-1}$.
 
 \paragraph{Quadratic Equations}
 \label{binquadeq}
@@ -292,7 +292,7 @@ In traditional \emph{symmetric} or \emph{private-key} cryptography, the generate
 
 There was originally no way to establish a secret key over insecure channels (for example internet with the http protocol). So to establish a shared secret key, a secret channel (which isn't eavesdropped) would be necessary.
 
-The situation changed thanks to public-key cryptography. Its origin lies in the Diffie-Hellman \cite{Diffie76newdirections} protocol, a method to generate a shared secret key between two communication partners over an insecure but authenticated channel. From it, the \emph{ElGamal} cryptosystem \cite{19480} was derived. In such an \emph{assymetric} system, two separate keys are generated for encryption and decryption. This enables one to publish the \emph{public-key}, with which anyone can encrypt messages, while the \emph{private-key} for decryption is kept secret. Besides encryption schemes, also \emph{signature} schemes exist, with the goal to ensure authenticity of a message instead confidentiality. There, the private-key is used to \emph{sign} a message, while the public-key is used to \emph{verify} the signature.
+The situation changed thanks to public-key cryptography. Its origin lies in the Diffie-Hellman \cite{Diffie76newdirections} protocol, a method to generate a shared secret key between two communication partners over an insecure but authenticated channel. From it, the \emph{ElGamal} cryptosystem \cite{19480} was derived. In such an \emph{asymmetric} system, two separate keys are generated for encryption and decryption. This enables one to publish the \emph{public-key}, with which anyone can encrypt messages, while the \emph{private-key} for decryption is kept secret. Besides encryption schemes, also \emph{signature} schemes exist, with the goal to ensure authenticity of a message instead confidentiality. There, the private-key is used to \emph{sign} a message, while the public-key is used to \emph{verify} the signature.
 
 We will first some security issues, then we present the cryptosystem we implemented for the project - Elliptic Curve ElGamal. Finally we will treat the issue how to represent messages in an elliptic curve.
 
@@ -301,7 +301,7 @@ The security of Diffie-Hellman and ElGamal relies on the hardness of the \emph{d
 
 \emph{RSA} (\cite{Rivest78amethod}), another famous cryptosystem relies on the hardness of \emph{factoring} large numbers.
 
-Both RSA and ElGamal can be adapted for elliptic curves, where the respective variants are called the elliptic curve analogues. Elliptic curve RSA analogues don't provide significant better security since the factoring problem essentially remains the same \cite{343485}. For the elliptic curve discrete logarithm, specialized algorithms like index calculus cannot be applied which results in better security and smaller key sizes. NIST key sizes with comparable security for symmetric, traditional and elliptic curve assymetric cryptography, which is shown in Table \ref{eqks}.
+Both RSA and ElGamal can be adapted for elliptic curves, where the respective variants are called the elliptic curve analogues. Elliptic curve RSA analogues don't provide significant better security since the factoring problem essentially remains the same \cite{343485}. For the elliptic curve discrete logarithm, specialized algorithms like index calculus cannot be applied which results in better security and smaller key sizes. NIST key sizes with comparable security for symmetric, traditional and elliptic curve asymmetric cryptography, which is shown in Table \ref{eqks}.
 
 \begin{table}
 % use packages: array
@@ -353,7 +353,7 @@ Besides the public parameters, we are given the public-key $Q$. We want to encry
 \item Compute $C_2=M+kQ$
 \item Output ciphertext: $(C_1,C_2)$
 \end{enumerate}
-One observation is that since $k$ is choosen at random, $C_2=M+kQ$ actually also appears to be random.
+One observation is that since $k$ is chosen at random, $C_2=M+kQ$ actually also appears to be random.
 
 \paragraph{Decryption}
 We are given the ciphertext-pair $(C_1,C_2)$, and the private key $d$. The goal is to reconstruct the message-point $M$:
@@ -380,30 +380,30 @@ We observe that decryption needs one multiplication compared to two in decryptio
 
 \subsection{Message Encoding}
 \label{Message Encoding}
-The only remaining question is how text messages could be encoded, or hashed onto points in the elliptic curve. For practical purposes, we restricted our implementation to ASCII text, where each caracter is represented as one byte code. This doesn't mean a loss of generality since arbitrary files can be encoded as ASCII text (for example by using \emph{base64}, which is also used for e-mail attachments).
+The only remaining question is how text messages could be encoded, or hashed onto points in the elliptic curve. For practical purposes, we restricted our implementation to ASCII text, where each character is represented as one byte code. This doesn't mean a loss of generality since arbitrary files can be encoded as ASCII text (for example by using \emph{base64}, which is also used for e-mail attachments).
 
-Since the size of the bit represntation of elliptic curve points is restricted by the curve's bit-size, messages have to be split in blocks. For example points on a 163 bit curve have space for at most $\lfloor\frac{163}{8}\rfloor=20$ characters.
+Since the size of the bit representation of elliptic curve points is restricted by the curve's bit-size, messages have to be split in blocks. For example points on a 163 bit curve have space for at most $\lfloor\frac{163}{8}\rfloor=20$ characters.
 
-The basic idea of the encoding is that the message corresponds to the x-coordinate. Finding the corresponding y-coordinate requires compting a square-root in the prime case and solving a quadratic equation in the binary case. Now we know that only every second x-coorinate corresponds to a valid point and that if the point is valid, two y-coordinates exist. While we can choose the y-coordinat simply at random, we have to ensure that the point is actually valid. This is done by adding some random padding to the coordinate, until the point is valid.
+The basic idea of the encoding is that the message corresponds to the x-coordinate. Finding the corresponding y-coordinate requires computing a square-root in the prime case and solving a quadratic equation in the binary case. Now we know that only every second x-coordinate corresponds to a valid point and that if the point is valid, two y-coordinates exist. While we can choose the y-coordinate simply at random, we have to ensure that the point is actually valid. This is done by adding some random padding to the coordinate, until the point is valid.
 
 The method is summarized as follows ($m$ is the message we want to encode and the elliptic curve has space for $l$ characters):
 \begin{enumerate}
  \item Split $m$ in blocks $m_i$ of size at most $l-1$ bytes.
  \item For each $m_i$: Choose a random byte $r$.
  \item Set $ASCII(m_i)|r$ as x-coordinate, and find the corresponding y-coordinate.
- \item If there are two y-coordinates: select one at random and output $(x,y)$. Otherwise if no y-coordiante exists, choose another padding $r$ and go back to point 3.
+ \item If there are two y-coordinates: select one at random and output $(x,y)$. Otherwise if no y-coordinate exists, choose another padding $r$ and go back to point 3.
 \end{enumerate}
 We note that using 8 bit padding, the probability not to find a valid point is negligible ($2^{-256}$).
 
 
 \section{Random Elliptic Curve Generation}
 \subsection{Introduction}
-The usage of predefined elliptic curves has its advantages and disadvantages. On one side there exist a set of curves recommended by NIST, which are publicly avalilable in \emph{FIPS 186-3}.
+The usage of predefined elliptic curves has its advantages and disadvantages. On one side there exist a set of curves recommended by NIST, which are publicly available in \emph{FIPS 186-3}.
 Contained in the document are both curves over prime and binary fields with bit-sizes from about 160 bits to about 500 bits. Those curves meet some security requirements and are especially suited for efficient implementations.
-When it comes to elliptic curve cryptography it is probably the straightforward way to use the NIST-recommended curves, since they are well-known, testbenches are available and the additional task to generate a curve is obsolete.
+When it comes to elliptic curve cryptography it is probably the straightforward way to use the NIST-recommended curves, since they are well-known, test-benches are available and the additional task to generate a curve is obsolete.
 
 On the other side, there are not many reasons why not to use a new random curve for each key-agreement, given that the curves meet the same security properties than predefined curves.
-The main advantage is obvious: when the curve is not known in advance, no precomputation can be done on it that might compromise its security. As an illustrative result, \cite{fixed} claimes the security when using a random curve is the same as using a fixed curve with an 11 bit longer key.
+The main advantage is obvious: when the curve is not known in advance, no precomputation can be done on it that might compromise its security. As an illustrative result, \cite{fixed} claims the security when using a random curve is the same as using a fixed curve with an 11 bit longer key.
 The critical factor however is efficiency. Generating a random curve needs costly operations, and the process should not take much longer than about one second on modern hardware to be feasible in practice.
 
 \subsubsection{Basic Approaches}
@@ -415,7 +415,7 @@ and in the binary case by
 \begin{displaymath}
  y^2+x=x^3+a_bx^2+b_b.
 \end{displaymath}
-The task is in both cases to select the parameters $a$ and $b$ randomally, while the field modulus, or the reduction polynomial respectly are given. In practice, the parameter $a$ could also be fixed in advance without much loss of generality, for instance to $a_p=-3$ and $a_b=0$ in order to enable using efficient EC arithmetic.
+The task is in both cases to select the parameters $a$ and $b$ randomly, while the field modulus, or the reduction polynomial respectively are given. In practice, the parameter $a$ could also be fixed in advance without much loss of generality, for instance to $a_p=-3$ and $a_b=0$ in order to enable using efficient EC arithmetic.
 
 Just selecting random coefficients would be easy and efficient, but the major concern is that also the curve order has to be known in order to use a cryptosystem. There are two conceptually different approaches how to deal with the order while generating the curve, the \emph{random approach} and the \emph{complex multiplication approach}
 
@@ -428,20 +428,20 @@ The random approach consists of the following steps:
 \end{enumerate}
 
 
-Using the point counting would significantly influence the efficiency of the random approach. Instead, one can use an \emph{early-abort strategy} as described in \cite{satohfgh} that detects insecure curves quickly whitout the need to know their exact order. We will not further investigate this strategy but the results show that the point counting algorithm is clearly the dominating part of the random approach. We therefore only implement the point counting algorithm when we evaluate the random approach.
+Using the point counting would significantly influence the efficiency of the random approach. Instead, one can use an \emph{early-abort strategy} as described in \cite{satohfgh} that detects insecure curves quickly without the need to know their exact order. We will not further investigate this strategy but the results show that the point counting algorithm is clearly the dominating part of the random approach. We therefore only implement the point counting algorithm when we evaluate the random approach.
 
 \paragraph{Complex Multiplication Approach}
 The complex multiplication approach solves the curve generation from the other side: the conceptual idea is instead of computing the order for a purely random curve to define an order in advance and generate a matching curve to it.
 The advantage of this method is that no point-counting algorithm has to run which generally results in a better performance than in the random approach. The disadvantage is however that the curve is not entirely random.
 
-The tradeoff in selecting one of the two methods lies in efficiency versus randomness. If the latter is not of a big concern, one could use complex multiplication, while the random approach becomes more interesting the more efficient point-counting algorithms are.
+The trade-off in selecting one of the two methods lies in efficiency versus randomness. If the latter is not of a big concern, one could use complex multiplication, while the random approach becomes more interesting the more efficient point-counting algorithms are.
 
-\subsubsection{Seurity Requirements}
+\subsubsection{Security Requirements}
 They are two main security requirements for elliptic curves as described in \cite{buchmann}, they have to be checked by the random generation methods. The first one ensures that the order is large enough (at least about 160 bits), to avoid the usage of generic discrete logarithm algorithms:
 \begin{itemize}
  \item $|E|=k\cdot r$, $r\geq 160$, $k\leq 4$
 \end{itemize}
-There are more specific attacks where the elliptic curve dircrete logarithm is converted in the ordinarc DL problem over $\mathbb{Z}_p$. We don't go into details here, but the resulting requirement for a prime curve (over $\mathbb{F}_p$) is:
+There are more specific attacks where the elliptic curve discrete logarithm is converted in the ordinary DL problem over $\mathbb{Z}_p$. We don't go into details here, but the resulting requirement for a prime curve (over $\mathbb{F}_p$) is:
 \begin{itemize}
  \item $p^s\not\equiv 1$ mod $r$, for $s\in\{1,..,20\}$, and $p\neq r$
 \end{itemize}
@@ -455,30 +455,30 @@ and the corresponding requirement for binary curves over $\mathbb{F}_{2^n}$ is:
 \subsubsection{Complex Multiplication}
 For $K=\mathbb{F}_p$, $p$ a given large prime, there is a polynomial time algorithm of Schoof for computing the number of points on a given curve.
 However, it is quite slow in practice (the basic running time is $O(\log ^8p)$, although improvements were made) and quite complicated to implement.
-Therefore we have used a different approach - first we decide on the desired order of the curve and the value of $p$, and afterwards we generate a
-curve over $\mathbb{F}_p$ with that order. The method we use is reffered to as the \emph{Complex Multiplication} method. The theory of complex
+Therefore we have used a different approach - first we decide on the desired order of the curve and the value of $p$, and afterward we generate a
+curve over $\mathbb{F}_p$ with that order. The method we use is referred to as the \emph{Complex Multiplication} method. The theory of complex
 multiplication is quite deep; we present here a brief overview of the facts related to the method.
 
 Given an elliptic curve $E$ over some field $K$, we consider the set of \emph{endomorphisms} of $E$ (an homomorphism from $E$ to itself). There are
-alwys ''trivial`` endomorphisms $\varphi_m$ defined by $\varphi_m(P)=m\cdot P=P+P+\dots+P$, and it's easy to see that endomorphisms form a ring
-with induced addition (i.e. $(\varphi+\psi)(P)=\varphi(P)+\psi(P)$) and composition serving as multiplication, and that the ''trivial'' endomprhisms form a subring
-isomorphic to $\mathbb{Z}$. If the curve possess more endomprhisms, it is said to have possess complex multiplication. The name stems from
+always ''trivial`` endomorphisms $\varphi_m$ defined by $\varphi_m(P)=m\cdot P=P+P+\dots+P$, and it's easy to see that endomorphisms form a ring
+with induced addition (i.e. $(\varphi+\psi)(P)=\varphi(P)+\psi(P)$) and composition serving as multiplication, and that the ''trivial'' endomorphisms form a subring
+isomorphic to $\mathbb{Z}$. If the curve possess more endomorphisms, it is said to have possess complex multiplication. The name stems from
 the fact that in this case the ring of endomorphisms is isomorphic to $\mathbb{Z}\tau+\mathbb{Z}$ with $\tau = (D+\sqrt{D})/2$ for some $D<0$
 such that $D\equiv 0,1 (\mathrm{mod }4)$, i.e. the ring of endomorphisms is contained in a quadratic imaginary field. The value $D$ is called the \emph{discriminant} of the
-endomprhisms ring, and the isomorphic ring is denoted by $\mathcal{O}_D$.
+endomorphisms ring, and the isomorphic ring is denoted by $\mathcal{O}_D$.
 
 The usefulness of complex multiplication for our goals comes from the following fact: if $E$ is an elliptic curve possessing complex multiplication over $\mathbb{Q}$
 with discriminant $D$, we can effectively calculate the order of $E$ over almost any field $\mathbb{F}_p$, problems arising only in cases where $p$ divides $D$ or
-when the equation of $E$ does not define a proper ellitpic curve over $\mathbb{F}_p$ (because the curve is not smooth). These cases are rare and
+when the equation of $E$ does not define a proper elliptic curve over $\mathbb{F}_p$ (because the curve is not smooth). These cases are rare and
 pose no real problem.
 
-Recall that the order of any curve over $\mathbb{F}_p$ is $p+1+a_p$, with $|a_p|\le2\sqrt{p}$, so the challange lies in computing $a_p$. If $D$ is
+Recall that the order of any curve over $\mathbb{F}_p$ is $p+1+a_p$, with $|a_p|\le2\sqrt{p}$, so the challenge lies in computing $a_p$. If $D$ is
 a quadratic residue over $p$, we have $a_p=\pi+\overline{\pi}$, with $\pi$ being an element of $\mathcal{O}_D$ such that $\pi\overline{\pi}=p$.
 $\pi$ can be denoted $\frac{a+b\sqrt{D}}{2}$ , and so $\overline{\pi}=\frac{a-b\sqrt{D}}{2}$ (recall that $D<0$ so $\sqrt{D}$ is imaginary),
 and so $p=\pi\overline{\pi}=\frac{a^2+|D|b^2}{4}$, or $4p=a^2+|D|b^2$, and  $a_p=\pi+\overline{\pi}=\frac{a+b\sqrt{D}+(a-b\sqrt{D}}{2}=a$.
 
 Hence, if $D$ and $p$ are already known, to compute the order of the curve one needs only to solve the equation $a^2+|D|b^2=4p$. However, this equation
-has two solutions (for $a$) which differ by sign, and so we get two different candidates for the order of the curve. A prectical solution to this problem, which
+has two solutions (for $a$) which differ by sign, and so we get two different candidates for the order of the curve. A practical solution to this problem, which
 we have implemented, is to take a random point $P$ on the curve and raise it to the power of each of the candidates, expecting to get $\mathcal{O}$ only
 once. This proved to be an efficient and reliable solution.
 
@@ -490,7 +490,7 @@ The first problem touches upon a well-known problem in mathematics - when is the
 $n$ a natural number, and how can such a solution be found? The origins of the question can be traced to Fermat who gave the complete classification of
 $p$ having solution for $n=1,2,3$. The proof of Fermat's results was first given by Euler, and it is connected strongly to the quadratic reciprocity theorem.
 The general theory classifying $p$ for an arbitrary $n$ is quite deep and heavily relies on class field theory. However, there is a simple algorithm which
-is essenitally based on the Euclidean algorithm which always yields a solution if one exists.
+is essentially based on the Euclidean algorithm which always yields a solution if one exists.
 
 The algorithm, due to Cornacchia, first determines whether $-n$ is a quadratic residue modulo $p$ and aborts if it is not (if $x^2+ny^2=p$ then $x^2=-ny^2$ modulo $p$,
 i.e. $-n=\left(\frac{x}{y}\right)^2$ modulo $p$). Next, a square root $x_0$ is found (i.e. $x_0^2=-d$ modulo $p$) - this requires an algorithm for square-root
@@ -499,7 +499,7 @@ The next step is simply applying the Euclidean algorithm to the pair $(p,x_0)$ u
 is $(x,y)=\left(b,\sqrt{\frac{p-b^2}{n}}\right)$ (if the square root does not exist, it is guaranteed there is no solution to the original equation).
 
 We are dealing with a slightly different equation as on the right-hand side we have $4p$ instead of $p$. However, this requires only a slight change in
-the algorithm - if we start the Eulidean algorithm with $(2p,x_0)$ and terminate it as soon as a value lower than $2\sqrt{p}$ is found, it is still guaranteed
+the algorithm - if we start the Euclidean algorithm with $(2p,x_0)$ and terminate it as soon as a value lower than $2\sqrt{p}$ is found, it is still guaranteed
 to work unless no solution exists.
 
 \subsubsection{The Hilbert Class Polynomials}
@@ -519,7 +519,7 @@ As required.
 
 Based on the theory of complex multiplication (which is not possible to describe here in detail), a polynomial with integer coefficients, called the \emph{Hilbert Class Polynomial}
 can be found for every value of discriminant $D$, such that if $j_0$ is a root of the polynomial (over $\mathbb{Q}$), the corresponding elliptic curve
-possesses complex multiplication for $D$. As we are only interested in the j-invariant modulo $p$, it suffices to find a root to the Hilber class polynomial
+possesses complex multiplication for $D$. As we are only interested in the j-invariant modulo $p$, it suffices to find a root to the Hilbert class polynomial
 over $\mathbb{F}_p$ - a relatively simple and discrete process which does not involve issues of precision.
 
 The Hilbert class polynomials are usually computed by generating their roots in $\mathbb{C}$ and multiplying accordingly. This is a costly process which
@@ -528,7 +528,7 @@ works very well in practice and does not compromise the safety of the curve (whi
 
 \subsubsection{Summary - Overview of The Full Method}
 We now describe the exact algorithm used for generation of curves over $\mathbb{F}_p$ with a known order. There are two possible approaches, depending on one's goals.
-One can start with a known $p$ and search for a suitable curve amond the known values of $D$, or one can choose $D$ upfront and choose random values of $p$. Therefore we have
+One can start with a known $p$ and search for a suitable curve among the known values of $D$, or one can choose $D$ upfront and choose random values of $p$. Therefore we have
 two ``initialization'' algorithms:
 
 Version 1: Known $p$.
@@ -540,7 +540,7 @@ Version 1: Known $p$.
 
 Version 2: Known $D$.
 \begin{enumerate}
- \item Randomally choose integers $s,t$. of the appropriate magnitude.
+ \item Randomly choose integers $s,t$. of the appropriate magnitude.
  \item Check that $p=\frac{t^2+|D|s^2}{4}$ is a prime integer (using the Miller-Rabin primality test, for example).
  \item Check that among the two order candidates, $u_1=p+1+t,u_2=p+1-t$ there is at least one with admissible factorization. Otherwise, go back to step 1.
 \end{enumerate}
@@ -553,7 +553,7 @@ The rest of the algorithm is the same no matter which initialization method was 
  \item Set $k=\frac{j_0}{1728-j_0}$ modulo $p$.
  \item Set the resulting curve to be the one defined by $a=3kc^2,b=2kc^3$ for a random $c\in\mathbb{F}_p$
  \item Check which of the two possible candidates is the order of the curve. If it has an admissible factorization, return the curve; otherwise,
-	  return the twist of the curve (i.e. pick randomally a non-square $e\in\mathbb{F}_p$ and return the curve $y^2=x^3+ae^2+be^3$.
+	  return the twist of the curve (i.e. pick randomly a non-square $e\in\mathbb{F}_p$ and return the curve $y^2=x^3+ae^2+be^3$.
 \end{enumerate}
 
 
@@ -562,7 +562,7 @@ The rest of the algorithm is the same no matter which initialization method was 
 The complex multiplication method for generating a random curve can also be applied for the binary field case $K=\mathbb{F}_{2^n}$, where $n$ is prime.
 In contrast to the prime field case, more efficient point counting algorithms for elliptic curves over fields of small characteristic exist.
 Besides Schoof's algorithm, which is also applicable in the binary case, the more efficient variants are so-called \emph{p-adic} algorithms that require a special kind of arithmetic.
-The most noticable among them are the \emph{Satoh-FGH} algorithm \cite{satohfgh}, the Elliptic Curve \emph{AGM} algorithm \cite{717152}\cite{handbook}, and the \emph{SST} algorithm \cite{Satoh200389}.
+The most noticeable among them are the \emph{Satoh-FGH} algorithm \cite{satohfgh}, the Elliptic Curve \emph{AGM} algorithm \cite{717152}\cite{handbook}, and the \emph{SST} algorithm \cite{Satoh200389}.
 The first two have an asymptotic complexity of $O(n^{3+\epsilon})$ and SST has a complexity of $O(n^{2.5+\epsilon})$, where the $\epsilon$ depends on the implementation of basic big integer arithmetic.
 
 Despite the theoretic advantage of SST, AGM has found to be the best choice so far for practical implementations, which is the reason why we selected it for this project.
@@ -597,7 +597,7 @@ The inverse of an element $a$ is computed as the root of the polynomial $f(X)=1-
 \paragraph{Square root}
 For computing the square root, the inverse of the inverse square is taken. The inverse square root is computed as the root of the polynomial $f(X)=1-aX^2$ is computed using a Newton iteration. As initial approximation of precision $1$, the square binary field square root must be implemented.
 
-From those operations, we have have found multiplication and reduction to be the major bottleneck in the implementation. Polynomial multiplication can be highly optimized for example by using Fast Fourier Transformation (FFT). This is the point where our approach ``building everything from scratch'' has certain limitations since highly optimized libraries exist especially for this purpose. We therefore also used polynomial multiplicaion from the \emph{NTL} library besides our own implementation.
+From those operations, we have have found multiplication and reduction to be the major bottleneck in the implementation. Polynomial multiplication can be highly optimized for example by using Fast Fourier Transformation (FFT). This is the point where our approach ``building everything from scratch'' has certain limitations since highly optimized libraries exist especially for this purpose. We therefore also used polynomial multiplication from the \emph{NTL} library besides our own implementation.
 
 \subsubsection{Elliptic Curve AGM}
 The AGM iteration consists of two parts. The first is computing starting values $a_0$ and $b_0$ to full working precision $N=\lceil\frac{d}{2}\rceil+3$. The second part consists of $d$ AGM iterations in precision $N$.
@@ -624,13 +624,13 @@ Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic c
 \section{Implementation}
 In this section we describe the various components implemented by us in the project.
 \subsection{Prime field algorithms}
-We have implemented a wrapper class for elements of $\mathbb{F}_p$ (zp\_int), complete with arithmetic and comparision operators, as
+We have implemented a wrapper class for elements of $\mathbb{F}_p$ (zp\_int), complete with arithmetic and comparison operators, as
 well as standard and Jacobian coordinate classes. We have also implemented a class for polynomials over $\mathbb{F}_p$ (ModularPolynomial) - again, complete with arithmetic (including GCD).
 
 Most of the algorithms we have used are described in Henri Cohen's book~\cite{Co96}; we give the page numbers.
 
 We have implemented the algorithm of Tonelli and Shanks for computing square roots over $\mathbb{F}_p$ (pg. 33), and used 
-it to implement an algorithm for finding roots of general polynomials over $\mathbb{F}_p$ (pg. 37) needed in the complex multiplicaion
+it to implement an algorithm for finding roots of general polynomials over $\mathbb{F}_p$ (pg. 37) needed in the complex multiplication
 method in order to find roots of the Hilbert class polynomial. These algorithms require the computation of Legendre's symbol
 and so we have implemented the standard efficient algorithm which utilizes the quadratic reciprocity theorem (pg. 29 gives an extended version).
 We have also implemented Cornacchia's algorithm for finding $x,y$ such that $x^2+|D|y^2=4p$ for given $p,D$ (pg. 35).
@@ -639,9 +639,9 @@ Primality testing was done via GMP's library (which implements Miller-Rabin).
 \subsection{Binary field algorithms}
 We have implemented binary finite field arithmetic in the class \emph{GFE.h} as two variants. The first one ``from scratch'', with algorithms for addition, multiplication (\cite{715867}), the extended euclidean algorithm for binary finite fields in order to compute the multiplicative inverse, and an algorithm for solving quadratic equations over $\mathbb{F}_{2^d}$ (see section \ref{binquadeq}). The last algorithm is especially of use in solving the curve-equation ($y^2+y=c$) to the y-coordinate. The second variant is actually a wrapper around the same functions provided by the NTL library. For the evaluations however we used the implementation from scratch. The implementation was done in a way that GFE objects can be used the same way as ``primitive'' types, with the corresponding operators.
 
-The algorithms used for AGM pointing are defined in \emph{adicops.h}. This contains the AGM algorithm itself, as defined in the Book ``Handbook of Elliptic and Hyperellyptic Curve Cryptography'' by Cohen and Frey \cite{handbook} at page 439. The p-adic algorithms required for AGM are: square-root computation, inverse square-root computation and inverse element computation. These algorithms are described in chapter 12 of the same book. In addition to this, p-adic polynomial-arithmetic containing addition, subtraction, multiplication and division (all operations modulo an irreducible polynomial) was implemented in two variants: the first one from scratch in the wrapper class defined in \emph{Poly.h}. The second variant used modular polynomials from NTL and is defined in the wrapper class in \emph{ModPoly.h}.
+The algorithms used for AGM pointing are defined in \emph{adicops.h}. This contains the AGM algorithm itself, as defined in the Book ``Handbook of Elliptic and Hyperelliptic Curve Cryptography'' by Cohen and Frey \cite{handbook} at page 439. The p-adic algorithms required for AGM are: square-root computation, inverse square-root computation and inverse element computation. These algorithms are described in chapter 12 of the same book. In addition to this, p-adic polynomial-arithmetic containing addition, subtraction, multiplication and division (all operations modulo an irreducible polynomial) was implemented in two variants: the first one from scratch in the wrapper class defined in \emph{Poly.h}. The second variant used modular polynomials from NTL and is defined in the wrapper class in \emph{ModPoly.h}.
 
-\subsection{Ellitpic curve implementation}
+\subsection{Elliptic curve implementation}
 The implementation of elliptic curves had to be done in such a way that a caller that wants to use its arithmetic doesn't have to distinguish between prime and binary curves. This was achieved by using a stable interface class defined in \emph{Ellipticcurve.h}, which defines the following virtual functions:
 
 \begin{itemize}
@@ -660,13 +660,13 @@ Elliptic curve arithmetic, namely addition and multiplication was implemented ac
 
 \subsubsection{Finding a random point on the curve}
 \label{Finding a random point on the curve}
-Another algorithm that is implemention specific is finding a random point on the curve, which is required while generating a random curve suitable for the cryptosystem. Both algorithms for prime and binary curves choose a random x coordinate until a corresponding y coordinate exists. For prime curves $y^2=x^3+ax+b$, this requires computing a modular square root, and in the binary case for curves $y^2+xy=x^3+ax^2+b$, a binary quadratic equation must be solved.
+Another algorithm that is implementation specific is finding a random point on the curve, which is required while generating a random curve suitable for the cryptosystem. Both algorithms for prime and binary curves choose a random x coordinate until a corresponding y coordinate exists. For prime curves $y^2=x^3+ax+b$, this requires computing a modular square root, and in the binary case for curves $y^2+xy=x^3+ax^2+b$, a binary quadratic equation must be solved.
 
 \subsubsection{Compressed format}
 \label{Compressed format}
 Because we are able to find the y-coordinate for a given x, full information of y is actually redundant information. Since there are two solutions for x, the question is only which one was intended.
 
-For the purpose of storing and recovering points from text-files (as described in section \ref{ecdefinitions}), we use the \emph{compressed format}. This consists of the x-coordinate and either ``+'' or ``-'' at the beginning, indicating which of the possible y-coordinates has to be choosen. As an example,
+For the purpose of storing and recovering points from text-files (as described in section \ref{ecdefinitions}), we use the \emph{compressed format}. This consists of the x-coordinate and either ``+'' or ``-'' at the beginning, indicating which of the possible y-coordinates has to be chosen. As an example,
 \begin{verbatim}
  -6468585198793925939445065556022715668330587295808
 \end{verbatim}
@@ -689,10 +689,10 @@ For the corresponding algorithms, see section \ref{Elliptic Curve ElGamal}. In a
 The command-line interface, used for interpreting user's parameters is implemented in \emph{cmd.h}. It parses the switches provided over the command-line, and launches actions like key-pair generation, encryption or decryption accordingly. A guide how to use the interface is given in chapter \ref{User Guide}.
 
 \subsection{Metrics}
-The implementation in C++ consists of approximately 7500 lines of code. The code is distributed in 29 files, containing 34 classes. In total, 53 testcases are written (using CppUnit) and can be executed at any time.
+The implementation is done in C++ and consists of approximately 7500 lines of code. The code is distributed in 29 files, containing 34 classes. In total, 53 test-cases are written (using CppUnit) and can be executed at any time.
 
 \section{Results}
-In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurementes were done on an Intel Core Duo processor with 1.8 GHz.
+In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurements were done on an Intel Core Duo processor with 1.8 GHz.
 
 \subsection{Key Generation}
 The key-pair generation was run with the built-in NIST curves over prime and binary fields. The key sizes are 192, 224, 256, 384 and 521 bits for prime curves and 163, 283, 409 and 571 bits for binary curves. The results are shown in Figure \ref{figure:keygen}.
@@ -718,12 +718,12 @@ While in the key-generation test the processed data depends on the key-size, in 
 \label{figure:encdec}
 \end{figure}
 
-The first thing we observe is that encryption takes approximately twice as much time as decryption. This is explained with the fact that encryption requires two multiplication while decryption needs only one (see Table \ref{elgoperations}). We again see a significant advantage of the prime curves like in curve generation. Furthermore it can be oversved that the efficiency of smaller keys is better than of larger keys, even though the total number of processed blocks is higher. The slope of the measurement curves is however steeper in key-generation.
+The first thing we observe is that encryption takes approximately twice as much time as decryption. This is explained with the fact that encryption requires two multiplication while decryption needs only one (see Table \ref{elgoperations}). We again see a significant advantage of the prime curves like in curve generation. Furthermore it can be observed that the efficiency of smaller keys is better than of larger keys, even though the total number of processed blocks is higher. The slope of the measurement curves is however steeper in key-generation.
 
-As a general comment, public-key cryption is in practice not very often used for actual encryption because of its inferior performance compared to symmetric key cryptography. Instead it is usually used to establish a symmeteic key and the actual encryption is done for example with AES. We can also see in our results that the efficiency of our implementation is not sufficient to encrypt large files in a reasonable time.
+As a general comment, public-key cryptography is in practice not very often used for actual encryption because of its inferior performance compared to symmetric key cryptography. Instead it is usually used to establish a symmetric key and the actual encryption is done for example with AES. We can also see in our results that the efficiency of our implementation is not sufficient to encrypt large files in a reasonable time.
 
 \subsection{Point Counting with AGM}
-The first attempt with the AGM algorithm was an implementation of the underlying polynomial multplication and reduction ``from scratch''. This was identified as the clear bottleneck as the runtime for a key-size of ~300 bits was about 30 minutes. We therefore decided replace this operations with the ones provided by the NTL library, which resulted in a dramatic performance improvement: the runtime for the same key-size was reduced to only a few seconds. The results are illustrated in Figure \ref{figure:agm}.
+The first attempt with the AGM algorithm was an implementation of the underlying polynomial multiplication and reduction ``from scratch''. This was identified as the clear bottleneck as the runtime for a key-size of ~300 bits was about 30 minutes. We therefore decided replace this operations with the ones provided by the NTL library, which resulted in a dramatic performance improvement: the runtime for the same key-size was reduced to only a few seconds. The results are illustrated in Figure \ref{figure:agm}.
 
 \label{agmres}
 \begin{figure}[h]
@@ -733,7 +733,7 @@ The first attempt with the AGM algorithm was an implementation of the underlying
 \label{figure:agm}
 \end{figure}
 
-The initial goal to be able to generate random curves in only a few seconds is achieved by looking at the results for key sizes up to about 500 bits. As an additional step for curve generation, an early-abort strategy to skip insecure curves \cite{satohfgh} would be needed. As described in the reference, a single point counting run dominates the early-abort step, from which we can conclude the feasiblilty of the AGM approach.
+The initial goal to be able to generate random curves in only a few seconds is achieved by looking at the results for key sizes up to about 500 bits. As an additional step for curve generation, an early-abort strategy to skip insecure curves \cite{satohfgh} would be needed. As described in the reference, a single point counting run dominates the early-abort step, from which we can conclude the feasibility of the AGM approach.
 
 \subsection{Challenge Solution}
 For testing the correctness of the implementation we were given a test consisting of the following tasks:
@@ -745,7 +745,7 @@ For testing the correctness of the implementation we were given a test consistin
  \item Deciding which message was forged.
 \end{itemize}
 
-In the first task, we were given the prime field modulus and some information needed to generate a curve using the complex muliplication method. The modulo equals the 13th mersenne prime ($n=2^{521}-1$), the imaginary field discriminant for complex multiplication is $D>-400$ and the EC parameter $a=-3$. The original description is available in Appendix \ref{appendixa}.
+In the first task, we were given the prime field modulus and some information needed to generate a curve using the complex multiplication method. The modulo equals the 13th Mersenne prime ($n=2^{521}-1$), the imaginary field discriminant for complex multiplication is $D>-400$ and the EC parameter $a=-3$. The original description is available in Appendix \ref{appendixa}.
 
 Finally the private key definition, readable by our implementation for the first curve was (for the format, see section \ref{ecdefinitions}):
 
@@ -816,7 +816,7 @@ and the second as
  y^2 + xy = x^3 + 7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd
 \end{displaymath}
 
-Afer bringing this information in the format readable for our application, the ciphertext was decrypted. The first message is:
+After bringing this information in the format readable for our application, the ciphertext was decrypted. The first message is:
 
 \begin{verbatim}
  Class number for discriminant -877991 equals 818.
@@ -833,7 +833,7 @@ The class number is a well-known invariant in Algebraic Number Theory and can be
 \section{User Guide}
 \label{User Guide}
 This section is intended to provide information to the interested user who wants to experiment with our application.
-With the command line interface, our program provides a convinient way to use elliptic curve cryptography in practice. The functionalities, and how they are used is presented, along with some practical examples.
+With the command line interface, our program provides a convenient way to use elliptic curve cryptography in practice. The functions, and how they are used is presented, along with some practical examples.
 
 \subsection{Getting the Source}
 The program source itself can be downloaded over one of the two identical repositories: \url{http://github.com/gadial/ECC} and \url{http://github.com/bhess/ECC}. One can also use git to download the source:
@@ -894,7 +894,7 @@ prime
 
 
 \subsection{Command Line Interface}
-Over a simple command line interface, the following three concepual functions of the cryptosystem can be used:
+Over a simple command line interface, the following three conceptual functions of the cryptosystem can be used:
 \begin{itemize}
  \item Key-pair generation.
  \item Encryption
@@ -1029,7 +1029,7 @@ dass wir nichts wissen koennen! Das will mir schier das Herz verbrennen!
 \subsubsection{Elliptic Curve Validation}
 For elliptic curves defined in a text-file, the switch -validate provides a quick and handy function to validate that the provided parameters are correct. Beside curve definition files consisting of 6 lines, also private and public keys can be provided, where the last line defining the key is simply ignored.
 
-Suppose we wanto to validate the elliptic curve defined in the following public-key file:
+Suppose we want to to validate the elliptic curve defined in the following public-key file:
 
 \begin{verbatim}
  #ECC> cat ./challenge/private_key_binary1.txt
@@ -1049,10 +1049,10 @@ To validate we run:
 Validation succeeded!
 \end{verbatim}
 
-More specifically, the test reads in the EC parameters, uncompresses the point on the curve and multiplies the point with the curve order. If the result is the point at infinity, the validation succeeds and otherwise it failes.
+More specifically, the test reads in the EC parameters, decompresses the point on the curve and multiplies the point with the curve order. If the result is the point at infinity, the validation succeeds and otherwise it fails.
 
 \subsubsection{Testcases}
-The implementation has a big number some built-in testcases that test different aspects of the implementation, like finite field arithmetic or several algorithms. With the switch -t the testcases are launched:
+The implementation has a big number some built-in test-cases that test different aspects of the implementation, like finite field arithmetic or several algorithms. With the switch -t the test-cases are launched:
 \begin{verbatim}
  #ECC> ./ECC -t
  .....................................................
@@ -1064,7 +1064,7 @@ This is mainly for debugging purposes and shows that ``everything should be righ
 \section{Conclusion}
 In this project we investigated the large field of elliptic curve cryptography, whose properties enable to achieve the same security with much smaller key sizes compared to public key cryptography over $\mathbb{Z}_n^*$. We implemented an elliptic curve cryptosystem ``from scratch'', relying only on big integer arithmetic. This implied the implementation of finite field arithmetic and several additional algorithms. Furthermore, the implementation was done for both elliptic curves over prime and binary fields. Besides the deep insight this approach gave, also some limitations were shown, namely not all our implementation can compete with highly optimized libraries.
 
-Besides the cryptosystem, we implemented two cutting-edge methods to generate random elliptic curves. The two approaches are conceptually different: the \emph{Complex Multiplication} (over prime fields) generates a curve for a given order, and the \emph{AGM} point-counting method (over binary fields) computes the order for given curve parameters. We showed the practical feasibility of both methods and that a random curve with not too large bit-size up to about 300 bits can be generated within a few seconds. We sucsessfully solved a challenge consisting of generation of a prime curve, and decryption over a prime and a binary curve. 
+Besides the cryptosystem, we implemented two cutting-edge methods to generate random elliptic curves. The two approaches are conceptually different: the \emph{Complex Multiplication} (over prime fields) generates a curve for a given order, and the \emph{AGM} point-counting method (over binary fields) computes the order for given curve parameters. We showed the practical feasibility of both methods and that a random curve with not too large bit-size up to about 300 bits can be generated within a few seconds. We successfully solved a challenge consisting of generation of a prime curve, and decryption over a prime and a binary curve. 
 
 Further work could involve the implementation of Complex Multiplication for binary fields and point-counting for prime fields, which would enable a direct comparison between binary and prime curves. Several optimizations could be done, either by choosing more efficient algorithms or by low-level optimizations. Additionally, a comparison of our implementations with variants from optimized library would be interesting. As cryptosystem, we choose the ECC ElGamal system for encryption and decryption. An additional task would be to implement a signature scheme, or to choose a different encryption system.
 
