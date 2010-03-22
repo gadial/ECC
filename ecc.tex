@@ -73,32 +73,40 @@
    }
 }
 
+
 \date{}
 
 \maketitle
 
 \section{Introduction}
-An \emph{Elliptic Curve} can be roughly described as the set of solutions to an equation of the form $y^2=x^3+ax+b$ over some field (e.g. $\mathbb{C}, 
+An \emph{Elliptic Curve} can be roughly described as the set of solutions of an equation of the form $y^2=x^3+ax+b$ over some field (e.g. $\mathbb{C}, 
 \mathbb{R},\mathbb{Q}$ or some finite field $\mathbb{F}_{p^n}$). The importence of elliptic curves stems from their rich structure: there is a rather simple
 addition law definable on elliptic curves which makes them into an abelian group. Studying the emerging structure of elliptic curves over various fields has been a
 major theme in the mathematics of the 20th centaury, and elliptic curves were connected to many famous problems and results, most notably the proof of Fermat's
-last theorem\marginpar{Give some reference, to a good survey if possible}.
+last theorem. See~\cite{Ko84} for an introduction to the subject via the solution of a specific problem (the congruent number problem). A more detailed and through
+treatment is presented in~\cite{Sil86} which has become the standard text on the subject.
 
 In the late 70's, \emph{Public-Key Cryptography} systems were first publicly described, changing the face of cryptography. Many of the purposed systems, such
-as the Diffie-Hellman key exchange system and the ElGamal encryption system\marginpar{Reference to both papers}, were based on arithmetic in the group $\mathbb{Z}_p$, but in theory could
+as the Diffie-Hellman key exchange system~\cite{Diffie76newdirections} and the ElGamal encryption system~\cite{19480}, were based on arithmetic in the group $\mathbb{Z}^*_p$, but in theory could
 be implemented in other groups as well. Groups based on elliptic curves were a good choice because of their well-developed theory and their high variety. In 1985,
-both Neal Koblitz and Victor S. Miller \marginpar{Ref...} suggested public key cryptosystems based on elliptic curves.
+both Neal Koblitz~\cite{Ko87} and Victor S. Miller~\cite{Mil85} suggested public key cryptosystems based on elliptic curves.
 
 Our goal in the project has been to implement an efficient public key cryptosystem based on elliptic curves ``from scratch'', relying only on large-number arithmetic
 libraries. In particular, we have implemented all the elliptic-curve related calculations, and additional related algorithms.
 
 \section{Elliptic Curves}
 \subsection{Definition}
-Most generally, and elliptic curve $E$ over a field $K$ can be described as the subset of $K\times K$ satisfying the equation $$y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$$ 
+\begin{figure}
+   \centering
+   \includegraphics[scale = 0.5]{ec.png}
+   \caption{An elliptic curve (corresponding to the equation $y^2=x^3-6x$)}
+\end{figure}
+
+Most generally, an elliptic curve $E$ over a field $K$ can be described as the subset of $K\times K$ satisfying the equation $$y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$$ 
 for a given $a_1,a_2,a_3,a_4,a_5,a_6\in K$, along with another special point ``at infinity'' $\mathcal{O}$. An additional demand is that the curve be ``smooth'',
 which means that the partial derivatives of the curve has no common zeros. This can be reduced to checking that some invariant value $\Delta$ (the \emph{discriminant} of the curve)
-which is calculated from the coefficients is not zero\marginpar{Add a picture}. Because the nature of the field $K$ is highly relevant to the structure of $E$,
-it is common to write $E/K$ indicating the curve $E$ (usually given by the equation) iis defined over the field $K$.
+which is calculated from the coefficients is not zero. Because the nature of the field $K$ is highly relevant to the structure of $E$,
+it is common to write $E/K$ indicating the curve $E$ (usually given by the equation) is defined over the field $K$.
 
 Depending on the characteristic of $K$, the above equation can be simplified. There are three cases to consider:
 \begin{enumerate}
@@ -125,11 +133,16 @@ has a pole in each lattice point and so $0\mapsto \mathcal{O}$ (this can be made
 can be shown that this map is onto, and that $z_1,z_2$ give the same point on the curve if and only if $z_1-z_2\in L$, and so we have a bijection
 between $E$  and $\mathbb{C}/L$, the latter set can be thought of as a torus (since $\mathbb{C}/L$ is isomorphic to $\Pi$ where parallel edges are ``glued`` together).
 
-Since $\mathbb{C}/L$ can be equipped with an operation of addition modulu $L$, it forms an abelian group. This group structure can thus be induced on the 
+Since $\mathbb{C}/L$ can be equipped with an operation of addition modulo $L$, it forms an abelian group. This group structure can thus be induced on the 
 isomorphic elliptic curve: Given $P_1, P_2$ on the curve that emerge from $z_1,z_2$ (i.e. $P_i=(\wp(z_i),\wp'(z_i))$) we define $P_1+P_2=(\wp(z_1+z_2),\wp'(z_1+z_2))$ 
-(with the addition of $z_1+z_2$ done modulu $L$). This shown that every elliptic curve over $\mathbb{C}$ is an abelian group.
+(with the addition of $z_1+z_2$ done modulo $L$). This shown that every elliptic curve over $\mathbb{C}$ is an abelian group.
 \subsection{The Group Operation}
-In the previous section we have seen how eliiptic curves over $\mathbb{C}$ can be naturally induced with a group operation. There is no similar theory over
+\begin{figure}
+   \centering
+   \includegraphics[scale = 0.5]{ecaddition.png}
+   \caption{The group operation}
+\end{figure}
+In the previous section we have seen how elliptic curves over $\mathbb{C}$ can be naturally induced with a group operation. There is no similar theory over
 other fields, but we can still axiomatically define an operation similar to the one arising in the complex case. A detailed analysis of the complex case yields
 the following rough description of the group operation:
 
@@ -192,6 +205,22 @@ have no standard two-dimensional equivalent, and so are considered ''points in i
 We consider now the case $K=\mathbb{F}_p$ for $p>3$ prime (however, for any $K$ such that $char K\ne 2,3$ our description is essentially the same).
 In this case let $E$ be a curve defined by $y^2=x^3+ax+b$. Given two points on the curve $P=(x_1,y_1),Q=(x_2,y_2)$ we first consider the case $x_1\ne x_2$
 (and so $P\ne\pm Q$). The line passing both in $P$ and $Q$ has slope $\frac{y_2-y_1}{x_2-x_1}$ and so its equation is $y=y_1+\left(\frac{y_2-y_1}{x_2-x_1}\right)(x-x_1)$.
+
+
+Substituting $y$ into the curve's equation yields a complicated equation of degree 3 in $x$; however, since we already know of two roots to the equation $x_1,x_2$
+we can find the third one $x_3$ by using the fact that $-(x_1+x_2+x_3)$ equals the coefficient of $x^2$ in the equation, which is exactly the square of the slope, $\left(\frac{y_2-y_1}{x_2-x_1}\right)$ 
+Hence we have $$x_3=\left(\frac{y_2-y_1}{x_2-x_1}\right)^2-x_1-x_2$$
+
+Given $x_3$, finding $y_3$ is easy, and we see that $$y_3=\left(\frac{y_2-y_1}{x_2-x_1}\right)(x_1-x_3)-y_1$$
+
+When adding a point $P=(x_1,y_1)$ to itself the only difference is the calculation of the slope, which in this case is the tangent to the curve at $x_1$, hence
+the implicit derivative $\frac{3x_1^2+a}{2y_1}$. This yields the equations 
+
+$$x_3=\left(\frac{3x_1^2+a}{2y_1}\right)^2-x_1-x_2$$
+
+and
+
+$$y_3=\left(\frac{3x_1^2+a}{2y_1}\right)(x_1-x_3)-y_1$$
 
 \subsection{Addition Formulas - The Binary Field Case}
 In the binary case $K=\mathbb{F}_2$, the curve $E$ is defined by $y^2+xy=x^3+ax^2+b$. First note that the negative of a point $S=(x,y)$ is defined as $-S=(x,x+y)$, and it can be checked that the point $-P$ indeed also lies on $E$.
@@ -594,6 +623,24 @@ As an example we take $d=7$ and the binary reduction polynomial $1+\theta+\theta
 Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic curve order is therefore $2^7+1-(-11)=140$ points. The result can be verified by multiplying an arbitrary point times 140, and the result should be infinity ($0$).
 
 \section{Implementation}
+In this section we describe the various components implemented by us in the project.
+\subsection{Prime field algorithms}
+We have implemented a wrapper class for elements of $\mathbb{F}_p$ (zp\_int), complete with arithmetic and comparision operators, as
+well as standard and Jacobian coordinate classes. We have also implemented a class for polynomials over $\mathbb{F}_p$ (ModularPolynomial) - again, complete with arithmetic (including GCD).
+
+Most of the algorithms we have used are described in Henri Cohen's book~\cite{Co96}; we give the page numbers.
+
+We have implemented the algorithm of Tonelli and Shanks for computing square roots over $\mathbb{F}_p$ (pg. 33), and used 
+it to implement an algorithm for finding roots of general polynomials over $\mathbb{F}_p$ (pg. 37) needed in the complex multiplicaion
+method in order to find roots of the Hilbert class polynomial. These algorithms require the computation of Legendre's symbol
+and so we have implemented the standard efficient algorithm which utilizes the quadratic reciprocity theorem (pg. 29 gives an extended version).
+We have also implemented Cornacchia's algorithm for finding $x,y$ such that $x^2+|D|y^2=4p$ for given $p,D$ (pg. 35).
+Primality testing was done via GMP's library (which implements Miller-Rabin). 
+
+\subsection{Binary field algorithms}
+\subsection{Ellitpic curve implementation}
+\subsection{Cryptosystem implementation}
+
 \section{Results}
 
 \section{User Guide}
