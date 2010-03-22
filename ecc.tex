@@ -799,7 +799,15 @@ The implementation has a big number some built-in testcases that test different 
 This is mainly for debugging purposes and shows that ``everything should be right'', especially after changes in the code are made.
 
 \section{Conclusion}
+In this project we investigated the large field of elliptic curve cryptography, whose properties enable to achieve the same security with much smaller key sizes compared to public key cryptography over $\mathbb{Z}_n^*$. We implemented an elliptic curve cryptosystem ``from scratch'', relying only on big integer arithmetic. This implied the implementation of finite field arithmetic and several additional algorithms. Furthermore, the implementation was done for both elliptic curves over prime and binary fields. Besides the deep insight this approach gave, also some limitations were shown, namely not all our implementation can compete with highly optimized libraries.
 
+Besides the cryptosystem, we implemented two cutting-edge methods to generate random elliptic curves. The two approaches are conceptually different: the \emph{Complex Multiplication} (over prime fields) generates a curve for a given order, and the \emph{AGM} point-counting method (over binary fields) computes the order for given curve parameters. We showed the practical feasibility of both methods and that a random curve with not too large bit-size up to about 300 bits can be generated within a few seconds. We sucsessfully solved a challenge consisting of generation of a prime curve, and decryption over a prime and a binary curve. 
+
+Further work could involve the implementation of Complex Multiplication for binary fields and point-counting for prime fields, which would enable a direct comparison between binary and prime curves. Several optimizations could be done, either by choosing more efficient algorithms or by low-level optimizations. Additionally, a comparison of our implementations with variants from optimized library would be interesting. As cryptosystem, we choose the ECC ElGamal system for encryption and decryption. An additional task would be to implement a signature scheme, or to choose a different encryption system.
+
+For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST, which are then used for key-generation, encryption, and decryption of arbitrary text-messages. The entire implementation in C++ consists of approximately 7500 lines of code.
+
+\newpage
 \bibliographystyle{plain}
 \bibliography{eccbib}
 \end{document}
