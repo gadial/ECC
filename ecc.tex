@@ -5,6 +5,7 @@
 \geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1.3in,rmargin=1.3in}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{pdfpages}
 \usepackage{hyperref}
 \makeatletter
 
@@ -596,6 +597,124 @@ Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic c
 \section{Implementation}
 \section{Results}
 
+\subsection{Key Generation}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{keygen.png}
+\caption{Key-pair generation, with prime and binary curves.}
+\label{figure:keygen}
+\end{figure}
+
+\subsection{Encryption and Decryption}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{dia2.png}
+\caption{Addition of two points $P+Q$ in an EC}
+\label{figure:encdec}
+\end{figure}
+
+\subsection{Point Counting with AGM}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.6]{dia1.png}
+\caption{Addition of two points $P+Q$ in an EC}
+\label{figure:agm}
+\end{figure}
+\subsection{Challenge Solution}
+For testing the correctness of the implementation we were given a test consisting of the following tasks:
+
+\begin{itemize}
+ \item Generating an elliptic curve over prime field.
+ \item Decrypting two messages over prime field.
+ \item Decrypting two message over binary field.
+ \item Deciding which message was forged.
+\end{itemize}
+
+In the first task, we were given the prime field modulus and some information needed to generate a curve using the complex muliplication method. The modulo equals the 13th mersenne prime ($n=2^{521}-1$), the imaginary field discriminant for complex multiplication is $D>-400$ and the EC parameter $a=-3$. The original description is available in Appendix \ref{appendixa}.
+
+Finally the private key definition, readable by our implementation for the first curve was (for the format, see section \ref{ecdefinitions}):
+
+\begin{verbatim}
+ prime
+6864797660130609714981900799081393217269435300143305409394463459185543183397656052 \
+  122559640661454554977296311391480858037121987999716643812574028291115057151
+-3
+3527776260069785152007274377287143876629163004151083436918067245834023095352803352 \
+  619592071776153064995010045981739923633622717991755444624957640186908953364
+-398540598942556796715601841984589553814663412077882118326991138647122232976515044 \
+  0620991823676837980440324457306600557245758586407123663426871114407190797434
+6864797660130609714981900799081393217269435300143305409394463459185543183397650992 \
+  549354694781534209408074441975667428948389124479097456824493161776014158579
+2744834878295875502523990898255970938931750803137064564739517102097730423490652151 \
+  435936560016891481734286491312379889015178748930010199888643781513
+\end{verbatim}
+
+And for the second curve:
+
+\begin{verbatim}
+ prime
+6864797660130609714981900799081393217269435300143305409394463459185543183397656052 \
+  122559640661454554977296311391480858037121987999716643812574028291115057151
+-3
+3527776260069785152007274377287143876629163004151083436918067245834023095352803352 \
+  619592071776153064995010045981739923633622717991755444624957640186908953364
++277633783987862290745991157088307728706423274798898334066464657055442467551243242 \
+  7452835254055623705198536338718514654123364891577242648186860775805757142087
+6864797660130609714981900799081393217269435300143305409394463459185543183397650992 \
+  549354694781534209408074441975667428948389124479097456824493161776014158579
+1237946678497568790188826094418628206193474380513556414420549154032544215130643918 \
+  215405913748994282110182353617745746987799819718799994745251376454
+\end{verbatim}
+
+The decrypted first ciphertext is (without new lines):
+
+\begin{verbatim}
+ f(z) : m = 283 in Table A.1, a = 1, b =
+ 43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c, P =
+ +587e2fa0ab7ccd194ba4d79aa859b109adef00bc75c66bf6c69a2536c256b8bb816927b. Private
+ key = 26334010226743190633240527195230292831833139108096019898661304553382794977231705.
+ Cypher : (+2996b532a62d94cd884558af3a22e4352e748808bab983bddbf387c35a4c0847a62d92c,
+ -464089c5b600dfe844fcf0c9fbfb5056a8b166c70cdaf501b9ea59a0e1f8b3c0255e1ac)
+ (-735bb3c6145270c85c8b4990fd76881fea861a2696f66074613a0ad088ae9ac829b1976,
+ +d8d0ef69942277d300e3e1c8c679fc539f736cd1207ca536ff1156d0b50484b7f93cf8).
+\end{verbatim}
+
+The decrypted second ciphertext is:
+
+\begin{verbatim}
+ f(z) : m = 283 in Table A.1, a = 0, b =
+ 7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd, P = 
+-fb4941d427a0b0ffe32ba899f6c8c7c9f89ad50f7291853d44004a5ea72762b048a54a. Private key =
+ 26326629228593706558136978105130308473615944643701116377878072489053032875983292312
+8. Cypher : (-1c77506e381a30b83def3e1ebb8d835a49108ee89ad826e5342d5285a0e4f9cb1f0bd28,
+ -1a48f416a4c3047701154062bfe56552e18bea284c6b3eff14d3f7ce30e311af61d27ee)
+ (-7ba754244a3b5fd85c6f64a7d959fc24e5b766d383684886fe5171ca64b59eba09af9fe,
+ -350c1b2efdb3bd7d3579158820c358c99328d329e6bce9f189937fab79019aa3e3797d8).
+\end{verbatim}
+
+So there is a second layer in the challenge, which consists of full definitions of two binary curves and two ciphertexts. The curve order isn't included, but not necessary for decryption. The reduction polynomial can be read from a table and is $z^{283}+z^{12}+z^7+z^5+1$. The first curve is defined as
+\begin{displaymath}
+ y^2 + xy = x^3 + x^2 + 43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c
+\end{displaymath}
+and the second as 
+\begin{displaymath}
+ y^2 + xy = x^3 + 7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd
+\end{displaymath}
+
+Afer bringing this information in the format readable for our application, the ciphertext was decrypted. The first message is:
+
+\begin{verbatim}
+ Class number for discriminant -877991 equals 818.
+\end{verbatim}
+
+The decrypted second message is:
+
+\begin{verbatim}
+ Class number for discriminant -1293367 equals 513.
+\end{verbatim}
+
+The class number is a well-known invariant in Algebraic Number Theory and can be computed using standard algebra libraries. Using the sage library, it was found that the first solution is true while the other is false (the class number in the second case is 511). Hence, the second message was forged.
+
 \section{User Guide}
 This section is intended to provide information to the interested user who wants to experiment with our application.
 With the command line interface, our program provides a convinient way to use elliptic curve cryptography in practice. The functionalities, and how they are used is presented, along with some practical examples.
@@ -629,6 +748,35 @@ In order to successfully compile the source, some shared libraries should be ins
 
 The program is tested under 32 bit Linux, as compiler g++ version 4.4.1 was used.
 
+\subsection{Elliptic Curve Definitions}
+\label{ecdefinitions}
+Public-key and private-keys contain the full definition of the corresponding elliptic curve. The files must be provided to the application in order to do encryption and decryption. A sample public-key file looks as following:
+
+The format is the following:
+
+\begin{itemize}
+ \item 1. line: ``prime'' or ``binary'' curve.
+ \item 2. line: Elliptic curve modulus (prime) or reduction polynomial (binary)
+ \item 3. line: Parameter $a$.
+ \item 4. line: Parameter $b$.
+ \item 5. line: Point $P$ on the elliptic curve, in compressed form.
+ \item 6. line: Elliptic curve order.
+ \item 7. line: Public key (in compressed form) or private key.
+\end{itemize}
+
+All values must be decimal. A sample public key definition for a prime curve could look the following way:
+
+\begin{verbatim}
+prime
+6277101735386680763835789423207666416083908700390324961279
+-3
+2455155546008943817740293915197451784769108058161191238065
++602046282375688656758213480587526111916698976636884684818
+6277101735386680763835789423176059013767194773182842284081
+-4202774374097843812550356794057673546542297328739257456130
+\end{verbatim}
+
+
 \subsection{Command Line Interface}
 Over a simple command line interface, the following three concepual functions of the cryptosystem can be used:
 \begin{itemize}
@@ -648,7 +796,6 @@ ECC {-pk </path/to/pk> -enc </path/to/plaintext> |
      -validate </path/to/ec>
 Predefined Curves (NIST): [p192|p224|p256|p384|p521|b163|b283|b409|b571]
 \end{verbatim}
-
 
 \subsubsection{Key-pair Generation}
 By using the switch \emph{-gen\_key} we indicate that a public-key/private-key should be generated. For this purpose the elliptic curve has to be known. The 9 curves recommended by NIST are built-in and can be specified with the switch \emph{-ec\_name}. In the NIST curve names, 'p' indicates a prime curve and 'b' a binary curve; the number afterwards indicate their bit-size. If we want to generate a key-pair with the curve \emph{p192}, we run:
@@ -806,6 +953,12 @@ Besides the cryptosystem, we implemented two cutting-edge methods to generate ra
 Further work could involve the implementation of Complex Multiplication for binary fields and point-counting for prime fields, which would enable a direct comparison between binary and prime curves. Several optimizations could be done, either by choosing more efficient algorithms or by low-level optimizations. Additionally, a comparison of our implementations with variants from optimized library would be interesting. As cryptosystem, we choose the ECC ElGamal system for encryption and decryption. An additional task would be to implement a signature scheme, or to choose a different encryption system.
 
 For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST, which are then used for key-generation, encryption, and decryption of arbitrary text-messages. The entire implementation in C++ consists of approximately 7500 lines of code.
+
+\begin{appendix}
+\section{Challenge Description}
+\label{appendixa}
+\includepdf[pages=1-2]{236349_Project_Test_2009.pdf}
+\end{appendix}
 
 \newpage
 \bibliographystyle{plain}
