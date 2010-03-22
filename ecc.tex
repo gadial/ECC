@@ -745,7 +745,15 @@ For testing the correctness of the implementation we were given a test consistin
  \item Deciding which message was forged.
 \end{itemize}
 
-In the first task, we were given the prime field modulus and some information needed to generate a curve using the complex multiplication method. The modulo equals the 13th Mersenne prime ($n=2^{521}-1$), the imaginary field discriminant for complex multiplication is $D>-400$ and the EC parameter $a=-3$. The original description is available in Appendix \ref{appendixa}.
+In the first task, we were given the prime field modulus and some information needed to generate a curve using the complex multiplication method. The modulo equals the 13th Mersenne prime ($n=2^{521}-1$), the imaginary field discriminant for complex multiplication is $D>-400$ and the EC parameter $a=-3$. 
+An additional security constraint was imposed on the curve - its order had largest prime divisor $>2^{160}$ and the rest of the prime divisors were $<2^{16}$. 
+The original description is available in Appendix \ref{appendixa}.
+
+These constraints admit a unique ``solution'', i.e. a suitable curve. In order to find it we generated using the CM methods all the possible
+curves over $\mathbb{F}_p$ for our specific $p$ and the possible values of $D$ (i.e. $D>-400$), except for those values of
+$D$ for which there is no solution to the equation $x^2+|D|y^2=4p$ (i.e. Cornacchia's algorithm fails on them). Not all those curves
+were isomorphic to curves with $a=-3$, and so they were also discarded. For the remaining curve, their order was known as a result
+of the CM method and among them all, only one curve had order satisfying the security constraints (for $D=-139$).
 
 Finally the private key definition, readable by our implementation for the first curve was (for the format, see section \ref{ecdefinitions}):
 
