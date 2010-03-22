@@ -639,9 +639,9 @@ We have also implemented Cornacchia's algorithm for finding $x,y$ such that $x^2
 Primality testing was done via GMP's library (which implements Miller-Rabin). 
 
 \subsection{Binary field algorithms}
-We have implemented binary finite field arithmetic in the class \emph{GFE.h} as two variants. The first one ``from scratch'', with algorithms for addition, multiplication (\cite{715867}), the extended euclidean algorithm for binary finite fields in order to compute the multiplicative inverse, and an algorithm for solving quadratic equations over $\mathbb{F}_{2^d}$ (see section \ref{binquadeq}). The last algorithm is especially of use in solving the curve-equation ($y^2+y=c$) to the y-coordinate. The second variant is actually a wrapper around the same functions provided by the NTL library. For the evaluations however we used the implementation from scratch. The implementation was done in a way that GFE objects can be used the same way as ``primitive'' types, with the corresponding operators.
+We have implemented binary finite field arithmetic in the class \emph{GFE.h} as two variants. The first one ``from scratch'', with algorithms for addition, multiplication (\cite{715867}), the extended euclidean algorithm for binary finite fields in order to compute the multiplicative inverse, and an algorithm for solving quadratic equations over $\mathbb{F}_{2^d}$ (see section \ref{binquadeq}). The last algorithm is especially of use in solving the curve-equation ($y^2+xy=x^3+ax^2+b$) to the y-coordinate. The second variant is actually a wrapper around the same functions provided by the NTL library. For the evaluations however we used in the implementation from scratch. The implementation was done in a way that GFE objects can be used the same way as ``primitive'' types, with the corresponding operators.
 
-The algorithms used for AGM pointing are defined in \emph{adicops.h}. This contains the AGM algorithm itself, as defined in the Book ``Handbook of Elliptic and Hyperelliptic Curve Cryptography'' by Cohen and Frey \cite{handbook} at page 439. The p-adic algorithms required for AGM are: square-root computation, inverse square-root computation and inverse element computation. These algorithms are described in chapter 12 of the same book. In addition to this, p-adic polynomial-arithmetic containing addition, subtraction, multiplication and division (all operations modulo an irreducible polynomial) was implemented in two variants: the first one from scratch in the wrapper class defined in \emph{Poly.h}. The second variant used modular polynomials from NTL and is defined in the wrapper class in \emph{ModPoly.h}.
+The algorithms used for AGM point-counting are defined in \emph{adicops.h}. This contains the AGM algorithm itself, as defined in the Book ``Handbook of Elliptic and Hyperelliptic Curve Cryptography'' by Cohen and Frey \cite{handbook} at page 439. The p-adic algorithms required for AGM are: square-root computation, inverse square-root computation and inverse element computation. These algorithms are described in chapter 12 of the same book. In addition to this, p-adic polynomial-arithmetic containing addition, subtraction, multiplication and division (all operations modulo an irreducible polynomial) was implemented in two variants: the first one from scratch in the wrapper class defined in \emph{Poly.h}. The second variant used modular polynomials from NTL and is defined in the wrapper class in \emph{ModPoly.h}.
 
 \subsection{Elliptic curve implementation}
 The implementation of elliptic curves had to be done in such a way that a caller that wants to use its arithmetic doesn't have to distinguish between prime and binary curves. This was achieved by using a stable interface class defined in \emph{Ellipticcurve.h}, which defines the following virtual functions:
@@ -662,13 +662,15 @@ Elliptic curve arithmetic, namely addition and multiplication was implemented ac
 
 \subsubsection{Finding a random point on the curve}
 \label{Finding a random point on the curve}
-Another algorithm that is implementation specific is finding a random point on the curve, which is required while generating a random curve suitable for the cryptosystem. Both algorithms for prime and binary curves choose a random x coordinate until a corresponding y coordinate exists. For prime curves $y^2=x^3+ax+b$, this requires computing a modular square root, and in the binary case for curves $y^2+xy=x^3+ax^2+b$, a binary quadratic equation must be solved.
+Another algorithm which is implementation specific is finding a random point on the curve. This is required while generating a random curve suitable for the cryptosystem.
+
+Both algorithms for prime and binary curves choose a random x coordinate until a corresponding y coordinate exists. For prime curves $y^2=x^3+ax+b$, this requires computing a modular square root, and in the binary case for curves $y^2+xy=x^3+ax^2+b$, a binary quadratic equation must be solved.
 
 \subsubsection{Compressed format}
 \label{Compressed format}
-Because we are able to find the y-coordinate for a given x, full information of y is actually redundant information. Since there are two solutions for x, the question is only which one was intended.
+Because we are able to find the y-coordinate for a given x, the full definition of y is actually redundant information. Since there are two solutions for x, the question is only which one was intended.
 
-For the purpose of storing and recovering points from text-files (as described in section \ref{ecdefinitions}), we use the \emph{compressed format}. This consists of the x-coordinate and either ``+'' or ``-'' at the beginning, indicating which of the possible y-coordinates has to be chosen. As an example,
+For the purpose of storing and recovering points from text-files (as described in section \ref{ecdefinitions}), we use the \emph{compressed format}. This consists of the x-coordinate, preceeded by either ``+'' or ``-'' at the beginning, indicating which of the possible y-coordinates has to be chosen. As an example,
 \begin{verbatim}
  -6468585198793925939445065556022715668330587295808
 \end{verbatim}
@@ -688,13 +690,13 @@ The elliptic curve ElGamal cryptosystem is implemented in the class defined in \
 For the corresponding algorithms, see section \ref{Elliptic Curve ElGamal}. In addition to this, routines for encoding strings to a point on an elliptic curve (including random padding) and for decoding string from points are implemented (for details, see section \ref{Message Encoding}). Furthermore, a curve validation function is implemented, which multiplies the curve-point with the curve-order. In a correctly defined curve, the result should be the point at infinity.
 
 \subsection{Command-line interface}
-The command-line interface, used for interpreting user's parameters is implemented in \emph{cmd.h}. It parses the switches provided over the command-line, and launches actions like key-pair generation, encryption or decryption accordingly. A guide how to use the interface is given in chapter \ref{User Guide}.
+The command-line interface, used for interpreting the user's parameters is implemented in \emph{cmd.h}. It parses the switches provided over the command-line, and launches actions like key-pair generation, encryption or decryption accordingly. A guide how to use the interface is given in chapter \ref{User Guide}.
 
 \subsection{Metrics}
 The implementation is done in C++ and consists of approximately 7500 lines of code. The code is distributed in 29 files, containing 34 classes. In total, 53 test-cases are written (using CppUnit) and can be executed at any time.
 
 \section{Results}
-In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurements were done on an Intel Core Duo processor with 1.8 GHz.
+In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sizes for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurements were done on an Intel Core Duo processor with 1.8 GHz.
 
 \subsection{Key Generation}
 The key-pair generation was run with the built-in NIST curves over prime and binary fields. The key sizes are 192, 224, 256, 384 and 521 bits for prime curves and 163, 283, 409 and 571 bits for binary curves. The results are shown in Figure \ref{figure:keygen}.
@@ -720,12 +722,12 @@ While in the key-generation test the processed data depends on the key-size, in 
 \label{figure:encdec}
 \end{figure}
 
-The first thing we observe is that encryption takes approximately twice as much time as decryption. This is explained with the fact that encryption requires two multiplication while decryption needs only one (see Table \ref{elgoperations}). We again see a significant advantage of the prime curves like in curve generation. Furthermore it can be observed that the efficiency of smaller keys is better than of larger keys, even though the total number of processed blocks is higher. The slope of the measurement curves is however steeper in key-generation.
+The first thing we observe is that encryption takes approximately twice as much time as decryption. This is explained with the fact that encryption requires two multiplication while decryption needs only one (see Table \ref{elgoperations}). We again see a significant advantage of the prime curves, like in curve generation. Furthermore it can be observed that the efficiency of smaller keys is better than of larger keys, even though the total number of processed blocks is higher. The slopes of the measurement curves is however steeper in key-generation.
 
-As a general comment, public-key cryptography is in practice not very often used for actual encryption because of its inferior performance compared to symmetric key cryptography. Instead it is usually used to establish a symmetric key and the actual encryption is done for example with AES. We can also see in our results that the efficiency of our implementation is not sufficient to encrypt large files in a reasonable time.
+As a general comment, public-key cryptography is in practice not very often used for actual encryption because of its inferior performance compared to symmetric key cryptography. Instead, it is usually used to establish a symmetric key and the actual encryption is done for example with AES. We can also see in our results that the efficiency of our implementation is not sufficient to encrypt large files in a reasonable time.
 
 \subsection{Point Counting with AGM}
-The first attempt with the AGM algorithm was an implementation of the underlying polynomial multiplication and reduction ``from scratch''. This was identified as the clear bottleneck as the runtime for a key-size of ~300 bits was about 30 minutes. We therefore decided replace this operations with the ones provided by the NTL library, which resulted in a dramatic performance improvement: the runtime for the same key-size was reduced to only a few seconds. The results are illustrated in Figure \ref{figure:agm}.
+The first attempt with the AGM algorithm was an implementation of the underlying polynomial multiplication and reduction ``from scratch''. This was identified as the clear bottleneck as the runtime for a key-size of ~300 bits was about 30 minutes. We therefore decided to replace those operations with the ones provided by the NTL library, which resulted in a dramatic performance improvement: the runtime for the same key-size was reduced to only a few seconds. The results are illustrated in Figure \ref{figure:agm}.
 
 \label{agmres}
 \begin{figure}[h]
@@ -735,7 +737,7 @@ The first attempt with the AGM algorithm was an implementation of the underlying
 \label{figure:agm}
 \end{figure}
 
-The initial goal to be able to generate random curves in only a few seconds is achieved by looking at the results for key sizes up to about 500 bits. As an additional step for curve generation, an early-abort strategy to skip insecure curves \cite{satohfgh} would be needed. As described in the reference, a single point counting run dominates the early-abort step, from which we can conclude the feasibility of the AGM approach.
+The initial goal to be able to generate random curves in only a few seconds is attained, looking at the results for key sizes up to about 500 bits. As an additional step for curve generation, an early-abort strategy to skip insecure curves \cite{satohfgh} would be needed. As described in the reference, a single point counting run dominates the early-abort step, from which we can conclude the feasibility of the random curve generation approach with AGM.
 
 \subsection{Challenge Solution}
 For testing the correctness of the implementation we were given a test consisting of the following tasks:
@@ -743,7 +745,7 @@ For testing the correctness of the implementation we were given a test consistin
 \begin{itemize}
  \item Generating an elliptic curve over prime field.
  \item Decrypting two messages over prime field.
- \item Decrypting two message over binary field.
+ \item Decrypting two messages over binary field.
  \item Deciding which message was forged.
 \end{itemize}
 
@@ -791,7 +793,7 @@ And for the second curve:
   215405913748994282110182353617745746987799819718799994745251376454
 \end{verbatim}
 
-The decrypted first ciphertext is (without new lines):
+The decrypted first ciphertext was (without new lines):
 
 \begin{verbatim}
  f(z) : m = 283 in Table A.1, a = 1, b =
@@ -804,7 +806,7 @@ The decrypted first ciphertext is (without new lines):
  +d8d0ef69942277d300e3e1c8c679fc539f736cd1207ca536ff1156d0b50484b7f93cf8).
 \end{verbatim}
 
-The decrypted second ciphertext is:
+The decrypted second ciphertext was:
 
 \begin{verbatim}
  f(z) : m = 283 in Table A.1, a = 0, b =
@@ -817,7 +819,7 @@ The decrypted second ciphertext is:
  -350c1b2efdb3bd7d3579158820c358c99328d329e6bce9f189937fab79019aa3e3797d8).
 \end{verbatim}
 
-So there is a second layer in the challenge, which consists of full definitions of two binary curves and two ciphertexts. The curve order isn't included, but not necessary for decryption. The reduction polynomial can be read from a table and is $z^{283}+z^{12}+z^7+z^5+1$. The first curve is defined as
+So there was a second layer in the challenge, which consists of full definitions of two binary curves and two ciphertexts. The curve order isn't included, but this isn't necessary information for decryption. The reduction polynomial can be read from a table in \cite{940321} and is $z^{283}+z^{12}+z^7+z^5+1$. The first curve is defined as
 \begin{displaymath}
  y^2 + xy = x^3 + x^2 + 43fdf8a39baa3eaad2fc71f1329184399a63e6fc51239c3df5e8b9e9de57618887eee7c
 \end{displaymath}
@@ -826,13 +828,13 @@ and the second as
  y^2 + xy = x^3 + 7cb16923a86f239ccb3d1cd7bd4d3de5dc3b97eda43330f533da57d8c208701899724dd
 \end{displaymath}
 
-After bringing this information in the format readable for our application, the ciphertext was decrypted. The first message is:
+After bringing this information in the format readable for our application, the ciphertext was decrypted. The first message was:
 
 \begin{verbatim}
  Class number for discriminant -877991 equals 818.
 \end{verbatim}
 
-The decrypted second message is:
+The decrypted second message was:
 
 \begin{verbatim}
  Class number for discriminant -1293367 equals 513.
@@ -843,10 +845,10 @@ The class number is a well-known invariant in Algebraic Number Theory and can be
 \section{User Guide}
 \label{User Guide}
 This section is intended to provide information to the interested user who wants to experiment with our application.
-With the command line interface, our program provides a convenient way to use elliptic curve cryptography in practice. The functions, and how they are used is presented, along with some practical examples.
+With the command line interface, our program provides a convenient way to use elliptic curve cryptography in practice. The functions and how they are used is presented, along with some practical examples.
 
 \subsection{Getting the Source}
-The program source itself can be downloaded over one of the two identical repositories: \url{http://github.com/gadial/ECC} and \url{http://github.com/bhess/ECC}. One can also use git to download the source:
+The program source itself can be downloaded over one of the two identical repositories: \url{http://github.com/gadial/ECC} and \url{http://github.com/bhess/ECC}. One can also use \emph{git} to download the source:
 \begin{verbatim}
  #> git clone git://github.com/gadial/ECC.git
 \end{verbatim}
@@ -861,7 +863,7 @@ The source repository provides a makefile, so that the source is compiled by run
 \begin{verbatim}
  #ECC> make
 \end{verbatim}
-in the root folder.
+in the root folder of the repository.
 
 \subsubsection{Dependencies}
 In order to successfully compile the source, some shared libraries should be installed. We recommend to install current versions of the following libraries (in braces are tested versions):
@@ -872,13 +874,11 @@ In order to successfully compile the source, some shared libraries should be ins
  \item NTL (version 5.5.2) \url{http://www.shoup.net/ntl}
 \end{itemize}
 
-The program is tested under 32 bit Linux, as compiler g++ version 4.4.1 was used.
+The program is tested under 32 bit Linux. As compiler we used g++ version 4.4.1.
 
 \subsection{Elliptic Curve Definitions}
 \label{ecdefinitions}
-Public-key and private-keys contain the full definition of the corresponding elliptic curve. The files must be provided to the application in order to do encryption and decryption. A sample public-key file looks as following:
-
-The format is the following:
+Public-key and private-keys contain the full definition of the corresponding elliptic curve. The files must be provided to the application in order to do encryption and decryption. A sample public-key or private-key file has the following structure:
 
 \begin{itemize}
  \item 1. line: ``prime'' or ``binary'' curve.
@@ -890,7 +890,7 @@ The format is the following:
  \item 7. line: Public key (in compressed form) or private key.
 \end{itemize}
 
-All values must be decimal. A sample public key definition for a prime curve could look the following way:
+All values must be decimal. A sample public key definition for a prime curve could looks the following way:
 
 \begin{verbatim}
 prime
@@ -904,7 +904,7 @@ prime
 
 
 \subsection{Command Line Interface}
-Over a simple command line interface, the following three conceptual functions of the cryptosystem can be used:
+Over a simple command line interface, the following three functions of the cryptosystem can be used:
 \begin{itemize}
  \item Key-pair generation.
  \item Encryption
@@ -954,7 +954,7 @@ prime
 3693200230270282832430567472370334031293814885720270459444
 \end{verbatim}
 
-The second possibility is to use a curve-definition from a file. In the next example, we take the above generated public-key file as definition of a curve.
+The second possibility is to use a curve-definition from a file, with the \emph{-use_ec} switch. In the next example, we take the above generated public-key file as definition of a curve.
 
 \begin{verbatim}
  #ECC> ./ECC -gen_key -use_ec public_key_201003220104.txt
@@ -1019,13 +1019,13 @@ The name of the file containing the ciphertext is the plaintext-name with extens
 \end{verbatim}
 
 \subsubsection{Decryption}
-Analogue to encryption, we provide the private key containing the curve definition to the command line interface to decrypt a ciphertext. To decrypt the example from before, run the following:
+Analogue to encryption, we provide the private key, containing the curve definition to the command line interface to decrypt a ciphertext. To decrypt the example from before, run the following command:
 
 \begin{verbatim}
  #ECC> ./ECC -sk private_key_201003220104.txt -dec faust.txt.enc
 \end{verbatim}
 
-The decrypted file has the file-extension \emph{.dec}, and indeed, the decryption was successful:
+The decrypted file has the file-extension \emph{.dec}, and indeed, the decryption was successful!:
 
 \begin{verbatim}
  #ECC> cat faust.txt.enc.dec
@@ -1062,7 +1062,7 @@ Validation succeeded!
 More specifically, the test reads in the EC parameters, decompresses the point on the curve and multiplies the point with the curve order. If the result is the point at infinity, the validation succeeds and otherwise it fails.
 
 \subsubsection{Testcases}
-The implementation has a big number some built-in test-cases that test different aspects of the implementation, like finite field arithmetic or several algorithms. With the switch -t the test-cases are launched:
+The implementation has a large number of built-in test-cases that test different aspects of the implementation, like finite field arithmetic or several algorithms. With the switch -t the test-cases are launched:
 \begin{verbatim}
  #ECC> ./ECC -t
  .....................................................
@@ -1078,7 +1078,7 @@ Besides the cryptosystem, we implemented two cutting-edge methods to generate ra
 
 Further work could involve the implementation of Complex Multiplication for binary fields and point-counting for prime fields, which would enable a direct comparison between binary and prime curves. Several optimizations could be done, either by choosing more efficient algorithms or by low-level optimizations. Additionally, a comparison of our implementations with variants from optimized library would be interesting. As cryptosystem, we choose the ECC ElGamal system for encryption and decryption. An additional task would be to implement a signature scheme, or to choose a different encryption system.
 
-For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST, which are then used for key-generation, encryption, and decryption of arbitrary text-messages. The implementation in C++ is done in a clean, easy-extensible object-oriented design, and achieves a high efficiency typical for native code. The entire project consists of approximately 7500 lines of code.
+For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST. They can be used for key-generation, encryption and decryption of arbitrary text-messages. The implementation in C++ is done in a clean, easy-extensible object-oriented design, and achieves a high efficiency typical for native code. The entire project consists of approximately 7500 lines of code.
 
 \begin{appendix}
 \section{Challenge Description}
