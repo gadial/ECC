@@ -69,9 +69,9 @@
       ETH Zurich,
       8092 Zurich, Switzerland.
       E-mail: {\tt bhess@ethz.ch}. Work done while visiting Technion.
-   }
+   } \and Supervision: Barukh Ziv
 }
-\date{}
+\date{March 22, 2010}
 \maketitle
 
 \section{Introduction}
@@ -91,18 +91,18 @@ Our goal in the project has been to implement an efficient public key cryptosyst
 libraries. In particular, we have implemented all the elliptic-curve related calculations, and additional related algorithms.
 
 \section{Elliptic Curves}
+Most generally, an elliptic curve $E$ over a field $K$ can be described as the subset of $K\times K$ satisfying the equation $$y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$$ 
+for a given $a_1,a_2,a_3,a_4,a_5,a_6\in K$, along with another special point ``at infinity'' $\mathcal{O}$. An additional demand is that the curve be ``smooth'',
+which means that the partial derivatives of the curve has no common zeros. This can be reduced to checking that some invariant value $\Delta$ (the \emph{discriminant} of the curve)
+which is calculated from the coefficients is not zero. Because the nature of the field $K$ is highly relevant to the structure of $E$,
+it is common to write $E/K$ indicating the curve $E$ (usually given by the equation) is defined over the field $K$.
+
 \subsection{Definition}
 \begin{figure}
    \centering
    \includegraphics[scale = 0.5]{ec.png}
    \caption{An elliptic curve (corresponding to the equation $y^2=x^3-6x$)}
 \end{figure}
-
-Most generally, an elliptic curve $E$ over a field $K$ can be described as the subset of $K\times K$ satisfying the equation $$y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$$ 
-for a given $a_1,a_2,a_3,a_4,a_5,a_6\in K$, along with another special point ``at infinity'' $\mathcal{O}$. An additional demand is that the curve be ``smooth'',
-which means that the partial derivatives of the curve has no common zeros. This can be reduced to checking that some invariant value $\Delta$ (the \emph{discriminant} of the curve)
-which is calculated from the coefficients is not zero. Because the nature of the field $K$ is highly relevant to the structure of $E$,
-it is common to write $E/K$ indicating the curve $E$ (usually given by the equation) is defined over the field $K$.
 
 Depending on the characteristic of $K$, the above equation can be simplified. There are three cases to consider:
 \begin{enumerate}
