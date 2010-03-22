@@ -43,7 +43,7 @@
 \title{Elliptic Curve Cryptography}
 
 
-\author{G. Aleksandrowicz\inst{1} \and B. Hess\inst{2}\\Supervisor: Barukh Ziv}
+\author{G. Aleksandrowicz\inst{1} \and B. Hess\inst{2}\\ Supervisor: Barukh Ziv}
 
 
 \institute{\inst{1}Department of Computer Science, Technion \and \inst{2} Department of Computer Science, ETH Zurich}
@@ -57,6 +57,18 @@
 
 
 \date{Project in Computer Security, 2009}
+
+\AtBeginSection[]{
+
+  \frame<beamer>{ 
+
+    \frametitle{Outline}   
+
+    \tableofcontents[currentsection,currentsubsection] 
+
+  }
+
+}
 
 \makebeamertitle
 
@@ -228,7 +240,7 @@ $AGM(a,b):=\lim\limits_{n \rightarrow \infty}{a_n}=\lim\limits_{n \rightarrow \i
 \lyxframe{ECC ElGamal Evaluation}
 \begin{itemize}
  \item Timings are not very competitive, there is much potential for optimizations.
- \item Both versions (binary and prime field) use field arithmetic, built from scratch.
+ \item Binary version use field arithmetic built from scratch.
  \begin{itemize}
   \item Using specialized libraries would improve the performance.
   \item Optimizations for reduction trinomials could be added in the binary case.
