@@ -57,8 +57,6 @@
 %\def\thepage{}
 
 \title{Elliptic Curve Cryptography\\Final report for a project in computer security}
-
-
 \author{
    Gadi Aleksandrowicz\thanks{
       Dept.\ of Computer Science,
@@ -73,10 +71,7 @@
       E-mail: {\tt bhess@ethz.ch}. Work done while visiting Technion.
    }
 }
-
-
 \date{}
-
 \maketitle
 
 \section{Introduction}
@@ -141,7 +136,7 @@ isomorphic elliptic curve: Given $P_1, P_2$ on the curve that emerge from $z_1,z
 \begin{figure}
    \centering
    \includegraphics[scale = 0.5]{ecaddition.png}
-   \caption{The group operation}
+   \caption{The group operation (\cite{maurerscript})}
 \end{figure}
 In the previous section we have seen how elliptic curves over $\mathbb{C}$ can be naturally induced with a group operation. There is no similar theory over
 other fields, but we can still axiomatically define an operation similar to the one arising in the complex case. A detailed analysis of the complex case yields
@@ -271,6 +266,7 @@ We note that in each iteration, $c$'s degree could be at most one degree to high
 As we know the extended euclidean algorithm can be used to compute the multiplicative inverse in a finite field. This is also the case with binary fields. Suppose we want to compute the inverse of $a$ modulo the reduction polynomial $m$. We have $aa^{-1}\equiv_m 1$, reforming this we get $aa^{-1}-1=mx$ for arbitrary $x$. This can be reformed to $aa^{-1}-mx=1$, which is is exactly the setup for the euclidean algorithm, since $gcd(a,-m)=1$, and the algorithm can run on the inputs $a$ and $-m$ and deliveres as one output $a^{-1}$.
 
 \paragraph{Quadratic Equations}
+\label{binquadeq}
 A frequent task is the computation of a y-coordinate for a given x-coordinate. Reviewing the equation $y^2+xy=x^3+ax^2+b$, the problem is reduced to a quadratic equation $y^2+a'y-b'=0$, which has either two or no solution. The solutions of this equation equation is equivalent to the solution of $y^2+y=c'$ with $c'=\frac{b'}{a'^2}$.
 
 The procedure how to solve this equations is described in IEEE P1363/D13, and works as follows:
@@ -639,8 +635,47 @@ We have also implemented Cornacchia's algorithm for finding $x,y$ such that $x^2
 Primality testing was done via GMP's library (which implements Miller-Rabin). 
 
 \subsection{Binary field algorithms}
+We have implemented binary finite field arithmetic in the class \emph{GFE.h} as two variants. The first one ``from scratch'', with algorithms for addition, multiplication (\cite{715867}), the extended euclidean algorithm for binary finite fields in order to compute the multiplicative inverse, and an algorithm for solving quadratic equations over $\mathbb{F}_{2^d}$ (see section \ref{binquadeq}). The last algorithm is especially of use in solving the curve-equation ($y^2+y=c$) to the y-coordinate. The second variant is actually a wrapper around the same functions provided by the NTL library. For the evaluations however we used the implementation from scratch. The implementation was done in a way that GFE objects can be used the same way as ``primitive'' types, with the corresponding operators.
+
+The algorithms used for AGM pointing are defined in \emph{adicops.h}. This contains the AGM algorithm itself, as defined in the Book ``Handbook of Elliptic and Hyperellyptic Curve Cryptography'' by Cohen and Frey \cite{handbook} at page 439. The p-adic algorithms required for AGM are: square-root computation, inverse square-root computation and inverse element computation. These algorithms are described in chapter 12 of the same book. In addition to this, p-adic polynomial-arithmetic containing addition, subtraction, multiplication and division (all operations modulo an irreducible polynomial) was implemented in two variants: the first one from scratch in the wrapper class defined in \emph{Poly.h}. The second variant used modular polynomials from NTL and is defined in the wrapper class in \emph{ModPoly.h}.
+
 \subsection{Ellitpic curve implementation}
+The implementation of elliptic curves had to be done in such a way that a caller that wants to use its arithmetic doesn't have to distinguish between prime and binary curves. This was achieved by using a stable interface class defined in \emph{Ellipticcurve.h}, which defines the following virtual functions:
+
+\begin{itemize}
+ \item Point addition
+ \item Point subtraction
+ \item Point doubling
+ \item Point multiplication
+ \item Get a point from the ``compressed format'' (see section \ref{Compressed format}).
+ \item Convert a point to the ``compressed format'' (section \ref{Compressed format}).
+ \item Get a random point on the curve (see section \ref{Finding a random point on the curve}).
+\end{itemize}
+
+The concrete implementation of the functions are done in \emph{ECPrime.h} for prime curves and \emph{ECBinary.h} for binary curves. In this way, the program can deal with objects of abstract type \emph{Ellipticcurve} without having to know the underlying implementation. The predefined NIST-curves are all implemented as own subclasses of ECBinary or ECPrime, which simplifies the initialization of those curves. In this case an Ellipticcurve object is simply initialized with the concrete \emph{CurveNISTp192} implementation, representing the prime NIST curve over 192 bit.
+
+Elliptic curve arithmetic, namely addition and multiplication was implemented according to Menezes' book ``Guide to Elliptic Curve Cryptography'' \cite{940321}, pg. 81,97.
+
+\subsubsection{Finding a random point on the curve}
+\label{Finding a random point on the curve}
+Another algorithm that is implemention specific is finding a random point on the curve, which is required while generating a random curve suitable for the cryptosystem. Both algorithms for prime and binary curves choose a random x coordinate until a corresponding y coordinate exists. For prime curves $y^2=x^3+ax+b$, this requires computing a modular square root, and in the binary case for curves $y^2+xy=x^3+ax^2+b$, a binary quadratic equation must be solved.
+
+\subsubsection{Compressed format}
+\label{Compressed format}
+Because we are able to find the y-coordinate for a given x, full information of y is actually redundant information. Since there are two solutions for x, the question is only which one was intended.
+
+For the purpose of storing and recovering points from text-files (as described in section \ref{ecdefinitions}), we use the \emph{compressed format}. This consists of the x-coordinate and either ``+'' or ``-'' at the beginning, indicating which of the possible y-coordinates has to be choosen. As an example,
+\begin{verbatim}
+ -6468585198793925939445065556022715668330587295808
+\end{verbatim}
+is a valid point in compressed format for the 163 bit binary NIST curve.
+
+The algorithms we implemented for compression and decompression are defined in \cite{point-compress}, section E.2.3.1 (compression) and in \cite{point-decompress}, section A.12.8/9 (decompression).
+
 \subsection{Cryptosystem implementation}
+The ElGamal cryptosystem is implemented in the class defined in \emph{elgamal.h}, and consists of the following functionality:
+
+\subsection{Command-line interface}
 
 \section{Results}
 In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurementes were done on an Intel Core Duo processor with 1.8 GHz.
@@ -1018,7 +1053,7 @@ Besides the cryptosystem, we implemented two cutting-edge methods to generate ra
 
 Further work could involve the implementation of Complex Multiplication for binary fields and point-counting for prime fields, which would enable a direct comparison between binary and prime curves. Several optimizations could be done, either by choosing more efficient algorithms or by low-level optimizations. Additionally, a comparison of our implementations with variants from optimized library would be interesting. As cryptosystem, we choose the ECC ElGamal system for encryption and decryption. An additional task would be to implement a signature scheme, or to choose a different encryption system.
 
-For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST, which are then used for key-generation, encryption, and decryption of arbitrary text-messages. The entire implementation in C++ consists of approximately 7500 lines of code.
+For end-users, the product of our project is an elliptic-curve-cryptosystem that is ready-to-use. One can either define own curves or choose between different predefined curves recommended by NIST, which are then used for key-generation, encryption, and decryption of arbitrary text-messages. The implementation in C++ is done in a clean, easy-extensible object-oriented design, and achieves a high efficiency typical for native code. The entire project consists of approximately 7500 lines of code.
 
 \begin{appendix}
 \section{Challenge Description}
