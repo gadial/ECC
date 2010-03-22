@@ -596,8 +596,12 @@ Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic c
 
 \section{Implementation}
 \section{Results}
+In this section we present some measurements and some highlighted results regarding our implementation. First, the key generation timings with different key sized for both prime and binary curves are analyzed in \ref{keygenres}. In \ref{encdecres}, we measure the timings for encryption and decryption, and in \ref{agmres} we measure the efficiency of the AGM point-counting algorithm. The measurementes were done on an Intel Core Duo processor with 1.8 GHz.
 
 \subsection{Key Generation}
+The key-pair generation was run with the built-in NIST curves over prime and binary fields. The key sizes are 192, 224, 256, 384 and 521 bits for prime curves and 163, 283, 409 and 571 bits for binary curves. The results are shown in Figure \ref{figure:keygen}.
+
+\label{keygenres}
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{keygen.png}
@@ -605,21 +609,36 @@ Before step 7., $t=56$, and it gets $t=t-2^{N-1}=-11$ afterwards. The elliptic c
 \label{figure:keygen}
 \end{figure}
 
+As expected, the time increases about linearly with the key size, while the slope in prime curve is slightly higher than in binary curves.. The operation done is essentially one elliptic curve point multiplication. The timings for all tested curves don't exceed one second and are therefore feasible. The computation in prime curve show a significant advantage over the binary curves. The difference most likely comes from the fact that the binary curve arithmetic uses binary field arithmetic built from scratch while prime field arithmetic was done using GMP. For a definite result, more optimized binary field arithmetic should be used.
+
 \subsection{Encryption and Decryption}
+While in the key-generation test the processed data depends on the key-size, in the encryption and decryption test all cases process a file of the same size: 3.3KB. Because a curve with double key size can store the double amount of information on one point, larger key sizes have the theoretical advantage that less ciphertext-points are produced and therefore less operations are done. The results are illustrated in Figure \ref{figure:encdec}.
+
+\label{encdecres}
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{dia2.png}
-\caption{Addition of two points $P+Q$ in an EC}
+\caption{Encryption/Decryption results on a 3.3KB file}
 \label{figure:encdec}
 \end{figure}
 
+The first thing we observe is that encryption takes approximately twice as much time as decryption. This is explained with the fact that encryption requires two multiplication while decryption needs only one (see Table \ref{elgoperations}). We again see a significant advantage of the prime curves like in curve generation. Furthermore it can be oversved that the efficiency of smaller keys is better than of larger keys, even though the total number of processed blocks is higher. The slope of the measurement curves is however steeper in key-generation.
+
+As a general comment, public-key cryption is in practice not very often used for actual encryption because of its inferior performance compared to symmetric key cryptography. Instead it is usually used to establish a symmeteic key and the actual encryption is done for example with AES. We can also see in our results that the efficiency of our implementation is not sufficient to encrypt large files in a reasonable time.
+
 \subsection{Point Counting with AGM}
+The first attempt with the AGM algorithm was an implementation of the underlying polynomial multplication and reduction ``from scratch''. This was identified as the clear bottleneck as the runtime for a key-size of ~300 bits was about 30 minutes. We therefore decided replace this operations with the ones provided by the NTL library, which resulted in a dramatic performance improvement: the runtime for the same key-size was reduced to only a few seconds. The results are illustrated in Figure \ref{figure:agm}.
+
+\label{agmres}
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{dia1.png}
-\caption{Addition of two points $P+Q$ in an EC}
+\caption{AGM point counting with varied key sizes.}
 \label{figure:agm}
 \end{figure}
+
+The initial goal to be able to generate random curves in only a few seconds is achieved by looking at the results for key sizes up to about 500 bits. As an additional step for curve generation, an early-abort strategy to skip insecure curves \cite{satohfgh} would be needed. As described in the reference, a single point counting run dominates the early-abort step, from which we can conclude the feasiblilty of the AGM approach.
+
 \subsection{Challenge Solution}
 For testing the correctness of the implementation we were given a test consisting of the following tasks:
 
